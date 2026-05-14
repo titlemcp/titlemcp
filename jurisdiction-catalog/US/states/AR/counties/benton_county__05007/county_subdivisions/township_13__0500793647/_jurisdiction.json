@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/AR/counties/benton_county__05007/county_subdivisions/township_13__0500793647/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Benton County",
+    "county_fips": "007",
+    "county_subdivision_fips": "93647",
+    "funcstat": "N",
+    "name": "Township 13",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AR",
+    "state_fips": "05",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Benton County",
+    "municipality": "Township 13",
+    "state": "AR"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/MO/counties/lewis_county__29111/county_subdivisions/la_belle_township__2911139530/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Lewis County",
+    "county_fips": "111",
+    "county_subdivision_fips": "39530",
+    "funcstat": "N",
+    "name": "La Belle township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MO",
+    "state_fips": "29",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Lewis County",
+    "municipality": "La Belle township",
+    "state": "MO"
+  }
+}

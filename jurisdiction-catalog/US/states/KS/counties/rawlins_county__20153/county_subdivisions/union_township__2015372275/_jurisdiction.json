@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/KS/counties/rawlins_county__20153/county_subdivisions/union_township__2015372275/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Rawlins County",
+    "county_fips": "153",
+    "county_subdivision_fips": "72275",
+    "funcstat": "A",
+    "name": "Union township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "KS",
+    "state_fips": "20",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Rawlins County",
+    "municipality": "Union township",
+    "state": "KS"
+  }
+}

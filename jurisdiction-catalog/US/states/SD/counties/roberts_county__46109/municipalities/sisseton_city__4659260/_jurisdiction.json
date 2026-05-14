@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/SD/counties/roberts_county__46109/municipalities/sisseton_city__4659260/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Roberts County",
+    "county_fips": "109",
+    "funcstat": "A",
+    "name": "Sisseton city",
+    "place_fips": "59260",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "SD",
+    "state_fips": "46",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Roberts County",
+    "municipality": "Sisseton city",
+    "state": "SD"
+  }
+}

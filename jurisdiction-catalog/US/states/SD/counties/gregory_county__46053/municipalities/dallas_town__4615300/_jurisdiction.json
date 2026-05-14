@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/SD/counties/gregory_county__46053/municipalities/dallas_town__4615300/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Gregory County",
+    "county_fips": "053",
+    "funcstat": "A",
+    "name": "Dallas town",
+    "place_fips": "15300",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "SD",
+    "state_fips": "46",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Gregory County",
+    "municipality": "Dallas town",
+    "state": "SD"
+  }
+}

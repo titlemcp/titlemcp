@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/AL/counties/fayette_county__01057/county_subdivisions/winfield_glen_allen_ccd__0105793495/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Fayette County",
+    "county_fips": "057",
+    "county_subdivision_fips": "93495",
+    "funcstat": "S",
+    "name": "Winfield-Glen Allen CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AL",
+    "state_fips": "01",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Fayette County",
+    "municipality": "Winfield-Glen Allen CCD",
+    "state": "AL"
+  }
+}

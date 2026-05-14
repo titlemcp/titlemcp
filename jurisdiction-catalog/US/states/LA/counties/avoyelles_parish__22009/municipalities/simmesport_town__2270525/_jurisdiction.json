@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/LA/counties/avoyelles_parish__22009/municipalities/simmesport_town__2270525/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Avoyelles Parish",
+    "county_fips": "009",
+    "funcstat": "A",
+    "name": "Simmesport town",
+    "place_fips": "70525",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "LA",
+    "state_fips": "22",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Avoyelles Parish",
+    "municipality": "Simmesport town",
+    "state": "LA"
+  }
+}

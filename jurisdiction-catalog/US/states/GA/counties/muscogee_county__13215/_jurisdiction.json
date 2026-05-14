@@ -1,0 +1,27 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/GA/counties/muscogee_county__13215/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county_fips": "215",
+    "funcstat": "H6",
+    "name": "Muscogee County",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_county.txt",
+    "state": "GA",
+    "state_fips": "13",
+    "type": "county"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Muscogee County",
+    "state": "GA"
+  }
+}

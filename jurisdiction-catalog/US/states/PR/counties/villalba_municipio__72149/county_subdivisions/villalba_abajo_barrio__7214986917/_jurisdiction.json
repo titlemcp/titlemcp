@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/PR/counties/villalba_municipio__72149/county_subdivisions/villalba_abajo_barrio__7214986917/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Villalba Municipio",
+    "county_fips": "149",
+    "county_subdivision_fips": "86917",
+    "funcstat": "N",
+    "name": "Villalba Abajo barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Villalba Municipio",
+    "municipality": "Villalba Abajo barrio",
+    "state": "PR"
+  }
+}

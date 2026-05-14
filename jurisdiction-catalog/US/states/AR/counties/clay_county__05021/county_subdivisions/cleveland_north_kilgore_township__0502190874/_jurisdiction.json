@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/AR/counties/clay_county__05021/county_subdivisions/cleveland_north_kilgore_township__0502190874/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Clay County",
+    "county_fips": "021",
+    "county_subdivision_fips": "90874",
+    "funcstat": "N",
+    "name": "Cleveland-North Kilgore township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AR",
+    "state_fips": "05",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Clay County",
+    "municipality": "Cleveland-North Kilgore township",
+    "state": "AR"
+  }
+}

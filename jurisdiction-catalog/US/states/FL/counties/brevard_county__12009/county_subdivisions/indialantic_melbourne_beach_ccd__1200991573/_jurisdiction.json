@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/FL/counties/brevard_county__12009/county_subdivisions/indialantic_melbourne_beach_ccd__1200991573/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Brevard County",
+    "county_fips": "009",
+    "county_subdivision_fips": "91573",
+    "funcstat": "S",
+    "name": "Indialantic-Melbourne Beach CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "FL",
+    "state_fips": "12",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Brevard County",
+    "municipality": "Indialantic-Melbourne Beach CCD",
+    "state": "FL"
+  }
+}

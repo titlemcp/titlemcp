@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/FL/counties/santa_rosa_county__12113/county_subdivisions/gulf_breeze_ccd__1211391376/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Santa Rosa County",
+    "county_fips": "113",
+    "county_subdivision_fips": "91376",
+    "funcstat": "S",
+    "name": "Gulf Breeze CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "FL",
+    "state_fips": "12",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Santa Rosa County",
+    "municipality": "Gulf Breeze CCD",
+    "state": "FL"
+  }
+}

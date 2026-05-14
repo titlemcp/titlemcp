@@ -1,0 +1,27 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/IN/counties/lake_county__18089/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county_fips": "089",
+    "funcstat": "H1",
+    "name": "Lake County",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_county.txt",
+    "state": "IN",
+    "state_fips": "18",
+    "type": "county"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Lake County",
+    "state": "IN"
+  }
+}

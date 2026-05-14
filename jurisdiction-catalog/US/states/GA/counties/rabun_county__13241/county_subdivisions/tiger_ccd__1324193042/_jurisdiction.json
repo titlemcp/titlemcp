@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/GA/counties/rabun_county__13241/county_subdivisions/tiger_ccd__1324193042/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Rabun County",
+    "county_fips": "241",
+    "county_subdivision_fips": "93042",
+    "funcstat": "S",
+    "name": "Tiger CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "GA",
+    "state_fips": "13",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Rabun County",
+    "municipality": "Tiger CCD",
+    "state": "GA"
+  }
+}

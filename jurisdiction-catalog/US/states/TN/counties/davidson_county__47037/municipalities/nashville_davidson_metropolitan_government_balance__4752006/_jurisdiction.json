@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/TN/counties/davidson_county__47037/municipalities/nashville_davidson_metropolitan_government_balance__4752006/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Davidson County",
+    "county_fips": "037",
+    "funcstat": "F",
+    "name": "Nashville-Davidson metropolitan government (balance)",
+    "place_fips": "52006",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "TN",
+    "state_fips": "47",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Davidson County",
+    "municipality": "Nashville-Davidson metropolitan government (balance)",
+    "state": "TN"
+  }
+}

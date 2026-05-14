@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/MA/counties/barnstable_county__25001/county_subdivisions/sandwich_town__2500159735/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Barnstable County",
+    "county_fips": "001",
+    "county_subdivision_fips": "59735",
+    "funcstat": "A",
+    "name": "Sandwich town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MA",
+    "state_fips": "25",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Barnstable County",
+    "municipality": "Sandwich town",
+    "state": "MA"
+  }
+}

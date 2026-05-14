@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/UT/counties/cache_county__49005/county_subdivisions/lewiston_ccd__4900591677/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Cache County",
+    "county_fips": "005",
+    "county_subdivision_fips": "91677",
+    "funcstat": "S",
+    "name": "Lewiston CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "UT",
+    "state_fips": "49",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Cache County",
+    "municipality": "Lewiston CCD",
+    "state": "UT"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/SC/counties/newberry_county__45071/county_subdivisions/whitmire_ccd__4507193705/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Newberry County",
+    "county_fips": "071",
+    "county_subdivision_fips": "93705",
+    "funcstat": "S",
+    "name": "Whitmire CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "SC",
+    "state_fips": "45",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Newberry County",
+    "municipality": "Whitmire CCD",
+    "state": "SC"
+  }
+}

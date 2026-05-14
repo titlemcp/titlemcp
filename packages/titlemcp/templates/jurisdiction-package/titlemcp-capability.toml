@@ -1,0 +1,27 @@
+[capability]
+capability_id = "us-oh-franklin-recorder"
+package_name = "titlemcp-us-oh-franklin-recorder"
+version = "0.1.0"
+
+[jurisdiction]
+country = "US"
+state = "OH"
+county = "Franklin County"
+
+[workflows.public_records_search]
+status = "draft"
+adapter = "implemented"
+source_connector = "implemented"
+human_review_required = true
+
+[readiness]
+docs = true
+unit_tests = false
+fixtures = false
+integration_tests = false
+no_live_credentials = true
+pypi_metadata = true
+reviewer_approved = false
+
+[release]
+publish = false

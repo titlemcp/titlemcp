@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/CT/counties/middlesex_county__09007/county_subdivisions/east_haddam_town__0900722280/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Middlesex County",
+    "county_fips": "007",
+    "county_subdivision_fips": "22280",
+    "funcstat": "A",
+    "name": "East Haddam town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CT",
+    "state_fips": "09",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Middlesex County",
+    "municipality": "East Haddam town",
+    "state": "CT"
+  }
+}

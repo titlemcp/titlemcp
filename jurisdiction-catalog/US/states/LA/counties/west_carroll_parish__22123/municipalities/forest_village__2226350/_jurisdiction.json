@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/LA/counties/west_carroll_parish__22123/municipalities/forest_village__2226350/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "West Carroll Parish",
+    "county_fips": "123",
+    "funcstat": "A",
+    "name": "Forest village",
+    "place_fips": "26350",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "LA",
+    "state_fips": "22",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "West Carroll Parish",
+    "municipality": "Forest village",
+    "state": "LA"
+  }
+}

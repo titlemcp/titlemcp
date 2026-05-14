@@ -1,9 +1,17 @@
 name: Publish Python Package
 
 on:
-  release:
-    types: [published]
   workflow_dispatch:
+    inputs:
+      package-path:
+        description: "Publishable package directory"
+        required: true
+        default: "packages/titlemcp"
+      publish:
+        description: "Publish to PyPI after build checks"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -25,21 +33,48 @@ jobs:
       - name: Install build tools
         run: python -m pip install --upgrade build twine
 
+      - name: Audit jurisdiction readiness
+        run: |
+          if [ -f "${{ inputs.package-path }}/titlemcp-capability.toml" ]; then
+            if [ "${{ inputs.publish }}" = "true" ]; then
+              python scripts/audit_jurisdiction_package.py \
+                "${{ inputs.package-path }}" \
+                --require-publish-ready
+            else
+              python scripts/audit_jurisdiction_package.py "${{ inputs.package-path }}"
+            fi
+          fi
+
+      - name: Install package for tests
+        run: |
+          if [ "${{ inputs.package-path }}" != "packages/titlemcp" ]; then
+            python -m pip install -e packages/titlemcp
+          fi
+          python -m pip install -e "${{ inputs.package-path }}"
+
+      - name: Run package tests
+        run: |
+          if [ -d "${{ inputs.package-path }}/tests" ]; then
+            python -m unittest discover -s "${{ inputs.package-path }}/tests" -v
+          fi
+
       - name: Build package
+        working-directory: ${{ inputs.package-path }}
         run: python -m build
 
       - name: Check package metadata
+        working-directory: ${{ inputs.package-path }}
         run: python -m twine check dist/*
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: python-distributions
-          path: dist/*
+          path: ${{ inputs.package-path }}/dist/*
 
   publish:
     name: Publish to PyPI
-    if: github.event_name == 'release'
+    if: inputs.publish
     needs: build
     runs-on: ubuntu-latest
     environment: pypi

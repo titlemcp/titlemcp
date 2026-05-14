@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/NV/counties/elko_county__32007/county_subdivisions/west_wendover_ccd__3200794896/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Elko County",
+    "county_fips": "007",
+    "county_subdivision_fips": "94896",
+    "funcstat": "S",
+    "name": "West Wendover CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NV",
+    "state_fips": "32",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Elko County",
+    "municipality": "West Wendover CCD",
+    "state": "NV"
+  }
+}

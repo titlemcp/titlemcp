@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/NV/counties/lyon_county__32019/county_subdivisions/smith_valley_ccd__3201994784/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Lyon County",
+    "county_fips": "019",
+    "county_subdivision_fips": "94784",
+    "funcstat": "S",
+    "name": "Smith Valley CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NV",
+    "state_fips": "32",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Lyon County",
+    "municipality": "Smith Valley CCD",
+    "state": "NV"
+  }
+}

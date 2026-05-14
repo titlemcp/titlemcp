@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/ID/counties/blaine_county__16013/county_subdivisions/ketchum_ccd__1601391817/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Blaine County",
+    "county_fips": "013",
+    "county_subdivision_fips": "91817",
+    "funcstat": "S",
+    "name": "Ketchum CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ID",
+    "state_fips": "16",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Blaine County",
+    "municipality": "Ketchum CCD",
+    "state": "ID"
+  }
+}

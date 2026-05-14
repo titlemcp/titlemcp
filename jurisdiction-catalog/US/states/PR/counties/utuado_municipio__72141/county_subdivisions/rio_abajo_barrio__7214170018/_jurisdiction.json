@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/PR/counties/utuado_municipio__72141/county_subdivisions/rio_abajo_barrio__7214170018/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Utuado Municipio",
+    "county_fips": "141",
+    "county_subdivision_fips": "70018",
+    "funcstat": "N",
+    "name": "R\u00edo Abajo barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Utuado Municipio",
+    "municipality": "R\u00edo Abajo barrio",
+    "state": "PR"
+  }
+}

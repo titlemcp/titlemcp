@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/NM/counties/chaves_county__35005/county_subdivisions/northeast_chaves_ccd__3500592190/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Chaves County",
+    "county_fips": "005",
+    "county_subdivision_fips": "92190",
+    "funcstat": "S",
+    "name": "Northeast Chaves CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NM",
+    "state_fips": "35",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Chaves County",
+    "municipality": "Northeast Chaves CCD",
+    "state": "NM"
+  }
+}

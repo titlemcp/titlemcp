@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/AK/counties/fairbanks_north_star_borough__02090/county_subdivisions/fairbanks_north_star_census_subarea__0209024450/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Fairbanks North Star Borough",
+    "county_fips": "090",
+    "county_subdivision_fips": "24450",
+    "funcstat": "S",
+    "name": "Fairbanks North Star census subarea",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Fairbanks North Star Borough",
+    "municipality": "Fairbanks North Star census subarea",
+    "state": "AK"
+  }
+}

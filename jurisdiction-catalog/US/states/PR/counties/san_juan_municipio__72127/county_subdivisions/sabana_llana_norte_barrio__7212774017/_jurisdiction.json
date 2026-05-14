@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/PR/counties/san_juan_municipio__72127/county_subdivisions/sabana_llana_norte_barrio__7212774017/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "San Juan Municipio",
+    "county_fips": "127",
+    "county_subdivision_fips": "74017",
+    "funcstat": "N",
+    "name": "Sabana Llana Norte barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "San Juan Municipio",
+    "municipality": "Sabana Llana Norte barrio",
+    "state": "PR"
+  }
+}

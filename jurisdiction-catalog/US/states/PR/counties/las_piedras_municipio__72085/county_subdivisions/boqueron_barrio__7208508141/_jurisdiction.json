@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/PR/counties/las_piedras_municipio__72085/county_subdivisions/boqueron_barrio__7208508141/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Las Piedras Municipio",
+    "county_fips": "085",
+    "county_subdivision_fips": "08141",
+    "funcstat": "N",
+    "name": "Boquer\u00f3n barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Las Piedras Municipio",
+    "municipality": "Boquer\u00f3n barrio",
+    "state": "PR"
+  }
+}

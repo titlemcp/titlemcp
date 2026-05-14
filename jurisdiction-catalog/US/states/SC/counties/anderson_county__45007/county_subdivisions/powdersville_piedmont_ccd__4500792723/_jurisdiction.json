@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/SC/counties/anderson_county__45007/county_subdivisions/powdersville_piedmont_ccd__4500792723/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Anderson County",
+    "county_fips": "007",
+    "county_subdivision_fips": "92723",
+    "funcstat": "S",
+    "name": "Powdersville-Piedmont CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "SC",
+    "state_fips": "45",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Anderson County",
+    "municipality": "Powdersville-Piedmont CCD",
+    "state": "SC"
+  }
+}

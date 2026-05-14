@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/NJ/counties/morris_county__34027/county_subdivisions/florham_park_borough__3402723910/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Morris County",
+    "county_fips": "027",
+    "county_subdivision_fips": "23910",
+    "funcstat": "F",
+    "name": "Florham Park borough",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NJ",
+    "state_fips": "34",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Morris County",
+    "municipality": "Florham Park borough",
+    "state": "NJ"
+  }
+}

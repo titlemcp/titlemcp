@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/WY/counties/natrona_county__56025/county_subdivisions/casper_north_ccd__5602590605/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Natrona County",
+    "county_fips": "025",
+    "county_subdivision_fips": "90605",
+    "funcstat": "S",
+    "name": "Casper North CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WY",
+    "state_fips": "56",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Natrona County",
+    "municipality": "Casper North CCD",
+    "state": "WY"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/UT/counties/wasatch_county__49051/county_subdivisions/heber_city_west_ccd__4905191312/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Wasatch County",
+    "county_fips": "051",
+    "county_subdivision_fips": "91312",
+    "funcstat": "S",
+    "name": "Heber City West CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "UT",
+    "state_fips": "49",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Wasatch County",
+    "municipality": "Heber City West CCD",
+    "state": "UT"
+  }
+}

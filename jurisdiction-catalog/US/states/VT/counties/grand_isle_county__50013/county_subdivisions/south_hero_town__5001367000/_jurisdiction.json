@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/VT/counties/grand_isle_county__50013/county_subdivisions/south_hero_town__5001367000/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Grand Isle County",
+    "county_fips": "013",
+    "county_subdivision_fips": "67000",
+    "funcstat": "A",
+    "name": "South Hero town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "VT",
+    "state_fips": "50",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Grand Isle County",
+    "municipality": "South Hero town",
+    "state": "VT"
+  }
+}

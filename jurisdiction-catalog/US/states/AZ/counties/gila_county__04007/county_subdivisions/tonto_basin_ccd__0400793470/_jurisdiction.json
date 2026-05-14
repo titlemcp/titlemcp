@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/AZ/counties/gila_county__04007/county_subdivisions/tonto_basin_ccd__0400793470/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Gila County",
+    "county_fips": "007",
+    "county_subdivision_fips": "93470",
+    "funcstat": "S",
+    "name": "Tonto Basin CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AZ",
+    "state_fips": "04",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Gila County",
+    "municipality": "Tonto Basin CCD",
+    "state": "AZ"
+  }
+}

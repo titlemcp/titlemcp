@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/MA/counties/worcester_county__25027/county_subdivisions/northbridge_town__2502746925/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Worcester County",
+    "county_fips": "027",
+    "county_subdivision_fips": "46925",
+    "funcstat": "A",
+    "name": "Northbridge town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MA",
+    "state_fips": "25",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Worcester County",
+    "municipality": "Northbridge town",
+    "state": "MA"
+  }
+}

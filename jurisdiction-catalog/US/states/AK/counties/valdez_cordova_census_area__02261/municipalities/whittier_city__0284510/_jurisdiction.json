@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/AK/counties/valdez_cordova_census_area__02261/municipalities/whittier_city__0284510/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Valdez-Cordova Census Area",
+    "county_fips": "261",
+    "funcstat": "A",
+    "name": "Whittier city",
+    "place_fips": "84510",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Valdez-Cordova Census Area",
+    "municipality": "Whittier city",
+    "state": "AK"
+  }
+}

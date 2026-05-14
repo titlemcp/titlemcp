@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/PR/counties/penuelas_municipio__72111/county_subdivisions/tallaboa_poniente_barrio__7211181585/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Penuelas Municipio",
+    "county_fips": "111",
+    "county_subdivision_fips": "81585",
+    "funcstat": "N",
+    "name": "Tallaboa Poniente barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Penuelas Municipio",
+    "municipality": "Tallaboa Poniente barrio",
+    "state": "PR"
+  }
+}

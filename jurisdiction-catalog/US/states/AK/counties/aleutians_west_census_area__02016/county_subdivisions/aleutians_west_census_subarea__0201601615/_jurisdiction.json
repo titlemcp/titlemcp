@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/AK/counties/aleutians_west_census_area__02016/county_subdivisions/aleutians_west_census_subarea__0201601615/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Aleutians West Census Area",
+    "county_fips": "016",
+    "county_subdivision_fips": "01615",
+    "funcstat": "S",
+    "name": "Aleutians West census subarea",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Aleutians West Census Area",
+    "municipality": "Aleutians West census subarea",
+    "state": "AK"
+  }
+}

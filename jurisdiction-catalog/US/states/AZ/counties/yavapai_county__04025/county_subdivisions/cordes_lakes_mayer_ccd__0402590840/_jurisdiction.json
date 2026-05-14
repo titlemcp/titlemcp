@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/AZ/counties/yavapai_county__04025/county_subdivisions/cordes_lakes_mayer_ccd__0402590840/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Yavapai County",
+    "county_fips": "025",
+    "county_subdivision_fips": "90840",
+    "funcstat": "S",
+    "name": "Cordes Lakes-Mayer CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AZ",
+    "state_fips": "04",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Yavapai County",
+    "municipality": "Cordes Lakes-Mayer CCD",
+    "state": "AZ"
+  }
+}

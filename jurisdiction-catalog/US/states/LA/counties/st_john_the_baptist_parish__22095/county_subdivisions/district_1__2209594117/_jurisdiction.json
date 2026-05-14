@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/LA/counties/st_john_the_baptist_parish__22095/county_subdivisions/district_1__2209594117/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "St. John the Baptist Parish",
+    "county_fips": "095",
+    "county_subdivision_fips": "94117",
+    "funcstat": "N",
+    "name": "District 1",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "LA",
+    "state_fips": "22",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "St. John the Baptist Parish",
+    "municipality": "District 1",
+    "state": "LA"
+  }
+}

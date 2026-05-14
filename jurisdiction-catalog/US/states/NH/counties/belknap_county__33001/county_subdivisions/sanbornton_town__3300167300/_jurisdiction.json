@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/NH/counties/belknap_county__33001/county_subdivisions/sanbornton_town__3300167300/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Belknap County",
+    "county_fips": "001",
+    "county_subdivision_fips": "67300",
+    "funcstat": "A",
+    "name": "Sanbornton town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NH",
+    "state_fips": "33",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Belknap County",
+    "municipality": "Sanbornton town",
+    "state": "NH"
+  }
+}

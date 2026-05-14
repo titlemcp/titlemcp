@@ -1,0 +1,27 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/CO/counties/san_juan_county__08111/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county_fips": "111",
+    "funcstat": "H1",
+    "name": "San Juan County",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_county.txt",
+    "state": "CO",
+    "state_fips": "08",
+    "type": "county"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "San Juan County",
+    "state": "CO"
+  }
+}

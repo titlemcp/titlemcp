@@ -1,0 +1,27 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/GA/counties/seminole_county__13253/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county_fips": "253",
+    "funcstat": "H1",
+    "name": "Seminole County",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_county.txt",
+    "state": "GA",
+    "state_fips": "13",
+    "type": "county"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Seminole County",
+    "state": "GA"
+  }
+}

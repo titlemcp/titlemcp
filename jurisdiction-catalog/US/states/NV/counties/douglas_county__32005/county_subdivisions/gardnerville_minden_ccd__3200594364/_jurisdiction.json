@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdiction-catalog/US/states/NV/counties/douglas_county__32005/county_subdivisions/gardnerville_minden_ccd__3200594364/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in packages/titlemcp/src/title_mcp and call it from jurisdiction code.",
+    "template": "packages/titlemcp/templates/jurisdiction-package"
+  },
+  "geography": {
+    "county": "Douglas County",
+    "county_fips": "005",
+    "county_subdivision_fips": "94364",
+    "funcstat": "S",
+    "name": "Gardnerville-Minden CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NV",
+    "state_fips": "32",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Douglas County",
+    "municipality": "Gardnerville-Minden CCD",
+    "state": "NV"
+  }
+}
