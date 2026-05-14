@@ -1,6 +1,20 @@
 # Razi Title MCP
 
-Python MCP platform for title and real estate service operations. The project is structured as a reusable framework rather than a pile of tool scripts: MCP tools delegate into typed workflow services, workflow state is persisted behind repository interfaces, and county/state behavior is supplied through jurisdiction adapters or plugins.
+Python MCP platform for title companies that want to expand their MCP server
+toolkit with practical title and real estate service operations. TitleMCP
+provides structured tools for source lookups, jurisdiction-specific searches,
+vendor requests, and review-first workflows that local LLMs, hosted agents, and
+internal automation can call through MCP.
+
+The project is structured as a reusable framework rather than a pile of tool
+scripts: MCP tools delegate into typed workflow services, workflow state is
+persisted behind repository interfaces, and county/state behavior is supplied
+through jurisdiction adapters or plugins. Tools should return predictable domain
+records, preserve source-specific evidence, and leave legal or underwriting
+judgment to a human reviewer.
+
+If you are new to the project, start with the root docs:
+[docs/README.md](../../docs/README.md).
 
 ## What Is Included
 

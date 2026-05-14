@@ -1,6 +1,31 @@
 # Razi Title MCP Monorepo
 
+TitleMCP is a toolkit for title companies that want to expand their MCP server
+tool surface with practical title and real estate operations capabilities. It is
+designed to expose reusable, structured tools for local LLMs, hosted agents, and
+workflow systems: parcel lookups, county auditor searches, PACER bankruptcy
+checks, public-records requests, tax certificates, HOA estoppels, release
+tracking, payoff parsing, and other title workflows.
+
+The project is intentionally tool-first. Each MCP tool should return predictable
+domain records, preserve source-specific evidence, and leave legal or
+underwriting judgment to a human reviewer. The goal is not to replace title
+professionals; it is to give title companies a clean MCP server foundation they
+can extend with jurisdiction-specific sources, vendor integrations, and internal
+workflow automation.
+
 This repository is organized as a Python package monorepo for TitleMCP.
+
+## Start Here
+
+New to the project? Start with the beginner docs:
+
+- [Docs overview](docs/README.md)
+- [Getting started](docs/GETTING_STARTED.md)
+- [Tool reference](docs/TOOLS.md)
+- [Configuration](docs/CONFIGURATION.md)
+- [Samples](docs/SAMPLES.md)
+- [Extending TitleMCP](docs/EXTENDING.md)
 
 ```text
 packages/
@@ -81,6 +106,7 @@ Regenerate it from the core package:
 
 ## Documentation
 
+- Beginner docs: `docs/README.md`
 - Core package README: `packages/titlemcp/README.md`
 - Architecture: `packages/titlemcp/docs/ARCHITECTURE.md`
 - Jurisdiction packages: `packages/titlemcp/docs/JURISDICTION_PACKAGES.md`
