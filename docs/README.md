@@ -10,10 +10,10 @@ Start here if you are new to the project:
 1. [Getting Started](GETTING_STARTED.md): install from a source checkout, run the
    MCP server, and verify the tool surface.
 2. [Tool Reference](TOOLS.md): what tools exist today and what each returns.
-3. [Configuration](CONFIGURATION.md): environment variables for PACER, Regrid,
-   state backends, logging, and extension loading.
-4. [Samples](SAMPLES.md): Ollama examples for Regrid, PACER, and Franklin County
-   Auditor.
+3. [Configuration](CONFIGURATION.md): environment variables for PACER, state
+   backends, logging, extension loading, and optional source connectors.
+4. [Samples](SAMPLES.md): Ollama examples for Franklin County Auditor and
+   PACER.
 5. [Extending TitleMCP](EXTENDING.md): where to add adapters, source connectors,
    vendor connectors, domain models, and optional toolsets.
 
@@ -21,9 +21,9 @@ Start here if you are new to the project:
 
 TitleMCP is built around MCP tools that return predictable domain records:
 
-- `title_mcp.parcel_record` for parcel/property data providers like Regrid.
 - `title_mcp.property_assessment_record` for county auditor and assessment
   sources.
+- `title_mcp.parcel_record` for parcel/property data providers.
 - `title_mcp.pacer_bankruptcy_search` for PACER bankruptcy party searches.
 - Workflow response models for estoppels, municipal liens, tax certificates,
   document analysis, payoff parsing, release tracking, and review tasks.

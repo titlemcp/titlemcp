@@ -12,26 +12,31 @@ Install the core package first:
 
 Make sure Ollama is running and a tool-capable model is available.
 
-## Regrid Parcel Lookup
+## Franklin County Auditor
+
+Parcel search:
 
 ```bash
-python samples/regrid_ollama/ollama_client.py \
-  --address "1150 Glenn Ave, Columbus, OH"
+python samples/franklin_county_ollama/ollama_client.py \
+  --scenario parcel \
+  --parcel-id "030-000526-00"
 ```
 
-The prompt does not name `regrid_parcel_lookup`; the sample verifies that the
-model chooses it. The tool returns `title_mcp.parcel_record`.
-
-Useful debug flags:
+Address search:
 
 ```bash
-TITLE_MCP_REGRID_TIMEOUT_SECONDS=3 \
-TITLE_MCP_REGRID_COOKIE_TIMEOUT_SECONDS=3 \
-TITLE_MCP_REGRID_MAX_PROXY_ATTEMPTS=2 \
-python samples/regrid_ollama/ollama_client.py \
-  --address "1150 Glenn Ave, Columbus, OH" \
-  --tool-timeout 30
+python samples/franklin_county_ollama/ollama_client.py \
+  --scenario address \
+  --address "1150 Glenn Ave"
 ```
+
+The prompt does not name `franklin_county_auditor_search`; the sample verifies
+that the model chooses it. The tool returns
+`title_mcp.property_assessment_record` and preserves the raw Franklin Auditor
+payload under `source_specific.franklin_auditor`.
+
+This sample uses a wrapper server so the jurisdiction package can be loaded from
+the source checkout.
 
 ## PACER Bankruptcy Search
 
@@ -54,27 +59,6 @@ python samples/pacer_ollama/ollama_client.py \
 
 If credentials are missing, the tool should still be triggered and return
 `requires_configuration`.
-
-## Franklin County Auditor
-
-Parcel search:
-
-```bash
-python samples/franklin_county_ollama/ollama_client.py \
-  --scenario parcel \
-  --parcel-id "030-000526-00"
-```
-
-Address search:
-
-```bash
-python samples/franklin_county_ollama/ollama_client.py \
-  --scenario address \
-  --address "1150 Glenn Ave"
-```
-
-This sample uses a wrapper server so the jurisdiction package can be loaded from
-the source checkout.
 
 ## How To Read The Logs
 

@@ -8,7 +8,6 @@ This guide assumes you are running TitleMCP from a local source checkout.
 - A virtual environment
 - Optional: Ollama running locally for the sample clients
 - Optional: PACER credentials for live PACER bankruptcy searches
-- Optional: Regrid smart proxy credentials for live Regrid parcel lookups
 
 ## 1. Create The Environment
 
@@ -59,13 +58,16 @@ PYTHONPATH=packages/titlemcp/src:packages/jurisdictions/us/oh/franklin/recorder/
 
 ## 4. Try A Sample
 
-The easiest way to see an LLM trigger an MCP tool is with the Ollama samples.
+The easiest way to see an LLM trigger an MCP tool is with the Franklin County
+Auditor Ollama sample. It asks a conversational parcel-search question and
+verifies that the model chooses `franklin_county_auditor_search`.
 
-Regrid parcel lookup:
+Franklin County Auditor parcel search:
 
 ```bash
-python samples/regrid_ollama/ollama_client.py \
-  --address "1150 Glenn Ave, Columbus, OH"
+python samples/franklin_county_ollama/ollama_client.py \
+  --scenario parcel \
+  --parcel-id "030-000526-00"
 ```
 
 PACER business bankruptcy search:
@@ -74,14 +76,6 @@ PACER business bankruptcy search:
 python samples/pacer_ollama/ollama_client.py \
   --scenario business \
   --business-name "Example Holdings LLC"
-```
-
-Franklin County Auditor parcel search:
-
-```bash
-python samples/franklin_county_ollama/ollama_client.py \
-  --scenario parcel \
-  --parcel-id "030-000526-00"
 ```
 
 Each sample logs:
@@ -98,7 +92,7 @@ TitleMCP tools usually return a `SourceResult`-style envelope:
 
 ```json
 {
-  "source_id": "regrid-parcel-search",
+  "source_id": "us-oh-franklin-auditor",
   "status": "succeeded",
   "records": [],
   "citations": [],

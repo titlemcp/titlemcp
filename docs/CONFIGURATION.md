@@ -85,7 +85,7 @@ TITLE_MCP_OLLAMA_MODEL=qwen3
 The sample clients also accept `--model`, for example:
 
 ```bash
-python samples/regrid_ollama/ollama_client.py --model qwen3:8b
+python samples/franklin_county_ollama/ollama_client.py --model qwen3:8b
 ```
 
 ## Extension Loading
