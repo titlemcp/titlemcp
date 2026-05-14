@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/vega_baja_municipio__72145/county_subdivisions/vega_baja_barrio_pueblo__7214585369/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Vega Baja Municipio",
+    "county_fips": "145",
+    "county_subdivision_fips": "85369",
+    "funcstat": "N",
+    "name": "Vega Baja barrio-pueblo",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Vega Baja Municipio",
+    "municipality": "Vega Baja barrio-pueblo",
+    "state": "PR"
+  }
+}

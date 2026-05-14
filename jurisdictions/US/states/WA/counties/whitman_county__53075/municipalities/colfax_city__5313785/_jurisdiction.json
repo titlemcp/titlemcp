@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WA/counties/whitman_county__53075/municipalities/colfax_city__5313785/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Whitman County",
+    "county_fips": "075",
+    "funcstat": "A",
+    "name": "Colfax city",
+    "place_fips": "13785",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "WA",
+    "state_fips": "53",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Whitman County",
+    "municipality": "Colfax city",
+    "state": "WA"
+  }
+}

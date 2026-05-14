@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NJ/counties/middlesex_county__34023/county_subdivisions/new_brunswick_city__3402351210/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Middlesex County",
+    "county_fips": "023",
+    "county_subdivision_fips": "51210",
+    "funcstat": "F",
+    "name": "New Brunswick city",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NJ",
+    "state_fips": "34",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Middlesex County",
+    "municipality": "New Brunswick city",
+    "state": "NJ"
+  }
+}

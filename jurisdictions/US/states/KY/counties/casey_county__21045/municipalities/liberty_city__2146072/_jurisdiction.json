@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KY/counties/casey_county__21045/municipalities/liberty_city__2146072/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Casey County",
+    "county_fips": "045",
+    "funcstat": "A",
+    "name": "Liberty city",
+    "place_fips": "46072",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "KY",
+    "state_fips": "21",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Casey County",
+    "municipality": "Liberty city",
+    "state": "KY"
+  }
+}

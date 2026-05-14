@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TX/counties/fannin_county__48147/county_subdivisions/leonard_ccd__4814792175/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Fannin County",
+    "county_fips": "147",
+    "county_subdivision_fips": "92175",
+    "funcstat": "S",
+    "name": "Leonard CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "TX",
+    "state_fips": "48",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Fannin County",
+    "municipality": "Leonard CCD",
+    "state": "TX"
+  }
+}

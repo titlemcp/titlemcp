@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TX/counties/jack_county__48237/county_subdivisions/jacksboro_ccd__4823791905/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Jack County",
+    "county_fips": "237",
+    "county_subdivision_fips": "91905",
+    "funcstat": "S",
+    "name": "Jacksboro CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "TX",
+    "state_fips": "48",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Jack County",
+    "municipality": "Jacksboro CCD",
+    "state": "TX"
+  }
+}

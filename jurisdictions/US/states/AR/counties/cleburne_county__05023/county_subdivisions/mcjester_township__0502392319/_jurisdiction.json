@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AR/counties/cleburne_county__05023/county_subdivisions/mcjester_township__0502392319/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Cleburne County",
+    "county_fips": "023",
+    "county_subdivision_fips": "92319",
+    "funcstat": "N",
+    "name": "McJester township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AR",
+    "state_fips": "05",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Cleburne County",
+    "municipality": "McJester township",
+    "state": "AR"
+  }
+}

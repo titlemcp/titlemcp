@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IA/counties/sioux_county__19167/county_subdivisions/holland_township__1916791965/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Sioux County",
+    "county_fips": "167",
+    "county_subdivision_fips": "91965",
+    "funcstat": "G",
+    "name": "Holland township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IA",
+    "state_fips": "19",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Sioux County",
+    "municipality": "Holland township",
+    "state": "IA"
+  }
+}

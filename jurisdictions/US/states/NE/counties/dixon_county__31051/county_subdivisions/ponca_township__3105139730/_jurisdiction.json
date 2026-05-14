@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NE/counties/dixon_county__31051/county_subdivisions/ponca_township__3105139730/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Dixon County",
+    "county_fips": "051",
+    "county_subdivision_fips": "39730",
+    "funcstat": "A",
+    "name": "Ponca township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NE",
+    "state_fips": "31",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Dixon County",
+    "municipality": "Ponca township",
+    "state": "NE"
+  }
+}

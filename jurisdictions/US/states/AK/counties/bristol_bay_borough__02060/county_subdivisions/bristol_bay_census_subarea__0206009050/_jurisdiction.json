@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AK/counties/bristol_bay_borough__02060/county_subdivisions/bristol_bay_census_subarea__0206009050/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Bristol Bay Borough",
+    "county_fips": "060",
+    "county_subdivision_fips": "09050",
+    "funcstat": "S",
+    "name": "Bristol Bay census subarea",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Bristol Bay Borough",
+    "municipality": "Bristol Bay census subarea",
+    "state": "AK"
+  }
+}

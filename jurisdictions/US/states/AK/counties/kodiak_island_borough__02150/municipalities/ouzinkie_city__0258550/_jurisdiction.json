@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AK/counties/kodiak_island_borough__02150/municipalities/ouzinkie_city__0258550/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Kodiak Island Borough",
+    "county_fips": "150",
+    "funcstat": "A",
+    "name": "Ouzinkie city",
+    "place_fips": "58550",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Kodiak Island Borough",
+    "municipality": "Ouzinkie city",
+    "state": "AK"
+  }
+}

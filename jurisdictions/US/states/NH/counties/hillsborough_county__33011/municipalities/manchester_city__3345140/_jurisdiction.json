@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NH/counties/hillsborough_county__33011/municipalities/manchester_city__3345140/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Hillsborough County",
+    "county_fips": "011",
+    "funcstat": "A",
+    "name": "Manchester city",
+    "place_fips": "45140",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "NH",
+    "state_fips": "33",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Hillsborough County",
+    "municipality": "Manchester city",
+    "state": "NH"
+  }
+}

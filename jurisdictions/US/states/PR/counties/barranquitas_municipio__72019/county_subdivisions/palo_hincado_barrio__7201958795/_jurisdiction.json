@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/barranquitas_municipio__72019/county_subdivisions/palo_hincado_barrio__7201958795/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Barranquitas Municipio",
+    "county_fips": "019",
+    "county_subdivision_fips": "58795",
+    "funcstat": "N",
+    "name": "Palo Hincado barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Barranquitas Municipio",
+    "municipality": "Palo Hincado barrio",
+    "state": "PR"
+  }
+}

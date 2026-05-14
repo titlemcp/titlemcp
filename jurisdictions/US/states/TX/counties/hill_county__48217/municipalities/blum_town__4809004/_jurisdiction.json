@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TX/counties/hill_county__48217/municipalities/blum_town__4809004/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Hill County",
+    "county_fips": "217",
+    "funcstat": "A",
+    "name": "Blum town",
+    "place_fips": "09004",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "TX",
+    "state_fips": "48",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Hill County",
+    "municipality": "Blum town",
+    "state": "TX"
+  }
+}

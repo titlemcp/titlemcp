@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TX/counties/oldham_county__48359/county_subdivisions/vega_ccd__4835994018/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Oldham County",
+    "county_fips": "359",
+    "county_subdivision_fips": "94018",
+    "funcstat": "S",
+    "name": "Vega CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "TX",
+    "state_fips": "48",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Oldham County",
+    "municipality": "Vega CCD",
+    "state": "TX"
+  }
+}

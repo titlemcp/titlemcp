@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MN/counties/stearns_county__27145/municipalities/st_rosa_city__2758072/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Stearns County",
+    "county_fips": "145",
+    "funcstat": "A",
+    "name": "St. Rosa city",
+    "place_fips": "58072",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "MN",
+    "state_fips": "27",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Stearns County",
+    "municipality": "St. Rosa city",
+    "state": "MN"
+  }
+}

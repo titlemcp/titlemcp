@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MI/counties/branch_county__26023/county_subdivisions/bethel_township__2602308060/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Branch County",
+    "county_fips": "023",
+    "county_subdivision_fips": "08060",
+    "funcstat": "A",
+    "name": "Bethel township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MI",
+    "state_fips": "26",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Branch County",
+    "municipality": "Bethel township",
+    "state": "MI"
+  }
+}

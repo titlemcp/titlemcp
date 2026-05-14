@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PA/counties/sullivan_county__42113/municipalities/forksville_borough__4226760/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Sullivan County",
+    "county_fips": "113",
+    "funcstat": "A",
+    "name": "Forksville borough",
+    "place_fips": "26760",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "PA",
+    "state_fips": "42",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Sullivan County",
+    "municipality": "Forksville borough",
+    "state": "PA"
+  }
+}

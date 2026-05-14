@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/VA/counties/charlotte_county__51037/county_subdivisions/walton_district__5103796223/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Charlotte County",
+    "county_fips": "037",
+    "county_subdivision_fips": "96223",
+    "funcstat": "N",
+    "name": "Walton district",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "VA",
+    "state_fips": "51",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Charlotte County",
+    "municipality": "Walton district",
+    "state": "VA"
+  }
+}

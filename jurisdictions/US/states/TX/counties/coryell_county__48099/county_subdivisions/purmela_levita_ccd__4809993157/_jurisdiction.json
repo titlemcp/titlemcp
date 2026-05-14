@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TX/counties/coryell_county__48099/county_subdivisions/purmela_levita_ccd__4809993157/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Coryell County",
+    "county_fips": "099",
+    "county_subdivision_fips": "93157",
+    "funcstat": "S",
+    "name": "Purmela-Levita CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "TX",
+    "state_fips": "48",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Coryell County",
+    "municipality": "Purmela-Levita CCD",
+    "state": "TX"
+  }
+}

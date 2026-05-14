@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MO/counties/mcdonald_county__29119/municipalities/noel_city__2952742/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "McDonald County",
+    "county_fips": "119",
+    "funcstat": "A",
+    "name": "Noel city",
+    "place_fips": "52742",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "MO",
+    "state_fips": "29",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "McDonald County",
+    "municipality": "Noel city",
+    "state": "MO"
+  }
+}

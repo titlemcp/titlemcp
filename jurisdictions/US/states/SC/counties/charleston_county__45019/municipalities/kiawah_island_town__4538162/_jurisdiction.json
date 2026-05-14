@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/SC/counties/charleston_county__45019/municipalities/kiawah_island_town__4538162/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Charleston County",
+    "county_fips": "019",
+    "funcstat": "A",
+    "name": "Kiawah Island town",
+    "place_fips": "38162",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "SC",
+    "state_fips": "45",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Charleston County",
+    "municipality": "Kiawah Island town",
+    "state": "SC"
+  }
+}

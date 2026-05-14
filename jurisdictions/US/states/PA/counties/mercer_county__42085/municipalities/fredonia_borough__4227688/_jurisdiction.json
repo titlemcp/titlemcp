@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PA/counties/mercer_county__42085/municipalities/fredonia_borough__4227688/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Mercer County",
+    "county_fips": "085",
+    "funcstat": "A",
+    "name": "Fredonia borough",
+    "place_fips": "27688",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "PA",
+    "state_fips": "42",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Mercer County",
+    "municipality": "Fredonia borough",
+    "state": "PA"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WV/counties/randolph_county__54083/county_subdivisions/dry_fork_district__5408390936/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Randolph County",
+    "county_fips": "083",
+    "county_subdivision_fips": "90936",
+    "funcstat": "N",
+    "name": "Dry Fork district",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WV",
+    "state_fips": "54",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Randolph County",
+    "municipality": "Dry Fork district",
+    "state": "WV"
+  }
+}

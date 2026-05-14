@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CA/counties/san_diego_county__06073/county_subdivisions/fallbrook_ccd__0607390960/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "San Diego County",
+    "county_fips": "073",
+    "county_subdivision_fips": "90960",
+    "funcstat": "S",
+    "name": "Fallbrook CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CA",
+    "state_fips": "06",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "San Diego County",
+    "municipality": "Fallbrook CCD",
+    "state": "CA"
+  }
+}

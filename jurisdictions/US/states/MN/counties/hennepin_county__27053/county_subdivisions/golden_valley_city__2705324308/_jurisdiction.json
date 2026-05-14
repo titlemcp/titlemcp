@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MN/counties/hennepin_county__27053/county_subdivisions/golden_valley_city__2705324308/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Hennepin County",
+    "county_fips": "053",
+    "county_subdivision_fips": "24308",
+    "funcstat": "F",
+    "name": "Golden Valley city",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MN",
+    "state_fips": "27",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Hennepin County",
+    "municipality": "Golden Valley city",
+    "state": "MN"
+  }
+}

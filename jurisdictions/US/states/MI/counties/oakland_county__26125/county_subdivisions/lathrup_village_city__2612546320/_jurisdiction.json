@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MI/counties/oakland_county__26125/county_subdivisions/lathrup_village_city__2612546320/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Oakland County",
+    "county_fips": "125",
+    "county_subdivision_fips": "46320",
+    "funcstat": "F",
+    "name": "Lathrup Village city",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MI",
+    "state_fips": "26",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Oakland County",
+    "municipality": "Lathrup Village city",
+    "state": "MI"
+  }
+}

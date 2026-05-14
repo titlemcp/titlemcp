@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OR/counties/umatilla_county__41059/county_subdivisions/athena_ccd__4105990170/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Umatilla County",
+    "county_fips": "059",
+    "county_subdivision_fips": "90170",
+    "funcstat": "S",
+    "name": "Athena CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OR",
+    "state_fips": "41",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Umatilla County",
+    "municipality": "Athena CCD",
+    "state": "OR"
+  }
+}

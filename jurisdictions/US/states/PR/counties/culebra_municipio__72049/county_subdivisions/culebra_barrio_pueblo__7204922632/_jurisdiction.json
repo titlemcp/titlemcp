@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/culebra_municipio__72049/county_subdivisions/culebra_barrio_pueblo__7204922632/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Culebra Municipio",
+    "county_fips": "049",
+    "county_subdivision_fips": "22632",
+    "funcstat": "N",
+    "name": "Culebra barrio-pueblo",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Culebra Municipio",
+    "municipality": "Culebra barrio-pueblo",
+    "state": "PR"
+  }
+}

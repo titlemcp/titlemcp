@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MI/counties/emmet_county__26047/county_subdivisions/petoskey_city__2604763820/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Emmet County",
+    "county_fips": "047",
+    "county_subdivision_fips": "63820",
+    "funcstat": "F",
+    "name": "Petoskey city",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MI",
+    "state_fips": "26",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Emmet County",
+    "municipality": "Petoskey city",
+    "state": "MI"
+  }
+}

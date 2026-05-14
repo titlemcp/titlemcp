@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ID/counties/jerome_county__16053/county_subdivisions/hunt_ccd__1605391587/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Jerome County",
+    "county_fips": "053",
+    "county_subdivision_fips": "91587",
+    "funcstat": "S",
+    "name": "Hunt CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ID",
+    "state_fips": "16",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Jerome County",
+    "municipality": "Hunt CCD",
+    "state": "ID"
+  }
+}

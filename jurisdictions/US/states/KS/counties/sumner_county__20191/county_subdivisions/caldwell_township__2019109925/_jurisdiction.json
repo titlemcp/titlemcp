@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KS/counties/sumner_county__20191/county_subdivisions/caldwell_township__2019109925/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Sumner County",
+    "county_fips": "191",
+    "county_subdivision_fips": "09925",
+    "funcstat": "A",
+    "name": "Caldwell township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "KS",
+    "state_fips": "20",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Sumner County",
+    "municipality": "Caldwell township",
+    "state": "KS"
+  }
+}

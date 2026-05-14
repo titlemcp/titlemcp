@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/SC/counties/aiken_county__45003/county_subdivisions/aiken_northeast_ccd__4500390028/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Aiken County",
+    "county_fips": "003",
+    "county_subdivision_fips": "90028",
+    "funcstat": "S",
+    "name": "Aiken Northeast CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "SC",
+    "state_fips": "45",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Aiken County",
+    "municipality": "Aiken Northeast CCD",
+    "state": "SC"
+  }
+}

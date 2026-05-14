@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MN/counties/ramsey_county__27123/county_subdivisions/north_oaks_city__2712347104/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Ramsey County",
+    "county_fips": "123",
+    "county_subdivision_fips": "47104",
+    "funcstat": "F",
+    "name": "North Oaks city",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MN",
+    "state_fips": "27",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Ramsey County",
+    "municipality": "North Oaks city",
+    "state": "MN"
+  }
+}

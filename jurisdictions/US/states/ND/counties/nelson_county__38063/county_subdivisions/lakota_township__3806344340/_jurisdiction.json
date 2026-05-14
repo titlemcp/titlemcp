@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ND/counties/nelson_county__38063/county_subdivisions/lakota_township__3806344340/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Nelson County",
+    "county_fips": "063",
+    "county_subdivision_fips": "44340",
+    "funcstat": "A",
+    "name": "Lakota township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ND",
+    "state_fips": "38",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Nelson County",
+    "municipality": "Lakota township",
+    "state": "ND"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TX/counties/rockwall_county__48397/county_subdivisions/south_rockwall_ccd__4839793665/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Rockwall County",
+    "county_fips": "397",
+    "county_subdivision_fips": "93665",
+    "funcstat": "S",
+    "name": "South Rockwall CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "TX",
+    "state_fips": "48",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Rockwall County",
+    "municipality": "South Rockwall CCD",
+    "state": "TX"
+  }
+}

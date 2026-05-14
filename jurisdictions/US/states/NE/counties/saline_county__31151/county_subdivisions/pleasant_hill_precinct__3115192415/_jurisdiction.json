@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NE/counties/saline_county__31151/county_subdivisions/pleasant_hill_precinct__3115192415/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Saline County",
+    "county_fips": "151",
+    "county_subdivision_fips": "92415",
+    "funcstat": "N",
+    "name": "Pleasant Hill precinct",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NE",
+    "state_fips": "31",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Saline County",
+    "municipality": "Pleasant Hill precinct",
+    "state": "NE"
+  }
+}

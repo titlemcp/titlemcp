@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AK/counties/matanuska_susitna_borough__02170/county_subdivisions/matanuska_susitna_census_subarea__0217047440/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Matanuska-Susitna Borough",
+    "county_fips": "170",
+    "county_subdivision_fips": "47440",
+    "funcstat": "S",
+    "name": "Matanuska-Susitna census subarea",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Matanuska-Susitna Borough",
+    "municipality": "Matanuska-Susitna census subarea",
+    "state": "AK"
+  }
+}

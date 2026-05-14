@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/GA/counties/houston_county__13153/county_subdivisions/perry_ccd__1315392352/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Houston County",
+    "county_fips": "153",
+    "county_subdivision_fips": "92352",
+    "funcstat": "S",
+    "name": "Perry CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "GA",
+    "state_fips": "13",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Houston County",
+    "municipality": "Perry CCD",
+    "state": "GA"
+  }
+}

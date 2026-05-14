@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MT/counties/mccone_county__30055/municipalities/circle_town__3014950/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "McCone County",
+    "county_fips": "055",
+    "funcstat": "A",
+    "name": "Circle town",
+    "place_fips": "14950",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "MT",
+    "state_fips": "30",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "McCone County",
+    "municipality": "Circle town",
+    "state": "MT"
+  }
+}

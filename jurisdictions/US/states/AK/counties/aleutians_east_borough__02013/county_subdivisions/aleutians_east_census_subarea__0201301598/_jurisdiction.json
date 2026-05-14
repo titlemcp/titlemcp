@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AK/counties/aleutians_east_borough__02013/county_subdivisions/aleutians_east_census_subarea__0201301598/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Aleutians East Borough",
+    "county_fips": "013",
+    "county_subdivision_fips": "01598",
+    "funcstat": "S",
+    "name": "Aleutians East census subarea",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Aleutians East Borough",
+    "municipality": "Aleutians East census subarea",
+    "state": "AK"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/FL/counties/pinellas_county__12103/county_subdivisions/boca_ciega_ccd__1210390182/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Pinellas County",
+    "county_fips": "103",
+    "county_subdivision_fips": "90182",
+    "funcstat": "S",
+    "name": "Boca Ciega CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "FL",
+    "state_fips": "12",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Pinellas County",
+    "municipality": "Boca Ciega CCD",
+    "state": "FL"
+  }
+}

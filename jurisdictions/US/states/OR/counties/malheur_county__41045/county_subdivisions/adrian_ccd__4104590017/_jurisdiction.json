@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OR/counties/malheur_county__41045/county_subdivisions/adrian_ccd__4104590017/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Malheur County",
+    "county_fips": "045",
+    "county_subdivision_fips": "90017",
+    "funcstat": "S",
+    "name": "Adrian CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OR",
+    "state_fips": "41",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Malheur County",
+    "municipality": "Adrian CCD",
+    "state": "OR"
+  }
+}

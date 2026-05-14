@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OR/counties/clackamas_county__41005/county_subdivisions/mount_hood_ccd__4100592023/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Clackamas County",
+    "county_fips": "005",
+    "county_subdivision_fips": "92023",
+    "funcstat": "S",
+    "name": "Mount Hood CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OR",
+    "state_fips": "41",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Clackamas County",
+    "municipality": "Mount Hood CCD",
+    "state": "OR"
+  }
+}

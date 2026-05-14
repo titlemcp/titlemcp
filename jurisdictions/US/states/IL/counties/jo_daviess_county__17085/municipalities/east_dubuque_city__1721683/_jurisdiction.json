@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IL/counties/jo_daviess_county__17085/municipalities/east_dubuque_city__1721683/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Jo Daviess County",
+    "county_fips": "085",
+    "funcstat": "A",
+    "name": "East Dubuque city",
+    "place_fips": "21683",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "IL",
+    "state_fips": "17",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Jo Daviess County",
+    "municipality": "East Dubuque city",
+    "state": "IL"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MI/counties/emmet_county__26047/municipalities/harbor_springs_city__2636560/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Emmet County",
+    "county_fips": "047",
+    "funcstat": "A",
+    "name": "Harbor Springs city",
+    "place_fips": "36560",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "MI",
+    "state_fips": "26",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Emmet County",
+    "municipality": "Harbor Springs city",
+    "state": "MI"
+  }
+}

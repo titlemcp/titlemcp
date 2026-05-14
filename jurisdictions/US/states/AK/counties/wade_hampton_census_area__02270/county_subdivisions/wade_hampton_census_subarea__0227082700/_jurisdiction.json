@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AK/counties/wade_hampton_census_area__02270/county_subdivisions/wade_hampton_census_subarea__0227082700/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Wade Hampton Census Area",
+    "county_fips": "270",
+    "county_subdivision_fips": "82700",
+    "funcstat": "S",
+    "name": "Wade Hampton census subarea",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Wade Hampton Census Area",
+    "municipality": "Wade Hampton census subarea",
+    "state": "AK"
+  }
+}

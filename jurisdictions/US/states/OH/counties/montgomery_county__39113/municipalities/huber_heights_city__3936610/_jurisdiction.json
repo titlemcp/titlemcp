@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OH/counties/montgomery_county__39113/municipalities/huber_heights_city__3936610/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Montgomery County",
+    "county_fips": "113",
+    "funcstat": "A",
+    "name": "Huber Heights city",
+    "place_fips": "36610",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "OH",
+    "state_fips": "39",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Montgomery County",
+    "municipality": "Huber Heights city",
+    "state": "OH"
+  }
+}

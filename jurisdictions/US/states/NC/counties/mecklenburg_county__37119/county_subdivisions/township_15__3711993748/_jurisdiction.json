@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NC/counties/mecklenburg_county__37119/county_subdivisions/township_15__3711993748/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Mecklenburg County",
+    "county_fips": "119",
+    "county_subdivision_fips": "93748",
+    "funcstat": " Huntersville",
+    "name": "Township 15",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NC",
+    "state_fips": "37",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Mecklenburg County",
+    "municipality": "Township 15",
+    "state": "NC"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NM/counties/san_juan_county__35045/municipalities/aztec_city__3505780/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "San Juan County",
+    "county_fips": "045",
+    "funcstat": "A",
+    "name": "Aztec city",
+    "place_fips": "05780",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "NM",
+    "state_fips": "35",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "San Juan County",
+    "municipality": "Aztec city",
+    "state": "NM"
+  }
+}

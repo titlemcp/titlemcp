@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MO/counties/cass_county__29037/county_subdivisions/dolan_township__2903719738/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Cass County",
+    "county_fips": "037",
+    "county_subdivision_fips": "19738",
+    "funcstat": "N",
+    "name": "Dolan township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MO",
+    "state_fips": "29",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Cass County",
+    "municipality": "Dolan township",
+    "state": "MO"
+  }
+}

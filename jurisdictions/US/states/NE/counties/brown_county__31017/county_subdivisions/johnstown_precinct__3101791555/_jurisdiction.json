@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NE/counties/brown_county__31017/county_subdivisions/johnstown_precinct__3101791555/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Brown County",
+    "county_fips": "017",
+    "county_subdivision_fips": "91555",
+    "funcstat": "N",
+    "name": "Johnstown precinct",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NE",
+    "state_fips": "31",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Brown County",
+    "municipality": "Johnstown precinct",
+    "state": "NE"
+  }
+}

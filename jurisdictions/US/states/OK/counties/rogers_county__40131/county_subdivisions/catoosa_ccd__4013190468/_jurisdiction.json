@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OK/counties/rogers_county__40131/county_subdivisions/catoosa_ccd__4013190468/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Rogers County",
+    "county_fips": "131",
+    "county_subdivision_fips": "90468",
+    "funcstat": "S",
+    "name": "Catoosa CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OK",
+    "state_fips": "40",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Rogers County",
+    "municipality": "Catoosa CCD",
+    "state": "OK"
+  }
+}

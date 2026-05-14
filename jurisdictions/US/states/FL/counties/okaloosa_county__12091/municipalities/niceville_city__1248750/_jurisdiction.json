@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/FL/counties/okaloosa_county__12091/municipalities/niceville_city__1248750/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Okaloosa County",
+    "county_fips": "091",
+    "funcstat": "A",
+    "name": "Niceville city",
+    "place_fips": "48750",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "FL",
+    "state_fips": "12",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Okaloosa County",
+    "municipality": "Niceville city",
+    "state": "FL"
+  }
+}

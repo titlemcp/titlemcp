@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OK/counties/washita_county__40149/county_subdivisions/northwest_washita_ccd__4014992340/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Washita County",
+    "county_fips": "149",
+    "county_subdivision_fips": "92340",
+    "funcstat": "S",
+    "name": "Northwest Washita CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OK",
+    "state_fips": "40",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Washita County",
+    "municipality": "Northwest Washita CCD",
+    "state": "OK"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NC/counties/wilson_county__37195/county_subdivisions/gardners_township__3719591208/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Wilson County",
+    "county_fips": "195",
+    "county_subdivision_fips": "91208",
+    "funcstat": "N",
+    "name": "Gardners township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NC",
+    "state_fips": "37",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Wilson County",
+    "municipality": "Gardners township",
+    "state": "NC"
+  }
+}

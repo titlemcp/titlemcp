@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KS/counties/marion_county__20115/county_subdivisions/west_branch_township__2011576775/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Marion County",
+    "county_fips": "115",
+    "county_subdivision_fips": "76775",
+    "funcstat": "A",
+    "name": "West Branch township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "KS",
+    "state_fips": "20",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Marion County",
+    "municipality": "West Branch township",
+    "state": "KS"
+  }
+}

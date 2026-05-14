@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OK/counties/mcclain_county__40087/county_subdivisions/purcell_ccd__4008792626/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "McClain County",
+    "county_fips": "087",
+    "county_subdivision_fips": "92626",
+    "funcstat": "S",
+    "name": "Purcell CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OK",
+    "state_fips": "40",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "McClain County",
+    "municipality": "Purcell CCD",
+    "state": "OK"
+  }
+}

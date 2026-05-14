@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MO/counties/maries_county__29125/county_subdivisions/jackson_township__2912535918/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Maries County",
+    "county_fips": "125",
+    "county_subdivision_fips": "35918",
+    "funcstat": "N",
+    "name": "Jackson township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MO",
+    "state_fips": "29",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Maries County",
+    "municipality": "Jackson township",
+    "state": "MO"
+  }
+}

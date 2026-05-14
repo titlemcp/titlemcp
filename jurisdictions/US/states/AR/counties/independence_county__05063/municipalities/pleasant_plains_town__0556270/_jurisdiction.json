@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AR/counties/independence_county__05063/municipalities/pleasant_plains_town__0556270/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Independence County",
+    "county_fips": "063",
+    "funcstat": "A",
+    "name": "Pleasant Plains town",
+    "place_fips": "56270",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "AR",
+    "state_fips": "05",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Independence County",
+    "municipality": "Pleasant Plains town",
+    "state": "AR"
+  }
+}

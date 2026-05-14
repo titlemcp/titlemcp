@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WV/counties/lewis_county__54041/municipalities/jane_lew_town__5440828/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Lewis County",
+    "county_fips": "041",
+    "funcstat": "A",
+    "name": "Jane Lew town",
+    "place_fips": "40828",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "WV",
+    "state_fips": "54",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Lewis County",
+    "municipality": "Jane Lew town",
+    "state": "WV"
+  }
+}

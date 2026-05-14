@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NV/counties/elko_county__32007/county_subdivisions/wells_ccd__3200794882/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Elko County",
+    "county_fips": "007",
+    "county_subdivision_fips": "94882",
+    "funcstat": "S",
+    "name": "Wells CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NV",
+    "state_fips": "32",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Elko County",
+    "municipality": "Wells CCD",
+    "state": "NV"
+  }
+}

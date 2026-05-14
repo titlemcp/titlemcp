@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MT/counties/silver_bow_county__30093/municipalities/walkerville_town__3077650/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Silver Bow County",
+    "county_fips": "093",
+    "funcstat": "A",
+    "name": "Walkerville town",
+    "place_fips": "77650",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "MT",
+    "state_fips": "30",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Silver Bow County",
+    "municipality": "Walkerville town",
+    "state": "MT"
+  }
+}

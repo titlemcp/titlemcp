@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NJ/counties/monmouth_county__34025/municipalities/freehold_borough__3425200/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Monmouth County",
+    "county_fips": "025",
+    "funcstat": "A",
+    "name": "Freehold borough",
+    "place_fips": "25200",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "NJ",
+    "state_fips": "34",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Monmouth County",
+    "municipality": "Freehold borough",
+    "state": "NJ"
+  }
+}

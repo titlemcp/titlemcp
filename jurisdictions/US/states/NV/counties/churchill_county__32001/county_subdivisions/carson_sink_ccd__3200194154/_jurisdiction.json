@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NV/counties/churchill_county__32001/county_subdivisions/carson_sink_ccd__3200194154/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Churchill County",
+    "county_fips": "001",
+    "county_subdivision_fips": "94154",
+    "funcstat": "S",
+    "name": "Carson Sink CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NV",
+    "state_fips": "32",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Churchill County",
+    "municipality": "Carson Sink CCD",
+    "state": "NV"
+  }
+}

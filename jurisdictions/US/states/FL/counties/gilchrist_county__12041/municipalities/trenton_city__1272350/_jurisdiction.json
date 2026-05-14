@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/FL/counties/gilchrist_county__12041/municipalities/trenton_city__1272350/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Gilchrist County",
+    "county_fips": "041",
+    "funcstat": "A",
+    "name": "Trenton city",
+    "place_fips": "72350",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "FL",
+    "state_fips": "12",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Gilchrist County",
+    "municipality": "Trenton city",
+    "state": "FL"
+  }
+}

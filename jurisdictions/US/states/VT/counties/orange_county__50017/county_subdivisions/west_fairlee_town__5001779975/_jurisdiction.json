@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/VT/counties/orange_county__50017/county_subdivisions/west_fairlee_town__5001779975/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Orange County",
+    "county_fips": "017",
+    "county_subdivision_fips": "79975",
+    "funcstat": "A",
+    "name": "West Fairlee town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "VT",
+    "state_fips": "50",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Orange County",
+    "municipality": "West Fairlee town",
+    "state": "VT"
+  }
+}

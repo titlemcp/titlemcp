@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KS/counties/sherman_county__20181/county_subdivisions/stateline_township__2018168150/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Sherman County",
+    "county_fips": "181",
+    "county_subdivision_fips": "68150",
+    "funcstat": "A",
+    "name": "Stateline township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "KS",
+    "state_fips": "20",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Sherman County",
+    "municipality": "Stateline township",
+    "state": "KS"
+  }
+}

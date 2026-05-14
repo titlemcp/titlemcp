@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NJ/counties/burlington_county__34005/county_subdivisions/lumberton_township__3400542060/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Burlington County",
+    "county_fips": "005",
+    "county_subdivision_fips": "42060",
+    "funcstat": "A",
+    "name": "Lumberton township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NJ",
+    "state_fips": "34",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Burlington County",
+    "municipality": "Lumberton township",
+    "state": "NJ"
+  }
+}

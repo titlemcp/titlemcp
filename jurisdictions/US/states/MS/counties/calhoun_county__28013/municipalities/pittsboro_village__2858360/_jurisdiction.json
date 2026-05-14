@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MS/counties/calhoun_county__28013/municipalities/pittsboro_village__2858360/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Calhoun County",
+    "county_fips": "013",
+    "funcstat": "A",
+    "name": "Pittsboro village",
+    "place_fips": "58360",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "MS",
+    "state_fips": "28",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Calhoun County",
+    "municipality": "Pittsboro village",
+    "state": "MS"
+  }
+}

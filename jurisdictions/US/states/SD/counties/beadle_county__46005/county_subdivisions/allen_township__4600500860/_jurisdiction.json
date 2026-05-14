@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/SD/counties/beadle_county__46005/county_subdivisions/allen_township__4600500860/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Beadle County",
+    "county_fips": "005",
+    "county_subdivision_fips": "00860",
+    "funcstat": "A",
+    "name": "Allen township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "SD",
+    "state_fips": "46",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Beadle County",
+    "municipality": "Allen township",
+    "state": "SD"
+  }
+}

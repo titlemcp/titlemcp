@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IN/counties/noble_county__18113/county_subdivisions/elkhart_township__1811320764/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Noble County",
+    "county_fips": "113",
+    "county_subdivision_fips": "20764",
+    "funcstat": "A",
+    "name": "Elkhart township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IN",
+    "state_fips": "18",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Noble County",
+    "municipality": "Elkhart township",
+    "state": "IN"
+  }
+}

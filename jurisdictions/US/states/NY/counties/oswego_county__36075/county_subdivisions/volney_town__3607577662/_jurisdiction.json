@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NY/counties/oswego_county__36075/county_subdivisions/volney_town__3607577662/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Oswego County",
+    "county_fips": "075",
+    "county_subdivision_fips": "77662",
+    "funcstat": "A",
+    "name": "Volney town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NY",
+    "state_fips": "36",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Oswego County",
+    "municipality": "Volney town",
+    "state": "NY"
+  }
+}

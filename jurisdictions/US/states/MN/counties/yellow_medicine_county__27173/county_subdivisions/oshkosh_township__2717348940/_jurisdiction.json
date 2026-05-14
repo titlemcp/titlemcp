@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MN/counties/yellow_medicine_county__27173/county_subdivisions/oshkosh_township__2717348940/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Yellow Medicine County",
+    "county_fips": "173",
+    "county_subdivision_fips": "48940",
+    "funcstat": "A",
+    "name": "Oshkosh township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MN",
+    "state_fips": "27",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Yellow Medicine County",
+    "municipality": "Oshkosh township",
+    "state": "MN"
+  }
+}

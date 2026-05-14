@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IL/counties/johnson_county__17087/county_subdivisions/goreville_no_1_precinct__1708791440/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Johnson County",
+    "county_fips": "087",
+    "county_subdivision_fips": "91440",
+    "funcstat": "N",
+    "name": "Goreville No. 1 precinct",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IL",
+    "state_fips": "17",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Johnson County",
+    "municipality": "Goreville No. 1 precinct",
+    "state": "IL"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/VA/counties/buchanan_county__51027/county_subdivisions/south_grundy_district__5102795775/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Buchanan County",
+    "county_fips": "027",
+    "county_subdivision_fips": "95775",
+    "funcstat": "N",
+    "name": "South Grundy district",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "VA",
+    "state_fips": "51",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Buchanan County",
+    "municipality": "South Grundy district",
+    "state": "VA"
+  }
+}

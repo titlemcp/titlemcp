@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NY/counties/madison_county__36053/county_subdivisions/smithfield_town__3605367785/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Madison County",
+    "county_fips": "053",
+    "county_subdivision_fips": "67785",
+    "funcstat": "A",
+    "name": "Smithfield town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NY",
+    "state_fips": "36",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Madison County",
+    "municipality": "Smithfield town",
+    "state": "NY"
+  }
+}

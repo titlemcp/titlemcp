@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/florida_municipio__72054/county_subdivisions/florida_adentro_barrio__7205428996/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Florida Municipio",
+    "county_fips": "054",
+    "county_subdivision_fips": "28996",
+    "funcstat": "N",
+    "name": "Florida Adentro barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Florida Municipio",
+    "municipality": "Florida Adentro barrio",
+    "state": "PR"
+  }
+}

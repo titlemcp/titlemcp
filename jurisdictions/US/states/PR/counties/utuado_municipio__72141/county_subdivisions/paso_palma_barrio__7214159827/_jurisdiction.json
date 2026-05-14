@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/utuado_municipio__72141/county_subdivisions/paso_palma_barrio__7214159827/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Utuado Municipio",
+    "county_fips": "141",
+    "county_subdivision_fips": "59827",
+    "funcstat": "N",
+    "name": "Paso Palma barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Utuado Municipio",
+    "municipality": "Paso Palma barrio",
+    "state": "PR"
+  }
+}

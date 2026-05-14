@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WV/counties/monongalia_county__54061/county_subdivisions/western_district__5406193612/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Monongalia County",
+    "county_fips": "061",
+    "county_subdivision_fips": "93612",
+    "funcstat": "N",
+    "name": "Western district",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WV",
+    "state_fips": "54",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Monongalia County",
+    "municipality": "Western district",
+    "state": "WV"
+  }
+}

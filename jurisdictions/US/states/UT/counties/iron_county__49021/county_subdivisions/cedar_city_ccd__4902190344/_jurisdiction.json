@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/UT/counties/iron_county__49021/county_subdivisions/cedar_city_ccd__4902190344/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Iron County",
+    "county_fips": "021",
+    "county_subdivision_fips": "90344",
+    "funcstat": "S",
+    "name": "Cedar City CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "UT",
+    "state_fips": "49",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Iron County",
+    "municipality": "Cedar City CCD",
+    "state": "UT"
+  }
+}

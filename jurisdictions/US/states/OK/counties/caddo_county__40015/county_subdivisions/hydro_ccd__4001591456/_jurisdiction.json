@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OK/counties/caddo_county__40015/county_subdivisions/hydro_ccd__4001591456/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Caddo County",
+    "county_fips": "015",
+    "county_subdivision_fips": "91456",
+    "funcstat": "S",
+    "name": "Hydro CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OK",
+    "state_fips": "40",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Caddo County",
+    "municipality": "Hydro CCD",
+    "state": "OK"
+  }
+}

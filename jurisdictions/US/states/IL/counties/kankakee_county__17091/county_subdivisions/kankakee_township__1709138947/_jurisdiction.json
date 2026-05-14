@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IL/counties/kankakee_county__17091/county_subdivisions/kankakee_township__1709138947/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Kankakee County",
+    "county_fips": "091",
+    "county_subdivision_fips": "38947",
+    "funcstat": "A",
+    "name": "Kankakee township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IL",
+    "state_fips": "17",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Kankakee County",
+    "municipality": "Kankakee township",
+    "state": "IL"
+  }
+}

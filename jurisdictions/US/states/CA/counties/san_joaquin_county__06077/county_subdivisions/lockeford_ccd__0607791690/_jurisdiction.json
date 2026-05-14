@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CA/counties/san_joaquin_county__06077/county_subdivisions/lockeford_ccd__0607791690/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "San Joaquin County",
+    "county_fips": "077",
+    "county_subdivision_fips": "91690",
+    "funcstat": "S",
+    "name": "Lockeford CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CA",
+    "state_fips": "06",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "San Joaquin County",
+    "municipality": "Lockeford CCD",
+    "state": "CA"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KY/counties/letcher_county__21133/county_subdivisions/whitesburg_ccd__2113393688/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Letcher County",
+    "county_fips": "133",
+    "county_subdivision_fips": "93688",
+    "funcstat": "S",
+    "name": "Whitesburg CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "KY",
+    "state_fips": "21",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Letcher County",
+    "municipality": "Whitesburg CCD",
+    "state": "KY"
+  }
+}

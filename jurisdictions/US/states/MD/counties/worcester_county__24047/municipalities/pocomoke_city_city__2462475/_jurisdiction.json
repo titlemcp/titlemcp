@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MD/counties/worcester_county__24047/municipalities/pocomoke_city_city__2462475/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Worcester County",
+    "county_fips": "047",
+    "funcstat": "A",
+    "name": "Pocomoke City city",
+    "place_fips": "62475",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "MD",
+    "state_fips": "24",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Worcester County",
+    "municipality": "Pocomoke City city",
+    "state": "MD"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OH/counties/belmont_county__39013/county_subdivisions/wheeling_township__3901384602/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Belmont County",
+    "county_fips": "013",
+    "county_subdivision_fips": "84602",
+    "funcstat": "A",
+    "name": "Wheeling township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OH",
+    "state_fips": "39",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Belmont County",
+    "municipality": "Wheeling township",
+    "state": "OH"
+  }
+}

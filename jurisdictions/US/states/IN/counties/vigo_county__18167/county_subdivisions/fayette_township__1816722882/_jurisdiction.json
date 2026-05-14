@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IN/counties/vigo_county__18167/county_subdivisions/fayette_township__1816722882/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Vigo County",
+    "county_fips": "167",
+    "county_subdivision_fips": "22882",
+    "funcstat": "A",
+    "name": "Fayette township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IN",
+    "state_fips": "18",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Vigo County",
+    "municipality": "Fayette township",
+    "state": "IN"
+  }
+}

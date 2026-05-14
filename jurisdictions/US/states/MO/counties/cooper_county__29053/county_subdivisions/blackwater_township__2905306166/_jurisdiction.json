@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MO/counties/cooper_county__29053/county_subdivisions/blackwater_township__2905306166/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Cooper County",
+    "county_fips": "053",
+    "county_subdivision_fips": "06166",
+    "funcstat": "N",
+    "name": "Blackwater township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MO",
+    "state_fips": "29",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Cooper County",
+    "municipality": "Blackwater township",
+    "state": "MO"
+  }
+}

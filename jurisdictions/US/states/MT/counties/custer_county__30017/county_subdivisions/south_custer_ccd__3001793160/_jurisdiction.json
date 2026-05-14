@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MT/counties/custer_county__30017/county_subdivisions/south_custer_ccd__3001793160/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Custer County",
+    "county_fips": "017",
+    "county_subdivision_fips": "93160",
+    "funcstat": "S",
+    "name": "South Custer CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MT",
+    "state_fips": "30",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Custer County",
+    "municipality": "South Custer CCD",
+    "state": "MT"
+  }
+}

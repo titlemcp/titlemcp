@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ND/counties/mclean_county__38055/municipalities/turtle_lake_city__3879940/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "McLean County",
+    "county_fips": "055",
+    "funcstat": "A",
+    "name": "Turtle Lake city",
+    "place_fips": "79940",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "ND",
+    "state_fips": "38",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "McLean County",
+    "municipality": "Turtle Lake city",
+    "state": "ND"
+  }
+}

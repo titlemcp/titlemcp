@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IL/counties/massac_county__17127/county_subdivisions/franklin_precinct__1712791260/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Massac County",
+    "county_fips": "127",
+    "county_subdivision_fips": "91260",
+    "funcstat": "N",
+    "name": "Franklin precinct",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IL",
+    "state_fips": "17",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Massac County",
+    "municipality": "Franklin precinct",
+    "state": "IL"
+  }
+}

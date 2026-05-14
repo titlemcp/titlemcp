@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IA/counties/chickasaw_county__19037/municipalities/fredericksburg_city__1928965/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Chickasaw County",
+    "county_fips": "037",
+    "funcstat": "A",
+    "name": "Fredericksburg city",
+    "place_fips": "28965",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "IA",
+    "state_fips": "19",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Chickasaw County",
+    "municipality": "Fredericksburg city",
+    "state": "IA"
+  }
+}

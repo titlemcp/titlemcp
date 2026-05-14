@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NY/counties/otsego_county__36077/county_subdivisions/roseboom_town__3607763638/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Otsego County",
+    "county_fips": "077",
+    "county_subdivision_fips": "63638",
+    "funcstat": "A",
+    "name": "Roseboom town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NY",
+    "state_fips": "36",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Otsego County",
+    "municipality": "Roseboom town",
+    "state": "NY"
+  }
+}

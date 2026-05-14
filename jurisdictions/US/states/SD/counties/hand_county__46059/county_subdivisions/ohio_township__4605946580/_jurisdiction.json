@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/SD/counties/hand_county__46059/county_subdivisions/ohio_township__4605946580/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Hand County",
+    "county_fips": "059",
+    "county_subdivision_fips": "46580",
+    "funcstat": "A",
+    "name": "Ohio township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "SD",
+    "state_fips": "46",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Hand County",
+    "municipality": "Ohio township",
+    "state": "SD"
+  }
+}

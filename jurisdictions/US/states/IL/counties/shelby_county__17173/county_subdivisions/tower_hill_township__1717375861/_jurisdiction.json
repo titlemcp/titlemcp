@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IL/counties/shelby_county__17173/county_subdivisions/tower_hill_township__1717375861/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Shelby County",
+    "county_fips": "173",
+    "county_subdivision_fips": "75861",
+    "funcstat": "A",
+    "name": "Tower Hill township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IL",
+    "state_fips": "17",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Shelby County",
+    "municipality": "Tower Hill township",
+    "state": "IL"
+  }
+}

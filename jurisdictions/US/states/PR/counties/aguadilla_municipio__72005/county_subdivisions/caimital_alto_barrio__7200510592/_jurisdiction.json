@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/aguadilla_municipio__72005/county_subdivisions/caimital_alto_barrio__7200510592/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Aguadilla Municipio",
+    "county_fips": "005",
+    "county_subdivision_fips": "10592",
+    "funcstat": "N",
+    "name": "Caimital Alto barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Aguadilla Municipio",
+    "municipality": "Caimital Alto barrio",
+    "state": "PR"
+  }
+}

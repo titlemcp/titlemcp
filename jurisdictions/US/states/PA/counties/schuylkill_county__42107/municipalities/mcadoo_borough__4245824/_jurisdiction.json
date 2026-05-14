@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PA/counties/schuylkill_county__42107/municipalities/mcadoo_borough__4245824/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Schuylkill County",
+    "county_fips": "107",
+    "funcstat": "A",
+    "name": "McAdoo borough",
+    "place_fips": "45824",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "PA",
+    "state_fips": "42",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Schuylkill County",
+    "municipality": "McAdoo borough",
+    "state": "PA"
+  }
+}

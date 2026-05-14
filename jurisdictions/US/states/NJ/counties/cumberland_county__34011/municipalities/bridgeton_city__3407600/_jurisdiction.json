@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NJ/counties/cumberland_county__34011/municipalities/bridgeton_city__3407600/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Cumberland County",
+    "county_fips": "011",
+    "funcstat": "A",
+    "name": "Bridgeton city",
+    "place_fips": "07600",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "NJ",
+    "state_fips": "34",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Cumberland County",
+    "municipality": "Bridgeton city",
+    "state": "NJ"
+  }
+}

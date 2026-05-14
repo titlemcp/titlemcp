@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/SC/counties/sumter_county__45085/county_subdivisions/privateer_ccd__4508592743/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Sumter County",
+    "county_fips": "085",
+    "county_subdivision_fips": "92743",
+    "funcstat": "S",
+    "name": "Privateer CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "SC",
+    "state_fips": "45",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Sumter County",
+    "municipality": "Privateer CCD",
+    "state": "SC"
+  }
+}

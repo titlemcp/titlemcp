@@ -1,0 +1,27 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MD/counties/anne_arundel_county__24003/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county_fips": "003",
+    "funcstat": "H1",
+    "name": "Anne Arundel County",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_county.txt",
+    "state": "MD",
+    "state_fips": "24",
+    "type": "county"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Anne Arundel County",
+    "state": "MD"
+  }
+}

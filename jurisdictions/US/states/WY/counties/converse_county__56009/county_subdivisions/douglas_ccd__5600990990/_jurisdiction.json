@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WY/counties/converse_county__56009/county_subdivisions/douglas_ccd__5600990990/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Converse County",
+    "county_fips": "009",
+    "county_subdivision_fips": "90990",
+    "funcstat": "S",
+    "name": "Douglas CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WY",
+    "state_fips": "56",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Converse County",
+    "municipality": "Douglas CCD",
+    "state": "WY"
+  }
+}

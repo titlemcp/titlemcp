@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CA/counties/fresno_county__06019/county_subdivisions/parlier_del_rey_ccd__0601992390/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Fresno County",
+    "county_fips": "019",
+    "county_subdivision_fips": "92390",
+    "funcstat": "S",
+    "name": "Parlier-Del Rey CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CA",
+    "state_fips": "06",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Fresno County",
+    "municipality": "Parlier-Del Rey CCD",
+    "state": "CA"
+  }
+}

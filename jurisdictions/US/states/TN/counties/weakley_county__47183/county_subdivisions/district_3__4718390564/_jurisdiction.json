@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TN/counties/weakley_county__47183/county_subdivisions/district_3__4718390564/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Weakley County",
+    "county_fips": "183",
+    "county_subdivision_fips": "90564",
+    "funcstat": "N",
+    "name": "District 3",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "TN",
+    "state_fips": "47",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Weakley County",
+    "municipality": "District 3",
+    "state": "TN"
+  }
+}

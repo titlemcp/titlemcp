@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WI/counties/langlade_county__55067/county_subdivisions/evergreen_town__5506724575/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Langlade County",
+    "county_fips": "067",
+    "county_subdivision_fips": "24575",
+    "funcstat": "A",
+    "name": "Evergreen town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WI",
+    "state_fips": "55",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Langlade County",
+    "municipality": "Evergreen town",
+    "state": "WI"
+  }
+}

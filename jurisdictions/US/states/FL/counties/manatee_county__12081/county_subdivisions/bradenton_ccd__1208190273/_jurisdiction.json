@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/FL/counties/manatee_county__12081/county_subdivisions/bradenton_ccd__1208190273/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Manatee County",
+    "county_fips": "081",
+    "county_subdivision_fips": "90273",
+    "funcstat": "S",
+    "name": "Bradenton CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "FL",
+    "state_fips": "12",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Manatee County",
+    "municipality": "Bradenton CCD",
+    "state": "FL"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IN/counties/lake_county__18089/county_subdivisions/hobart_township__1808934132/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Lake County",
+    "county_fips": "089",
+    "county_subdivision_fips": "34132",
+    "funcstat": "A",
+    "name": "Hobart township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IN",
+    "state_fips": "18",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Lake County",
+    "municipality": "Hobart township",
+    "state": "IN"
+  }
+}

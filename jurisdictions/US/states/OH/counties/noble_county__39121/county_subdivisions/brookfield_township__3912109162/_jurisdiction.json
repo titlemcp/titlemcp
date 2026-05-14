@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OH/counties/noble_county__39121/county_subdivisions/brookfield_township__3912109162/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Noble County",
+    "county_fips": "121",
+    "county_subdivision_fips": "09162",
+    "funcstat": "A",
+    "name": "Brookfield township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OH",
+    "state_fips": "39",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Noble County",
+    "municipality": "Brookfield township",
+    "state": "OH"
+  }
+}

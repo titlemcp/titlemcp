@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NC/counties/wake_county__37183/county_subdivisions/new_light_township__3718392264/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Wake County",
+    "county_fips": "183",
+    "county_subdivision_fips": "92264",
+    "funcstat": "N",
+    "name": "New Light township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NC",
+    "state_fips": "37",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Wake County",
+    "municipality": "New Light township",
+    "state": "NC"
+  }
+}

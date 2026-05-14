@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NY/counties/rensselaer_county__36083/county_subdivisions/north_greenbush_town__3608352100/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Rensselaer County",
+    "county_fips": "083",
+    "county_subdivision_fips": "52100",
+    "funcstat": "A",
+    "name": "North Greenbush town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NY",
+    "state_fips": "36",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Rensselaer County",
+    "municipality": "North Greenbush town",
+    "state": "NY"
+  }
+}

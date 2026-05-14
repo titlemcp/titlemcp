@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AK/counties/petersburg_census_area__02195/municipalities/petersburg_city__0260310/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Petersburg Census Area",
+    "county_fips": "195",
+    "funcstat": "A",
+    "name": "Petersburg city",
+    "place_fips": "60310",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Petersburg Census Area",
+    "municipality": "Petersburg city",
+    "state": "AK"
+  }
+}

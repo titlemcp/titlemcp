@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MA/counties/plymouth_county__25023/county_subdivisions/duxbury_town__2502317895/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Plymouth County",
+    "county_fips": "023",
+    "county_subdivision_fips": "17895",
+    "funcstat": "A",
+    "name": "Duxbury town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MA",
+    "state_fips": "25",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Plymouth County",
+    "municipality": "Duxbury town",
+    "state": "MA"
+  }
+}

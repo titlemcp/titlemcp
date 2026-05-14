@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/GA/counties/bacon_county__13005/county_subdivisions/alma_ccd__1300590072/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Bacon County",
+    "county_fips": "005",
+    "county_subdivision_fips": "90072",
+    "funcstat": "S",
+    "name": "Alma CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "GA",
+    "state_fips": "13",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Bacon County",
+    "municipality": "Alma CCD",
+    "state": "GA"
+  }
+}

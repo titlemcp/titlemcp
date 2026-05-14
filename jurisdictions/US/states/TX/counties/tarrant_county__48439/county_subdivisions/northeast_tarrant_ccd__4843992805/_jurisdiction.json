@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TX/counties/tarrant_county__48439/county_subdivisions/northeast_tarrant_ccd__4843992805/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Tarrant County",
+    "county_fips": "439",
+    "county_subdivision_fips": "92805",
+    "funcstat": "S",
+    "name": "Northeast Tarrant CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "TX",
+    "state_fips": "48",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Tarrant County",
+    "municipality": "Northeast Tarrant CCD",
+    "state": "TX"
+  }
+}

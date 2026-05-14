@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AL/counties/hale_county__01065/county_subdivisions/greensboro_south_ccd__0106591415/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Hale County",
+    "county_fips": "065",
+    "county_subdivision_fips": "91415",
+    "funcstat": "S",
+    "name": "Greensboro South CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AL",
+    "state_fips": "01",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Hale County",
+    "municipality": "Greensboro South CCD",
+    "state": "AL"
+  }
+}

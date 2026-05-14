@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MI/counties/montcalm_county__26117/county_subdivisions/bloomer_township__2611709040/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Montcalm County",
+    "county_fips": "117",
+    "county_subdivision_fips": "09040",
+    "funcstat": "A",
+    "name": "Bloomer township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MI",
+    "state_fips": "26",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Montcalm County",
+    "municipality": "Bloomer township",
+    "state": "MI"
+  }
+}

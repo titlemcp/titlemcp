@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WA/counties/skagit_county__53057/county_subdivisions/swinomish_reservation_ccd__5305793360/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Skagit County",
+    "county_fips": "057",
+    "county_subdivision_fips": "93360",
+    "funcstat": "S",
+    "name": "Swinomish Reservation CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WA",
+    "state_fips": "53",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Skagit County",
+    "municipality": "Swinomish Reservation CCD",
+    "state": "WA"
+  }
+}

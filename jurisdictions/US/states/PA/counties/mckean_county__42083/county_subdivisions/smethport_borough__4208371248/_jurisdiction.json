@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PA/counties/mckean_county__42083/county_subdivisions/smethport_borough__4208371248/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "McKean County",
+    "county_fips": "083",
+    "county_subdivision_fips": "71248",
+    "funcstat": "F",
+    "name": "Smethport borough",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PA",
+    "state_fips": "42",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "McKean County",
+    "municipality": "Smethport borough",
+    "state": "PA"
+  }
+}

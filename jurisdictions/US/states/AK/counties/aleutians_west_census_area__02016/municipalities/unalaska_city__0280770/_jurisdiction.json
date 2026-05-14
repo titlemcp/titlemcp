@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AK/counties/aleutians_west_census_area__02016/municipalities/unalaska_city__0280770/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Aleutians West Census Area",
+    "county_fips": "016",
+    "funcstat": "A",
+    "name": "Unalaska city",
+    "place_fips": "80770",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Aleutians West Census Area",
+    "municipality": "Unalaska city",
+    "state": "AK"
+  }
+}

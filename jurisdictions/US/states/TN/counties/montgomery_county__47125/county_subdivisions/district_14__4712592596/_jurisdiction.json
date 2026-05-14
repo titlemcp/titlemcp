@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TN/counties/montgomery_county__47125/county_subdivisions/district_14__4712592596/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Montgomery County",
+    "county_fips": "125",
+    "county_subdivision_fips": "92596",
+    "funcstat": "N",
+    "name": "District 14",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "TN",
+    "state_fips": "47",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Montgomery County",
+    "municipality": "District 14",
+    "state": "TN"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AR/counties/independence_county__05063/county_subdivisions/big_bottom_wycough_logan_township__0506390250/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Independence County",
+    "county_fips": "063",
+    "county_subdivision_fips": "90250",
+    "funcstat": "N",
+    "name": "Big Bottom-Wycough-Logan township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AR",
+    "state_fips": "05",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Independence County",
+    "municipality": "Big Bottom-Wycough-Logan township",
+    "state": "AR"
+  }
+}

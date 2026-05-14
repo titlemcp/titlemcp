@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KS/counties/kearny_county__20093/county_subdivisions/west_hibbard_township__2009377050/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Kearny County",
+    "county_fips": "093",
+    "county_subdivision_fips": "77050",
+    "funcstat": "A",
+    "name": "West Hibbard township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "KS",
+    "state_fips": "20",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Kearny County",
+    "municipality": "West Hibbard township",
+    "state": "KS"
+  }
+}

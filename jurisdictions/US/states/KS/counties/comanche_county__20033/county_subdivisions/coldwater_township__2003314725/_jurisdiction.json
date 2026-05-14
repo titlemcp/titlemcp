@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KS/counties/comanche_county__20033/county_subdivisions/coldwater_township__2003314725/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Comanche County",
+    "county_fips": "033",
+    "county_subdivision_fips": "14725",
+    "funcstat": "A",
+    "name": "Coldwater township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "KS",
+    "state_fips": "20",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Comanche County",
+    "municipality": "Coldwater township",
+    "state": "KS"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/TN/counties/gibson_county__47053/county_subdivisions/district_19__4705393474/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Gibson County",
+    "county_fips": "053",
+    "county_subdivision_fips": "93474",
+    "funcstat": "N",
+    "name": "District 19",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "TN",
+    "state_fips": "47",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Gibson County",
+    "municipality": "District 19",
+    "state": "TN"
+  }
+}

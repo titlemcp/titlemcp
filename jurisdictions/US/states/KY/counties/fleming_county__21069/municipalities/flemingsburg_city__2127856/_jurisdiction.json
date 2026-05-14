@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KY/counties/fleming_county__21069/municipalities/flemingsburg_city__2127856/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Fleming County",
+    "county_fips": "069",
+    "funcstat": "A",
+    "name": "Flemingsburg city",
+    "place_fips": "27856",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "KY",
+    "state_fips": "21",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Fleming County",
+    "municipality": "Flemingsburg city",
+    "state": "KY"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ID/counties/power_county__16077/county_subdivisions/fort_hall_ccd__1607791127/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Power County",
+    "county_fips": "077",
+    "county_subdivision_fips": "91127",
+    "funcstat": "S",
+    "name": "Fort Hall CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ID",
+    "state_fips": "16",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Power County",
+    "municipality": "Fort Hall CCD",
+    "state": "ID"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MD/counties/carroll_county__24013/county_subdivisions/district_10__2401390852/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Carroll County",
+    "county_fips": "013",
+    "county_subdivision_fips": "90852",
+    "funcstat": " Middleburg",
+    "name": "District 10",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MD",
+    "state_fips": "24",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Carroll County",
+    "municipality": "District 10",
+    "state": "MD"
+  }
+}

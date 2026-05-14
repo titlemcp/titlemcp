@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ME/counties/kennebec_county__23011/county_subdivisions/belgrade_town__2301104020/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Kennebec County",
+    "county_fips": "011",
+    "county_subdivision_fips": "04020",
+    "funcstat": "A",
+    "name": "Belgrade town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ME",
+    "state_fips": "23",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Kennebec County",
+    "municipality": "Belgrade town",
+    "state": "ME"
+  }
+}

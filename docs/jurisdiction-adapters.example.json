@@ -1,0 +1,45 @@
+{
+  "adapters": [
+    {
+      "adapter_id": "us-md-baltimore-county-public-records",
+      "priority": 200,
+      "scope": {
+        "country": "US",
+        "state": "MD",
+        "county": "Baltimore County"
+      },
+      "workflow_kinds": ["public_records_search"],
+      "required_review": true,
+      "risk_level": "medium",
+      "steps": [
+        {
+          "label": "Search Baltimore County land records",
+          "description": "Use the configured Baltimore County public records source.",
+          "metadata": {
+            "source": "configured_baltimore_county_land_records"
+          }
+        },
+        {
+          "label": "Check Baltimore County lien indexes",
+          "description": "Review county-specific lien, judgment, and municipal index sources.",
+          "metadata": {
+            "source": "configured_baltimore_county_lien_indexes"
+          }
+        },
+        {
+          "label": "Review public-record matches",
+          "description": "Human reviewer confirms party, property, and recording-data matches."
+        }
+      ],
+      "external_requirements": [
+        "Confirm the property is Baltimore County and not Baltimore City.",
+        "Capture parcel, party name, book/page, and instrument number references."
+      ],
+      "routing_hints": {
+        "country": "US",
+        "state": "MD",
+        "county": "Baltimore County"
+      }
+    }
+  ]
+}

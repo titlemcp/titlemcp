@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CO/counties/washington_county__08121/county_subdivisions/akron_ccd__0812190057/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Washington County",
+    "county_fips": "121",
+    "county_subdivision_fips": "90057",
+    "funcstat": "S",
+    "name": "Akron CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CO",
+    "state_fips": "08",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Washington County",
+    "municipality": "Akron CCD",
+    "state": "CO"
+  }
+}

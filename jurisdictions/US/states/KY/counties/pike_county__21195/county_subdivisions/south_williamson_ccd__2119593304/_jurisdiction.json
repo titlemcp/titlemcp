@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KY/counties/pike_county__21195/county_subdivisions/south_williamson_ccd__2119593304/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Pike County",
+    "county_fips": "195",
+    "county_subdivision_fips": "93304",
+    "funcstat": "S",
+    "name": "South Williamson CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "KY",
+    "state_fips": "21",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Pike County",
+    "municipality": "South Williamson CCD",
+    "state": "KY"
+  }
+}

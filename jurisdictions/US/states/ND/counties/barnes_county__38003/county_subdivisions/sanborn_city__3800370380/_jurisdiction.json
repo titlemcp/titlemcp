@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ND/counties/barnes_county__38003/county_subdivisions/sanborn_city__3800370380/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Barnes County",
+    "county_fips": "003",
+    "county_subdivision_fips": "70380",
+    "funcstat": "F",
+    "name": "Sanborn city",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ND",
+    "state_fips": "38",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Barnes County",
+    "municipality": "Sanborn city",
+    "state": "ND"
+  }
+}

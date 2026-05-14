@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/SD/counties/kingsbury_county__46077/county_subdivisions/le_sueur_township__4607736580/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Kingsbury County",
+    "county_fips": "077",
+    "county_subdivision_fips": "36580",
+    "funcstat": "A",
+    "name": "Le Sueur township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "SD",
+    "state_fips": "46",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Kingsbury County",
+    "municipality": "Le Sueur township",
+    "state": "SD"
+  }
+}

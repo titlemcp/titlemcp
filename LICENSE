@@ -1,0 +1,7 @@
+Copyright (c) 2026 Razi Title MCP Contributors.
+
+All rights reserved.
+
+This repository is currently prepared for private or commercial package distribution. Before
+publishing as open source, replace this file and the `license` metadata in `pyproject.toml`
+with the selected open-source license, such as Apache-2.0 or MIT.

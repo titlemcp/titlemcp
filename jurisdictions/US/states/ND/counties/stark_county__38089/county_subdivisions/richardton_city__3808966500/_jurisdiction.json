@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ND/counties/stark_county__38089/county_subdivisions/richardton_city__3808966500/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Stark County",
+    "county_fips": "089",
+    "county_subdivision_fips": "66500",
+    "funcstat": "F",
+    "name": "Richardton city",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ND",
+    "state_fips": "38",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Stark County",
+    "municipality": "Richardton city",
+    "state": "ND"
+  }
+}

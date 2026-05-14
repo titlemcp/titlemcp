@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NC/counties/iredell_county__37097/county_subdivisions/new_hope_township__3709792244/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Iredell County",
+    "county_fips": "097",
+    "county_subdivision_fips": "92244",
+    "funcstat": "N",
+    "name": "New Hope township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NC",
+    "state_fips": "37",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Iredell County",
+    "municipality": "New Hope township",
+    "state": "NC"
+  }
+}

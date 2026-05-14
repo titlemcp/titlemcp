@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/VA/counties/surry_county__51181/county_subdivisions/claremont_district__5118190848/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Surry County",
+    "county_fips": "181",
+    "county_subdivision_fips": "90848",
+    "funcstat": "N",
+    "name": "Claremont district",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "VA",
+    "state_fips": "51",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Surry County",
+    "municipality": "Claremont district",
+    "state": "VA"
+  }
+}

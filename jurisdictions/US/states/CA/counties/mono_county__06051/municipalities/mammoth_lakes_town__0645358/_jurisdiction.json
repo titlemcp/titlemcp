@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CA/counties/mono_county__06051/municipalities/mammoth_lakes_town__0645358/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Mono County",
+    "county_fips": "051",
+    "funcstat": "A",
+    "name": "Mammoth Lakes town",
+    "place_fips": "45358",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "CA",
+    "state_fips": "06",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Mono County",
+    "municipality": "Mammoth Lakes town",
+    "state": "CA"
+  }
+}

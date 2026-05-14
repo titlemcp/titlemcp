@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NH/counties/hillsborough_county__33011/county_subdivisions/litchfield_town__3301142260/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Hillsborough County",
+    "county_fips": "011",
+    "county_subdivision_fips": "42260",
+    "funcstat": "A",
+    "name": "Litchfield town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NH",
+    "state_fips": "33",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Hillsborough County",
+    "municipality": "Litchfield town",
+    "state": "NH"
+  }
+}

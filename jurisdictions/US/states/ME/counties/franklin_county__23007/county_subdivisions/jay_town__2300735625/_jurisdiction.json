@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ME/counties/franklin_county__23007/county_subdivisions/jay_town__2300735625/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Franklin County",
+    "county_fips": "007",
+    "county_subdivision_fips": "35625",
+    "funcstat": "A",
+    "name": "Jay town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ME",
+    "state_fips": "23",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Franklin County",
+    "municipality": "Jay town",
+    "state": "ME"
+  }
+}

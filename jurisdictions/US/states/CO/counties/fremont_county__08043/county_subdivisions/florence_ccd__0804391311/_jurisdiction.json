@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CO/counties/fremont_county__08043/county_subdivisions/florence_ccd__0804391311/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Fremont County",
+    "county_fips": "043",
+    "county_subdivision_fips": "91311",
+    "funcstat": "S",
+    "name": "Florence CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CO",
+    "state_fips": "08",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Fremont County",
+    "municipality": "Florence CCD",
+    "state": "CO"
+  }
+}

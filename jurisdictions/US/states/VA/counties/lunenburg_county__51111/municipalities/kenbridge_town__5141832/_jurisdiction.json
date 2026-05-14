@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/VA/counties/lunenburg_county__51111/municipalities/kenbridge_town__5141832/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Lunenburg County",
+    "county_fips": "111",
+    "funcstat": "A",
+    "name": "Kenbridge town",
+    "place_fips": "41832",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "VA",
+    "state_fips": "51",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Lunenburg County",
+    "municipality": "Kenbridge town",
+    "state": "VA"
+  }
+}

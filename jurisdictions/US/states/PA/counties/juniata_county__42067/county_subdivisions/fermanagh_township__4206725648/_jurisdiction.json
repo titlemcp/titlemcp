@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PA/counties/juniata_county__42067/county_subdivisions/fermanagh_township__4206725648/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Juniata County",
+    "county_fips": "067",
+    "county_subdivision_fips": "25648",
+    "funcstat": "A",
+    "name": "Fermanagh township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PA",
+    "state_fips": "42",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Juniata County",
+    "municipality": "Fermanagh township",
+    "state": "PA"
+  }
+}

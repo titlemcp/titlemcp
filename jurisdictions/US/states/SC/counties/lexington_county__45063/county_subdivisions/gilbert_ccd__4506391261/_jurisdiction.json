@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/SC/counties/lexington_county__45063/county_subdivisions/gilbert_ccd__4506391261/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Lexington County",
+    "county_fips": "063",
+    "county_subdivision_fips": "91261",
+    "funcstat": "S",
+    "name": "Gilbert CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "SC",
+    "state_fips": "45",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Lexington County",
+    "municipality": "Gilbert CCD",
+    "state": "SC"
+  }
+}

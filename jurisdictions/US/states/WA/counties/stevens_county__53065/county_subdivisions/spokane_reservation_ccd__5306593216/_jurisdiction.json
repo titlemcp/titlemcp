@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WA/counties/stevens_county__53065/county_subdivisions/spokane_reservation_ccd__5306593216/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Stevens County",
+    "county_fips": "065",
+    "county_subdivision_fips": "93216",
+    "funcstat": "S",
+    "name": "Spokane Reservation CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WA",
+    "state_fips": "53",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Stevens County",
+    "municipality": "Spokane Reservation CCD",
+    "state": "WA"
+  }
+}

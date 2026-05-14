@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ND/counties/mercer_county__38057/county_subdivisions/golden_valley_city__3805731180/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Mercer County",
+    "county_fips": "057",
+    "county_subdivision_fips": "31180",
+    "funcstat": "F",
+    "name": "Golden Valley city",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ND",
+    "state_fips": "38",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Mercer County",
+    "municipality": "Golden Valley city",
+    "state": "ND"
+  }
+}

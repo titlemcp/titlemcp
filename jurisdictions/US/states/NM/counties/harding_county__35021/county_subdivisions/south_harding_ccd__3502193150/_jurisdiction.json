@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NM/counties/harding_county__35021/county_subdivisions/south_harding_ccd__3502193150/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Harding County",
+    "county_fips": "021",
+    "county_subdivision_fips": "93150",
+    "funcstat": "S",
+    "name": "South Harding CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NM",
+    "state_fips": "35",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Harding County",
+    "municipality": "South Harding CCD",
+    "state": "NM"
+  }
+}

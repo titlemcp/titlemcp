@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PA/counties/somerset_county__42111/county_subdivisions/middlecreek_township__4211149024/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Somerset County",
+    "county_fips": "111",
+    "county_subdivision_fips": "49024",
+    "funcstat": "A",
+    "name": "Middlecreek township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PA",
+    "state_fips": "42",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Somerset County",
+    "municipality": "Middlecreek township",
+    "state": "PA"
+  }
+}

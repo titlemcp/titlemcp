@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NC/counties/sampson_county__37163/county_subdivisions/little_coharie_township__3716391844/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Sampson County",
+    "county_fips": "163",
+    "county_subdivision_fips": "91844",
+    "funcstat": "N",
+    "name": "Little Coharie township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NC",
+    "state_fips": "37",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Sampson County",
+    "municipality": "Little Coharie township",
+    "state": "NC"
+  }
+}

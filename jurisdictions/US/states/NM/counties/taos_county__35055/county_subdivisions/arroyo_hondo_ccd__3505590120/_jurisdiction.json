@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NM/counties/taos_county__35055/county_subdivisions/arroyo_hondo_ccd__3505590120/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Taos County",
+    "county_fips": "055",
+    "county_subdivision_fips": "90120",
+    "funcstat": "S",
+    "name": "Arroyo Hondo CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NM",
+    "state_fips": "35",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Taos County",
+    "municipality": "Arroyo Hondo CCD",
+    "state": "NM"
+  }
+}

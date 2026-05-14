@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/fajardo_municipio__72053/county_subdivisions/rio_arriba_barrio__7205370233/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Fajardo Municipio",
+    "county_fips": "053",
+    "county_subdivision_fips": "70233",
+    "funcstat": "N",
+    "name": "R\u00edo Arriba barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Fajardo Municipio",
+    "municipality": "R\u00edo Arriba barrio",
+    "state": "PR"
+  }
+}

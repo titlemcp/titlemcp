@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PA/counties/perry_county__42099/county_subdivisions/millerstown_borough__4209949720/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Perry County",
+    "county_fips": "099",
+    "county_subdivision_fips": "49720",
+    "funcstat": "F",
+    "name": "Millerstown borough",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PA",
+    "state_fips": "42",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Perry County",
+    "municipality": "Millerstown borough",
+    "state": "PA"
+  }
+}

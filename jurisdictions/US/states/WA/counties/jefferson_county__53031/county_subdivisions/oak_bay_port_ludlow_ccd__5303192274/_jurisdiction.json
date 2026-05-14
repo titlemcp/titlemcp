@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WA/counties/jefferson_county__53031/county_subdivisions/oak_bay_port_ludlow_ccd__5303192274/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Jefferson County",
+    "county_fips": "031",
+    "county_subdivision_fips": "92274",
+    "funcstat": "S",
+    "name": "Oak Bay-Port Ludlow CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WA",
+    "state_fips": "53",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Jefferson County",
+    "municipality": "Oak Bay-Port Ludlow CCD",
+    "state": "WA"
+  }
+}

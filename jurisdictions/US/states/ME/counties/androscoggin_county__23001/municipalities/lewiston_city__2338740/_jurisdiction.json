@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ME/counties/androscoggin_county__23001/municipalities/lewiston_city__2338740/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Androscoggin County",
+    "county_fips": "001",
+    "funcstat": "A",
+    "name": "Lewiston city",
+    "place_fips": "38740",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "ME",
+    "state_fips": "23",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Androscoggin County",
+    "municipality": "Lewiston city",
+    "state": "ME"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NC/counties/new_hanover_county__37129/municipalities/carolina_beach_town__3710500/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "New Hanover County",
+    "county_fips": "129",
+    "funcstat": "A",
+    "name": "Carolina Beach town",
+    "place_fips": "10500",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "NC",
+    "state_fips": "37",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "New Hanover County",
+    "municipality": "Carolina Beach town",
+    "state": "NC"
+  }
+}

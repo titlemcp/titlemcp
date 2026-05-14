@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IA/counties/pottawattamie_county__19155/county_subdivisions/boomer_township__1915590297/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Pottawattamie County",
+    "county_fips": "155",
+    "county_subdivision_fips": "90297",
+    "funcstat": "G",
+    "name": "Boomer township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IA",
+    "state_fips": "19",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Pottawattamie County",
+    "municipality": "Boomer township",
+    "state": "IA"
+  }
+}

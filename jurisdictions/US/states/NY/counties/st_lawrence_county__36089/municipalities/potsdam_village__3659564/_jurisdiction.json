@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NY/counties/st_lawrence_county__36089/municipalities/potsdam_village__3659564/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "St. Lawrence County",
+    "county_fips": "089",
+    "funcstat": "A",
+    "name": "Potsdam village",
+    "place_fips": "59564",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "NY",
+    "state_fips": "36",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "St. Lawrence County",
+    "municipality": "Potsdam village",
+    "state": "NY"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/IL/counties/menard_county__17129/county_subdivisions/fancy_prairie_no_3_precinct__1712991242/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Menard County",
+    "county_fips": "129",
+    "county_subdivision_fips": "91242",
+    "funcstat": "N",
+    "name": "Fancy Prairie No. 3 precinct",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "IL",
+    "state_fips": "17",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Menard County",
+    "municipality": "Fancy Prairie No. 3 precinct",
+    "state": "IL"
+  }
+}

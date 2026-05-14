@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/HI/counties/kauai_county__15007/county_subdivisions/niihau_ccd__1500792340/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Kauai County",
+    "county_fips": "007",
+    "county_subdivision_fips": "92340",
+    "funcstat": "S",
+    "name": "Niihau CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "HI",
+    "state_fips": "15",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Kauai County",
+    "municipality": "Niihau CCD",
+    "state": "HI"
+  }
+}

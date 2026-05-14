@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NJ/counties/bergen_county__34003/county_subdivisions/waldwick_borough__3400376400/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Bergen County",
+    "county_fips": "003",
+    "county_subdivision_fips": "76400",
+    "funcstat": "F",
+    "name": "Waldwick borough",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NJ",
+    "state_fips": "34",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Bergen County",
+    "municipality": "Waldwick borough",
+    "state": "NJ"
+  }
+}

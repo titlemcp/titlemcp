@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WA/counties/pacific_county__53049/county_subdivisions/raymond_ccd__5304992736/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Pacific County",
+    "county_fips": "049",
+    "county_subdivision_fips": "92736",
+    "funcstat": "S",
+    "name": "Raymond CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WA",
+    "state_fips": "53",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Pacific County",
+    "municipality": "Raymond CCD",
+    "state": "WA"
+  }
+}

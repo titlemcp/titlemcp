@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/VA/counties/spotsylvania_county__51177/county_subdivisions/livingston_district__5117794311/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Spotsylvania County",
+    "county_fips": "177",
+    "county_subdivision_fips": "94311",
+    "funcstat": "N",
+    "name": "Livingston district",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "VA",
+    "state_fips": "51",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Spotsylvania County",
+    "municipality": "Livingston district",
+    "state": "VA"
+  }
+}

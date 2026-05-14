@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/VA/counties/patrick_county__51141/county_subdivisions/mayo_river_district__5114194591/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Patrick County",
+    "county_fips": "141",
+    "county_subdivision_fips": "94591",
+    "funcstat": "N",
+    "name": "Mayo River district",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "VA",
+    "state_fips": "51",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Patrick County",
+    "municipality": "Mayo River district",
+    "state": "VA"
+  }
+}

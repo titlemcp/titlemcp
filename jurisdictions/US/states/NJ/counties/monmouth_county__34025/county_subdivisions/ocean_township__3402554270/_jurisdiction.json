@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NJ/counties/monmouth_county__34025/county_subdivisions/ocean_township__3402554270/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Monmouth County",
+    "county_fips": "025",
+    "county_subdivision_fips": "54270",
+    "funcstat": "A",
+    "name": "Ocean township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NJ",
+    "state_fips": "34",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Monmouth County",
+    "municipality": "Ocean township",
+    "state": "NJ"
+  }
+}

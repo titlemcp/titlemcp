@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/guayanilla_municipio__72059/county_subdivisions/sierra_baja_barrio__7205980209/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Guayanilla Municipio",
+    "county_fips": "059",
+    "county_subdivision_fips": "80209",
+    "funcstat": "N",
+    "name": "Sierra Baja barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Guayanilla Municipio",
+    "municipality": "Sierra Baja barrio",
+    "state": "PR"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CA/counties/orange_county__06059/county_subdivisions/mission_viejo_ccd__0605991977/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Orange County",
+    "county_fips": "059",
+    "county_subdivision_fips": "91977",
+    "funcstat": "S",
+    "name": "Mission Viejo CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CA",
+    "state_fips": "06",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Orange County",
+    "municipality": "Mission Viejo CCD",
+    "state": "CA"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/SD/counties/aurora_county__46003/county_subdivisions/pleasant_valley_township__4600350700/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Aurora County",
+    "county_fips": "003",
+    "county_subdivision_fips": "50700",
+    "funcstat": "A",
+    "name": "Pleasant Valley township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "SD",
+    "state_fips": "46",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Aurora County",
+    "municipality": "Pleasant Valley township",
+    "state": "SD"
+  }
+}

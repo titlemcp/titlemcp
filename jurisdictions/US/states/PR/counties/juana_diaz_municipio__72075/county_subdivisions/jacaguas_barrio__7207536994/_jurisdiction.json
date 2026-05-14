@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/juana_diaz_municipio__72075/county_subdivisions/jacaguas_barrio__7207536994/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Juana Diaz Municipio",
+    "county_fips": "075",
+    "county_subdivision_fips": "36994",
+    "funcstat": "N",
+    "name": "Jacaguas barrio",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Juana Diaz Municipio",
+    "municipality": "Jacaguas barrio",
+    "state": "PR"
+  }
+}

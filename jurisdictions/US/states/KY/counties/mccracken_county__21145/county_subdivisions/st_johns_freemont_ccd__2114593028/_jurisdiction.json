@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/KY/counties/mccracken_county__21145/county_subdivisions/st_johns_freemont_ccd__2114593028/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "McCracken County",
+    "county_fips": "145",
+    "county_subdivision_fips": "93028",
+    "funcstat": "S",
+    "name": "St. Johns-Freemont CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "KY",
+    "state_fips": "21",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "McCracken County",
+    "municipality": "St. Johns-Freemont CCD",
+    "state": "KY"
+  }
+}

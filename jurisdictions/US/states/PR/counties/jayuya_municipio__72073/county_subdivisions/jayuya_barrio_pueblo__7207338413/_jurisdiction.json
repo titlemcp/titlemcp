@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/PR/counties/jayuya_municipio__72073/county_subdivisions/jayuya_barrio_pueblo__7207338413/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Jayuya Municipio",
+    "county_fips": "073",
+    "county_subdivision_fips": "38413",
+    "funcstat": "N",
+    "name": "Jayuya barrio-pueblo",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "PR",
+    "state_fips": "72",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Jayuya Municipio",
+    "municipality": "Jayuya barrio-pueblo",
+    "state": "PR"
+  }
+}

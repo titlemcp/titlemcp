@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MD/counties/washington_county__24043/county_subdivisions/district_5__2404390452/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Washington County",
+    "county_fips": "043",
+    "county_subdivision_fips": "90452",
+    "funcstat": " Hancock",
+    "name": "District 5",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MD",
+    "state_fips": "24",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Washington County",
+    "municipality": "District 5",
+    "state": "MD"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/DE/counties/kent_county__10001/county_subdivisions/felton_ccd__1000190888/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Kent County",
+    "county_fips": "001",
+    "county_subdivision_fips": "90888",
+    "funcstat": "S",
+    "name": "Felton CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "DE",
+    "state_fips": "10",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Kent County",
+    "municipality": "Felton CCD",
+    "state": "DE"
+  }
+}

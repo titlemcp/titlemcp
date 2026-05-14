@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CA/counties/ventura_county__06111/county_subdivisions/las_posas_ccd__0611191560/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Ventura County",
+    "county_fips": "111",
+    "county_subdivision_fips": "91560",
+    "funcstat": "S",
+    "name": "Las Posas CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CA",
+    "state_fips": "06",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Ventura County",
+    "municipality": "Las Posas CCD",
+    "state": "CA"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MT/counties/phillips_county__30071/county_subdivisions/south_phillips_ccd__3007193223/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Phillips County",
+    "county_fips": "071",
+    "county_subdivision_fips": "93223",
+    "funcstat": "S",
+    "name": "South Phillips CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MT",
+    "state_fips": "30",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Phillips County",
+    "municipality": "South Phillips CCD",
+    "state": "MT"
+  }
+}

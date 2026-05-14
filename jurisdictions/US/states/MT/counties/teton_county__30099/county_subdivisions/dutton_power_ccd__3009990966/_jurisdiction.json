@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MT/counties/teton_county__30099/county_subdivisions/dutton_power_ccd__3009990966/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Teton County",
+    "county_fips": "099",
+    "county_subdivision_fips": "90966",
+    "funcstat": "S",
+    "name": "Dutton-Power CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MT",
+    "state_fips": "30",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Teton County",
+    "municipality": "Dutton-Power CCD",
+    "state": "MT"
+  }
+}

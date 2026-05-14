@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CA/counties/san_bernardino_county__06071/municipalities/ontario_city__0653896/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "San Bernardino County",
+    "county_fips": "071",
+    "funcstat": "A",
+    "name": "Ontario city",
+    "place_fips": "53896",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "CA",
+    "state_fips": "06",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "San Bernardino County",
+    "municipality": "Ontario city",
+    "state": "CA"
+  }
+}

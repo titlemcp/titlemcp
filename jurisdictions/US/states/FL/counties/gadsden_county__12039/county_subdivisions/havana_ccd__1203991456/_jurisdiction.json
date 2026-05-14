@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/FL/counties/gadsden_county__12039/county_subdivisions/havana_ccd__1203991456/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Gadsden County",
+    "county_fips": "039",
+    "county_subdivision_fips": "91456",
+    "funcstat": "S",
+    "name": "Havana CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "FL",
+    "state_fips": "12",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Gadsden County",
+    "municipality": "Havana CCD",
+    "state": "FL"
+  }
+}

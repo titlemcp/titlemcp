@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ID/counties/cassia_county__16031/county_subdivisions/albion_ccd__1603190046/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Cassia County",
+    "county_fips": "031",
+    "county_subdivision_fips": "90046",
+    "funcstat": "S",
+    "name": "Albion CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ID",
+    "state_fips": "16",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Cassia County",
+    "municipality": "Albion CCD",
+    "state": "ID"
+  }
+}

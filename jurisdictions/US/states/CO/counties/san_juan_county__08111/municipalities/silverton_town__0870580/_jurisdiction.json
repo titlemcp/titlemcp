@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CO/counties/san_juan_county__08111/municipalities/silverton_town__0870580/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "San Juan County",
+    "county_fips": "111",
+    "funcstat": "A",
+    "name": "Silverton town",
+    "place_fips": "70580",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "CO",
+    "state_fips": "08",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "San Juan County",
+    "municipality": "Silverton town",
+    "state": "CO"
+  }
+}

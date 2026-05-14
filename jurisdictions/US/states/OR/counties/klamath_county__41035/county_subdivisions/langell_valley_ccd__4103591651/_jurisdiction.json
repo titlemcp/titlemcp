@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/OR/counties/klamath_county__41035/county_subdivisions/langell_valley_ccd__4103591651/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Klamath County",
+    "county_fips": "035",
+    "county_subdivision_fips": "91651",
+    "funcstat": "S",
+    "name": "Langell Valley CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "OR",
+    "state_fips": "41",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Klamath County",
+    "municipality": "Langell Valley CCD",
+    "state": "OR"
+  }
+}

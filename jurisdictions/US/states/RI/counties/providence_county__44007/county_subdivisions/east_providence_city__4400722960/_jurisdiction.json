@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/RI/counties/providence_county__44007/county_subdivisions/east_providence_city__4400722960/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Providence County",
+    "county_fips": "007",
+    "county_subdivision_fips": "22960",
+    "funcstat": "F",
+    "name": "East Providence city",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "RI",
+    "state_fips": "44",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Providence County",
+    "municipality": "East Providence city",
+    "state": "RI"
+  }
+}

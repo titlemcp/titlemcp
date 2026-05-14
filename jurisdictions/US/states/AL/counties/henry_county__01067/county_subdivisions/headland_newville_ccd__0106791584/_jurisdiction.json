@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AL/counties/henry_county__01067/county_subdivisions/headland_newville_ccd__0106791584/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Henry County",
+    "county_fips": "067",
+    "county_subdivision_fips": "91584",
+    "funcstat": "S",
+    "name": "Headland-Newville CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AL",
+    "state_fips": "01",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Henry County",
+    "municipality": "Headland-Newville CCD",
+    "state": "AL"
+  }
+}

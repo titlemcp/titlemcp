@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CO/counties/garfield_county__08045/county_subdivisions/west_garfield_ccd__0804593832/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Garfield County",
+    "county_fips": "045",
+    "county_subdivision_fips": "93832",
+    "funcstat": "S",
+    "name": "West Garfield CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CO",
+    "state_fips": "08",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Garfield County",
+    "municipality": "West Garfield CCD",
+    "state": "CO"
+  }
+}

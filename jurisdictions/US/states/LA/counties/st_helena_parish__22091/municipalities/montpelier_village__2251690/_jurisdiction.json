@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/LA/counties/st_helena_parish__22091/municipalities/montpelier_village__2251690/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "St. Helena Parish",
+    "county_fips": "091",
+    "funcstat": "A",
+    "name": "Montpelier village",
+    "place_fips": "51690",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "LA",
+    "state_fips": "22",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "St. Helena Parish",
+    "municipality": "Montpelier village",
+    "state": "LA"
+  }
+}

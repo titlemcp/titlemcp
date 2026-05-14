@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CO/counties/el_paso_county__08041/county_subdivisions/southeastern_el_paso_ccd__0804193420/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "El Paso County",
+    "county_fips": "041",
+    "county_subdivision_fips": "93420",
+    "funcstat": "S",
+    "name": "Southeastern El Paso CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CO",
+    "state_fips": "08",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "El Paso County",
+    "municipality": "Southeastern El Paso CCD",
+    "state": "CO"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/GA/counties/richmond_county__13245/municipalities/augusta_richmond_county_consolidated_government_balance__1304204/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Richmond County",
+    "county_fips": "245",
+    "funcstat": "F",
+    "name": "Augusta-Richmond County consolidated government (balance)",
+    "place_fips": "04204",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "GA",
+    "state_fips": "13",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Richmond County",
+    "municipality": "Augusta-Richmond County consolidated government (balance)",
+    "state": "GA"
+  }
+}

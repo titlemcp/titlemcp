@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/GA/counties/franklin_county__13119/county_subdivisions/carnesville_ccd__1311990546/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Franklin County",
+    "county_fips": "119",
+    "county_subdivision_fips": "90546",
+    "funcstat": "S",
+    "name": "Carnesville CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "GA",
+    "state_fips": "13",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Franklin County",
+    "municipality": "Carnesville CCD",
+    "state": "GA"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AR/counties/monroe_county__05095/county_subdivisions/brown_township__0509590495/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Monroe County",
+    "county_fips": "095",
+    "county_subdivision_fips": "90495",
+    "funcstat": "N",
+    "name": "Brown township",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AR",
+    "state_fips": "05",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Monroe County",
+    "municipality": "Brown township",
+    "state": "AR"
+  }
+}

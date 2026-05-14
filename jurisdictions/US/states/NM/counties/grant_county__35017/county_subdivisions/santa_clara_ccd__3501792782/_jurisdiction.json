@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NM/counties/grant_county__35017/county_subdivisions/santa_clara_ccd__3501792782/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Grant County",
+    "county_fips": "017",
+    "county_subdivision_fips": "92782",
+    "funcstat": "S",
+    "name": "Santa Clara CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NM",
+    "state_fips": "35",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Grant County",
+    "municipality": "Santa Clara CCD",
+    "state": "NM"
+  }
+}

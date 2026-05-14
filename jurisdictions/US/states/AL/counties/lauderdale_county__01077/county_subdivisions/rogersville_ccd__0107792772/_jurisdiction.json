@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AL/counties/lauderdale_county__01077/county_subdivisions/rogersville_ccd__0107792772/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Lauderdale County",
+    "county_fips": "077",
+    "county_subdivision_fips": "92772",
+    "funcstat": "S",
+    "name": "Rogersville CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AL",
+    "state_fips": "01",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Lauderdale County",
+    "municipality": "Rogersville CCD",
+    "state": "AL"
+  }
+}

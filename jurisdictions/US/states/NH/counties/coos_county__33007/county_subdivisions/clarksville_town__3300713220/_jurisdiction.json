@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NH/counties/coos_county__33007/county_subdivisions/clarksville_town__3300713220/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Coos County",
+    "county_fips": "007",
+    "county_subdivision_fips": "13220",
+    "funcstat": "A",
+    "name": "Clarksville town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "NH",
+    "state_fips": "33",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Coos County",
+    "municipality": "Clarksville town",
+    "state": "NH"
+  }
+}

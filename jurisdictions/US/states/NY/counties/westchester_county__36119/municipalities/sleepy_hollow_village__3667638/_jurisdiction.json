@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/NY/counties/westchester_county__36119/municipalities/sleepy_hollow_village__3667638/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Westchester County",
+    "county_fips": "119",
+    "funcstat": "A",
+    "name": "Sleepy Hollow village",
+    "place_fips": "67638",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "NY",
+    "state_fips": "36",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Westchester County",
+    "municipality": "Sleepy Hollow village",
+    "state": "NY"
+  }
+}

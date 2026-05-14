@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/WY/counties/campbell_county__56005/county_subdivisions/gillette_north_ccd__5600591210/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Campbell County",
+    "county_fips": "005",
+    "county_subdivision_fips": "91210",
+    "funcstat": "S",
+    "name": "Gillette North CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "WY",
+    "state_fips": "56",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Campbell County",
+    "municipality": "Gillette North CCD",
+    "state": "WY"
+  }
+}

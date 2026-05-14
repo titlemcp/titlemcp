@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MA/counties/hampshire_county__25015/municipalities/easthampton_town_city__2519370/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Hampshire County",
+    "county_fips": "015",
+    "funcstat": "A",
+    "name": "Easthampton Town city",
+    "place_fips": "19370",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "MA",
+    "state_fips": "25",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Hampshire County",
+    "municipality": "Easthampton Town city",
+    "state": "MA"
+  }
+}

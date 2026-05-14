@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MT/counties/silver_bow_county__30093/county_subdivisions/butte_silver_bow_northwest_ccd__3009390485/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Silver Bow County",
+    "county_fips": "093",
+    "county_subdivision_fips": "90485",
+    "funcstat": "S",
+    "name": "Butte-Silver Bow Northwest CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MT",
+    "state_fips": "30",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Silver Bow County",
+    "municipality": "Butte-Silver Bow Northwest CCD",
+    "state": "MT"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/CO/counties/huerfano_county__08055/county_subdivisions/walsenburg_ccd__0805593743/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Huerfano County",
+    "county_fips": "055",
+    "county_subdivision_fips": "93743",
+    "funcstat": "S",
+    "name": "Walsenburg CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "CO",
+    "state_fips": "08",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Huerfano County",
+    "municipality": "Walsenburg CCD",
+    "state": "CO"
+  }
+}

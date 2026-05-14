@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/FL/counties/bay_county__12005/county_subdivisions/mexico_beach_ccd__1200592145/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Bay County",
+    "county_fips": "005",
+    "county_subdivision_fips": "92145",
+    "funcstat": "S",
+    "name": "Mexico Beach CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "FL",
+    "state_fips": "12",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Bay County",
+    "municipality": "Mexico Beach CCD",
+    "state": "FL"
+  }
+}

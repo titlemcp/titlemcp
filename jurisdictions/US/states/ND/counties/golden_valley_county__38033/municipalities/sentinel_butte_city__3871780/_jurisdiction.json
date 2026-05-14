@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ND/counties/golden_valley_county__38033/municipalities/sentinel_butte_city__3871780/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Golden Valley County",
+    "county_fips": "033",
+    "funcstat": "A",
+    "name": "Sentinel Butte city",
+    "place_fips": "71780",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "ND",
+    "state_fips": "38",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Golden Valley County",
+    "municipality": "Sentinel Butte city",
+    "state": "ND"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/LA/counties/livingston_parish__22063/municipalities/french_settlement_village__2227435/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Livingston Parish",
+    "county_fips": "063",
+    "funcstat": "A",
+    "name": "French Settlement village",
+    "place_fips": "27435",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "LA",
+    "state_fips": "22",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Livingston Parish",
+    "municipality": "French Settlement village",
+    "state": "LA"
+  }
+}

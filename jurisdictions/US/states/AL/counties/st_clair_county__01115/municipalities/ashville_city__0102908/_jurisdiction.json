@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AL/counties/st_clair_county__01115/municipalities/ashville_city__0102908/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "St. Clair County",
+    "county_fips": "115",
+    "funcstat": "A",
+    "name": "Ashville city",
+    "place_fips": "02908",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "AL",
+    "state_fips": "01",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "St. Clair County",
+    "municipality": "Ashville city",
+    "state": "AL"
+  }
+}

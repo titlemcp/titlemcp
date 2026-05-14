@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/FL/counties/miami_dade_county__12086/county_subdivisions/miami_ccd__1208692158/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Miami-Dade County",
+    "county_fips": "086",
+    "county_subdivision_fips": "92158",
+    "funcstat": "S",
+    "name": "Miami CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "FL",
+    "state_fips": "12",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Miami-Dade County",
+    "municipality": "Miami CCD",
+    "state": "FL"
+  }
+}

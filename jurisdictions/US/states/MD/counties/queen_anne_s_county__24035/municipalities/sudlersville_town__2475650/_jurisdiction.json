@@ -1,0 +1,31 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MD/counties/queen_anne_s_county__24035/municipalities/sudlersville_town__2475650/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Queen Anne's County",
+    "county_fips": "035",
+    "funcstat": "A",
+    "name": "Sudlersville town",
+    "place_fips": "75650",
+    "place_type": "Incorporated Place",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_places.txt",
+    "state": "MD",
+    "state_fips": "24",
+    "type": "municipality"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Queen Anne's County",
+    "municipality": "Sudlersville town",
+    "state": "MD"
+  }
+}

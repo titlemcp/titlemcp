@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/MA/counties/essex_county__25009/county_subdivisions/marblehead_town__2500938400/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Essex County",
+    "county_fips": "009",
+    "county_subdivision_fips": "38400",
+    "funcstat": "A",
+    "name": "Marblehead town",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "MA",
+    "state_fips": "25",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Essex County",
+    "municipality": "Marblehead town",
+    "state": "MA"
+  }
+}

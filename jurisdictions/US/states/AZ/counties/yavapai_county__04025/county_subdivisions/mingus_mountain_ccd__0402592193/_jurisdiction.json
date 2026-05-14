@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AZ/counties/yavapai_county__04025/county_subdivisions/mingus_mountain_ccd__0402592193/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Yavapai County",
+    "county_fips": "025",
+    "county_subdivision_fips": "92193",
+    "funcstat": "S",
+    "name": "Mingus Mountain CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AZ",
+    "state_fips": "04",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Yavapai County",
+    "municipality": "Mingus Mountain CCD",
+    "state": "AZ"
+  }
+}

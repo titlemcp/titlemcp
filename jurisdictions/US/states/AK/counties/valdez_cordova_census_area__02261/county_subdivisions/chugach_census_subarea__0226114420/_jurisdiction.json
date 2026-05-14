@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/AK/counties/valdez_cordova_census_area__02261/county_subdivisions/chugach_census_subarea__0226114420/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Valdez-Cordova Census Area",
+    "county_fips": "261",
+    "county_subdivision_fips": "14420",
+    "funcstat": "S",
+    "name": "Chugach census subarea",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "AK",
+    "state_fips": "02",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Valdez-Cordova Census Area",
+    "municipality": "Chugach census subarea",
+    "state": "AK"
+  }
+}

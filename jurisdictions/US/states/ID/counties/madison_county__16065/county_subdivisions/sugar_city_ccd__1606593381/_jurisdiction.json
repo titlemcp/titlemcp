@@ -1,0 +1,30 @@
+{
+  "capabilities": {
+    "adapters": [],
+    "schemas": [],
+    "tools": [],
+    "workflows": []
+  },
+  "capability_convention": {
+    "create_here": "jurisdictions/US/states/ID/counties/madison_county__16065/county_subdivisions/sugar_city_ccd__1606593381/capabilities",
+    "notes": "Add jurisdiction-specific adapters, tools, workflows, schemas, or tests here. Keep shared logic in src/title_mcp and call it from jurisdiction code.",
+    "template": "jurisdictions/_templates/capability_package"
+  },
+  "geography": {
+    "county": "Madison County",
+    "county_fips": "065",
+    "county_subdivision_fips": "93381",
+    "funcstat": "S",
+    "name": "Sugar City CCD",
+    "source": "https://www2.census.gov/geo/docs/reference/codes/files/national_cousub.txt",
+    "state": "ID",
+    "state_fips": "16",
+    "type": "county_subdivision"
+  },
+  "jurisdiction": {
+    "country": "US",
+    "county": "Madison County",
+    "municipality": "Sugar City CCD",
+    "state": "ID"
+  }
+}
