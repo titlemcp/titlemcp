@@ -14,7 +14,12 @@ from title_mcp.domain.models import (
 )
 from title_mcp.domain.responses import WorkflowListResponse
 from title_mcp.platform import TitleMCPPlatform
-from title_mcp.sources import SourceKind
+from title_mcp.sources import (
+    PacerBankruptcySourceConnector,
+    RegridParcelSourceConnector,
+    SourceKind,
+    SourceQuery,
+)
 from title_mcp.vendors import VendorKind
 
 
@@ -23,6 +28,78 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
 
     async def ensure_ready() -> None:
         await platform.initialize()
+
+    @mcp.tool()
+    async def regrid_parcel_lookup(
+        address: str,
+        requested_by: str = "mcp",
+    ) -> dict[str, Any]:
+        """Lookup parcel information by address using Regrid through the smart proxy."""
+        await ensure_ready()
+        connector = platform.sources.get(RegridParcelSourceConnector.source_id)
+        if connector is None:
+            connector = RegridParcelSourceConnector(settings=platform.settings)
+        result = await connector.query(
+            SourceQuery(
+                jurisdiction=Jurisdiction(country="US"),
+                kind=SourceKind.VENDOR_API,
+                criteria={"address": address},
+                requested_by=requested_by,
+            )
+        )
+        return result.model_dump(mode="json")
+
+    @mcp.tool()
+    async def pacer_bankruptcy_search(
+        last_name: str | None = None,
+        ssn: str | None = None,
+        ssn4: str | None = None,
+        first_name: str | None = None,
+        middle_name: str | None = None,
+        tax_id_type: str | None = None,
+        business_name: str | None = None,
+        court_id: str | None = None,
+        case_number: str | None = None,
+        case_year_from: int | None = None,
+        case_year_to: int | None = None,
+        exact_name_match: bool = False,
+        requested_by: str = "mcp",
+    ) -> dict[str, Any]:
+        """
+        Search PACER Case Locator bankruptcy party records for a person or business.
+
+        For business/entity searches, pass business_name; tax_id_type is optional unless
+        the caller explicitly knows the identifier type.
+        """
+        await ensure_ready()
+        connector = platform.sources.get(PacerBankruptcySourceConnector.source_id)
+        if connector is None:
+            connector = PacerBankruptcySourceConnector(settings=platform.settings)
+
+        criteria = {
+            "last_name": last_name,
+            "ssn": ssn,
+            "ssn4": ssn4,
+            "first_name": first_name,
+            "middle_name": middle_name,
+            "tax_id_type": tax_id_type,
+            "business_name": business_name,
+            "court_id": court_id,
+            "case_number": case_number,
+            "case_year_from": case_year_from,
+            "case_year_to": case_year_to,
+            "exact_name_match": exact_name_match,
+        }
+        criteria = {key: value for key, value in criteria.items() if value is not None}
+        result = await connector.query(
+            SourceQuery(
+                jurisdiction=Jurisdiction(country="US"),
+                kind=SourceKind.COURT,
+                criteria=criteria,
+                requested_by=requested_by,
+            )
+        )
+        return result.model_dump(mode="json")
 
     @mcp.tool()
     async def start_title_workflow(

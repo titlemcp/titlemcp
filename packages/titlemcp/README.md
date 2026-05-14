@@ -154,6 +154,51 @@ titlemcp-ollama \
 
 Set `TITLE_MCP_OLLAMA_MODEL` to change the model.
 
+## PACER Bankruptcy Search
+
+The core MCP server includes `pacer_bankruptcy_search`, which uses the PACER Case Locator
+party-search API for bankruptcy searches. Configure credentials in `.env` or the process
+environment:
+
+```env
+TITLE_MCP_PACER_USERNAME=
+TITLE_MCP_PACER_PASSWORD=
+TITLE_MCP_PACER_CLIENT_CODE=
+TITLE_MCP_PACER_QA_MODE=false
+TITLE_MCP_PACER_TIMEOUT_SECONDS=30
+```
+
+The tool returns a deterministic `title_mcp.pacer_bankruptcy_search` record with redacted tax
+identifiers, case rows, and a title-officer review flag. It does not use LLM summarization or local
+application caching. Production PACER searches may be billable; use `TITLE_MCP_PACER_QA_MODE=true`
+with QA credentials for non-billable API testing.
+
+## Regrid Parcel Lookup
+
+The core MCP server includes `regrid_parcel_lookup`, which searches Regrid by address and then
+loads the matching parcel detail JSON. The tool returns a canonical `title_mcp.parcel_record`
+with Regrid's original fields preserved under `source_specific.regrid`. This source requires smart
+proxy configuration and will return `requires_configuration` when no proxy is configured.
+
+```env
+TITLE_MCP_SMART_PROXY=
+TITLE_MCP_REGRID_PROXY_PORT_START=10001
+TITLE_MCP_REGRID_PROXY_PORT_END=10999
+TITLE_MCP_REGRID_MAX_RETRIES=5
+TITLE_MCP_REGRID_BACKOFF_FACTOR=0.5
+TITLE_MCP_REGRID_COOKIE_REFRESH_THRESHOLD=25
+TITLE_MCP_REGRID_MAX_PROXY_ATTEMPTS=10
+TITLE_MCP_REGRID_TIMEOUT_SECONDS=10
+TITLE_MCP_REGRID_COOKIE_TIMEOUT_SECONDS=5
+```
+
+Set `TITLE_MCP_SMART_PROXY` to the smart proxy host/auth portion without the rotating port, for
+example `user:password@proxy.example.com`. The legacy `SMART_PROXY` environment variable is also
+supported. The lookup keeps the smart proxy pool, cookie fetch/refresh behavior, browser-like
+randomized headers, and proxy rotation on 429 or proxy failures. `TITLE_MCP_REGRID_MAX_PROXY_ATTEMPTS`
+bounds how many rotating proxy endpoints are tried per request so bad proxy configuration fails
+visibly instead of walking the full port range.
+
 ## State Backends
 
 Local default:

@@ -14,6 +14,7 @@ def capability_manifest() -> CapabilityManifest:
         capability_types=[
             CapabilityType.WORKFLOW_ADAPTER,
             CapabilityType.GOVERNMENT_SOURCE,
+            CapabilityType.MCP_TOOLSET,
         ],
         jurisdiction_scopes=[
             JurisdictionScope(country="US", state="OH", county="Franklin County")
@@ -28,6 +29,17 @@ def capability_manifest() -> CapabilityManifest:
                 "titlemcp_us_oh_franklin_recorder.sources:"
                 "FranklinRecorderSourceConnector"
             ),
+            "title_mcp.toolsets": (
+                "titlemcp_us_oh_franklin_recorder.toolsets:"
+                "FranklinAuditorToolset"
+            ),
         },
         review_required=True,
+        metadata={
+            "sources": [
+                "us-oh-franklin-recorder",
+                "us-oh-franklin-auditor",
+            ],
+            "auditor_search_modes": ["address", "owner", "parid"],
+        },
     )

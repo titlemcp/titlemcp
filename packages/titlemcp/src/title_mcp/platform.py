@@ -11,7 +11,9 @@ from title_mcp.observability import configure_logging
 from title_mcp.plugins import PluginContext, load_plugins
 from title_mcp.services import DocumentAnalysisService, WorkflowService
 from title_mcp.settings import TitleMCPSettings
+from title_mcp.sources.pacer import PacerBankruptcySourceConnector
 from title_mcp.sources.registry import SourceConnectorRegistry, create_default_source_registry
+from title_mcp.sources.regrid import RegridParcelSourceConnector
 from title_mcp.state import WorkflowRepository, create_repository
 from title_mcp.vendors.registry import VendorConnectorRegistry, create_default_vendor_registry
 from title_mcp.workflows import WorkflowEngine
@@ -68,6 +70,10 @@ class TitleMCPPlatform:
             config_path=settings.jurisdiction_config_path,
         )
         self.sources = sources or create_default_source_registry(include_entry_points=load_sources)
+        if sources is None and self.sources.get(PacerBankruptcySourceConnector.source_id) is None:
+            self.sources.register(PacerBankruptcySourceConnector(settings=settings))
+        if sources is None and self.sources.get(RegridParcelSourceConnector.source_id) is None:
+            self.sources.register(RegridParcelSourceConnector(settings=settings))
         self.vendors = vendors or create_default_vendor_registry(include_entry_points=load_vendors)
         self.document_analysis = DocumentAnalysisService()
         self.engine = WorkflowEngine(

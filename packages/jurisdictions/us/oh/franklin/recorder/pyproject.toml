@@ -14,6 +14,10 @@ us_oh_franklin_recorder = "titlemcp_us_oh_franklin_recorder.adapters:FranklinCou
 
 [project.entry-points."title_mcp.sources"]
 us_oh_franklin_recorder = "titlemcp_us_oh_franklin_recorder.sources:FranklinRecorderSourceConnector"
+us_oh_franklin_auditor = "titlemcp_us_oh_franklin_recorder.sources:FranklinAuditorSourceConnector"
+
+[project.entry-points."title_mcp.toolsets"]
+us_oh_franklin_auditor = "titlemcp_us_oh_franklin_recorder.toolsets:FranklinAuditorToolset"
 
 [project.entry-points."title_mcp.capabilities"]
 us_oh_franklin_recorder = "titlemcp_us_oh_franklin_recorder.manifest:capability_manifest"

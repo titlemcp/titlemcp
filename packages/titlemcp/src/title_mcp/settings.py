@@ -29,6 +29,22 @@ class TitleMCPSettings(BaseSettings):
     ollama_model: str = "qwen3"
     ollama_server_command: str = "python"
 
+    pacer_username: str | None = None
+    pacer_password: str | None = None
+    pacer_client_code: str | None = None
+    pacer_qa_mode: bool = False
+    pacer_timeout_seconds: float = Field(default=30.0, ge=1.0, le=300.0)
+
+    smart_proxy: str | None = None
+    regrid_proxy_port_start: int = Field(default=10001, ge=1, le=65535)
+    regrid_proxy_port_end: int = Field(default=10999, ge=1, le=65535)
+    regrid_max_retries: int = Field(default=5, ge=0, le=20)
+    regrid_backoff_factor: float = Field(default=0.5, ge=0.0, le=30.0)
+    regrid_cookie_refresh_threshold: int = Field(default=25, ge=1, le=1000)
+    regrid_max_proxy_attempts: int = Field(default=10, ge=1, le=1000)
+    regrid_timeout_seconds: float = Field(default=10.0, ge=1.0, le=120.0)
+    regrid_cookie_timeout_seconds: float = Field(default=5.0, ge=1.0, le=120.0)
+
     background_worker_concurrency: int = Field(default=4, ge=1, le=64)
     default_human_review_required: bool = True
     jurisdiction_config_path: str | None = None
