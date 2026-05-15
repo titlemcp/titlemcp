@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import asyncio
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -31,19 +30,12 @@ def local_src_paths(root: Path) -> list[Path]:
 
 
 def franklin_server_params(root: Path, log_level: str) -> Any:
-    from mcp import StdioServerParameters
-    from samples._shared.ollama_mcp import build_pythonpath
+    from samples._shared.ollama_mcp import core_server_params
 
-    env = dict(os.environ)
-    env["PYTHONPATH"] = build_pythonpath(root, local_src_paths(root)[1:])
-    env["TITLE_MCP_LOG_LEVEL"] = log_level.upper()
-    env["TITLE_MCP_LOG_JSON"] = "false"
-    server_script = Path(__file__).with_name("franklin_auditor_mcp_server.py")
-    return StdioServerParameters(
-        command=sys.executable,
-        args=[str(server_script)],
-        cwd=str(root),
-        env=env,
+    return core_server_params(
+        root,
+        log_level,
+        extra_python_paths=local_src_paths(root)[1:],
     )
 
 

@@ -29,9 +29,9 @@ preserved under each candidate and SerpAPI metadata is preserved under
 
 Configuration: `TITLE_MCP_SERPAPI_API_KEY`.
 
-### `regrid_parcel_lookup`
+### `parcel_lookup`
 
-Looks up parcel data by address using Regrid through the configured smart proxy.
+Looks up parcel data by address.
 
 Input:
 
@@ -41,8 +41,7 @@ Input:
 }
 ```
 
-Returns a canonical `title_mcp.parcel_record` with Regrid's original payload
-preserved under `source_specific.regrid`.
+Returns a canonical `title_mcp.parcel_record`.
 
 Useful fields:
 
@@ -54,7 +53,7 @@ Useful fields:
 - `building.year_built`
 - `geography.geometry`
 
-Configuration: `TITLE_MCP_SMART_PROXY` or legacy `SMART_PROXY`.
+Configuration: parcel provider credentials/proxy settings.
 
 ### `pacer_bankruptcy_search`
 
@@ -149,6 +148,31 @@ metadata.
 
 These tools are useful for clients that need to inspect available capabilities
 or resume existing work.
+
+## Inspector Resources
+
+The server exposes read-only MCP resources for richer MCP Inspector debugging:
+
+- `titlemcp://server/info`: server metadata, advertised capabilities, and counts.
+- `titlemcp://server/runtime`: sanitized runtime configuration and integration status.
+- `titlemcp://tools/catalog`: public tool catalog with schemas and annotations.
+- `titlemcp://tools/{tool_name}`: detailed schema and annotations for one tool.
+- `titlemcp://workflows/kinds`: workflow kinds accepted by workflow tools.
+
+The HTTP server also exposes `GET /healthz` and `GET /readyz` for deployment
+checks.
+
+## Inspector Prompts
+
+The server exposes prompt templates that can be tested in MCP Inspector:
+
+- `title_workflow_intake`: prepare a structured title workflow request.
+- `parcel_lookup_review`: review parcel lookup evidence for an address.
+- `hoa_contact_review`: review HOA contact search evidence.
+- `sample_parcel_lookup`: sample natural-language parcel lookup request.
+- `sample_hoa_contact_search`: sample natural-language HOA contact request.
+- `sample_bankruptcy_search`: sample natural-language bankruptcy search request.
+- `sample_franklin_county_auditor_search`: sample Franklin County auditor request.
 
 ## Human Review Rule
 

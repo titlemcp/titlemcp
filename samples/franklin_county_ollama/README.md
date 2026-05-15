@@ -83,12 +83,12 @@ pass `--think`.
 
 ## What This Uses
 
-- `franklin_auditor_mcp_server.py` starts the TitleMCP server over stdio and
-  explicitly registers `FranklinAuditorToolset`.
-- `ollama_client.py` connects to that stdio MCP server, exposes the Franklin
-  tool to Ollama, executes the model-requested tool call, and prints the
-  canonical tool result. Passing `--summarize-with-ollama` sends the canonical
-  result back to the model for a final answer.
+- `ollama_client.py` starts the standard `title_mcp.mcp.server` stdio server
+  through the shared sample helper, exposes the Franklin tool to Ollama,
+  executes the model-requested tool call, and prints the canonical tool result.
+  Passing `--summarize-with-ollama` sends the canonical result back to the model
+  for a final answer.
 
-The server wrapper sets `PYTHONPATH` for the local checkout so the sample works
-while developing, even before the Franklin County package is published.
+The Franklin Auditor tool is loaded from the jurisdiction package's
+`title_mcp.toolsets` entry point. Install that package in editable mode while
+developing so the standard server can discover it from the local checkout.

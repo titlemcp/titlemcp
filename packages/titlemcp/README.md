@@ -151,6 +151,24 @@ PYTHONPATH=packages/titlemcp/src .venv/bin/python packages/titlemcp/examples/mcp
 
 The client lists MCP tools and creates a municipal lien search workflow.
 
+## MCP Inspector Support
+
+In Streamable HTTP mode, MCP Inspector can browse tools, resources, and prompts.
+TitleMCP exposes read-only resources for server info, sanitized runtime config,
+tool catalog/detail, and workflow kinds:
+
+```text
+titlemcp://server/info
+titlemcp://server/runtime
+titlemcp://tools/catalog
+titlemcp://tools/{tool_name}
+titlemcp://workflows/kinds
+```
+
+Prompt templates are available for title workflow intake, parcel lookup review,
+HOA contact review, and sample prompts derived from the Ollama examples. HTTP
+health checks are available at `/healthz` and `/readyz`.
+
 ## Ollama Client
 
 Make sure Ollama is running and the configured model is available, then run:
@@ -204,12 +222,11 @@ identifiers, case rows, and a title-officer review flag. It does not use LLM sum
 application caching. Production PACER searches may be billable; use `TITLE_MCP_PACER_QA_MODE=true`
 with QA credentials for non-billable API testing.
 
-## Regrid Parcel Lookup
+## Parcel Lookup
 
-The core MCP server includes `regrid_parcel_lookup`, which searches Regrid by address and then
-loads the matching parcel detail JSON. The tool returns a canonical `title_mcp.parcel_record`
-with Regrid's original fields preserved under `source_specific.regrid`. This source requires smart
-proxy configuration and will return `requires_configuration` when no proxy is configured.
+The core MCP server includes `parcel_lookup`, which searches parcel data by address and returns a
+canonical `title_mcp.parcel_record`. This source requires provider configuration and will return
+`requires_configuration` when it is not configured.
 
 ```env
 TITLE_MCP_SMART_PROXY=
@@ -223,12 +240,10 @@ TITLE_MCP_REGRID_TIMEOUT_SECONDS=10
 TITLE_MCP_REGRID_COOKIE_TIMEOUT_SECONDS=5
 ```
 
-Set `TITLE_MCP_SMART_PROXY` to the smart proxy host/auth portion without the rotating port, for
+Set `TITLE_MCP_SMART_PROXY` to the provider proxy host/auth portion without the rotating port, for
 example `user:password@proxy.example.com`. The legacy `SMART_PROXY` environment variable is also
-supported. The lookup keeps the smart proxy pool, cookie fetch/refresh behavior, browser-like
-randomized headers, and proxy rotation on 429 or proxy failures. `TITLE_MCP_REGRID_MAX_PROXY_ATTEMPTS`
-bounds how many rotating proxy endpoints are tried per request so bad proxy configuration fails
-visibly instead of walking the full port range.
+supported. `TITLE_MCP_REGRID_MAX_PROXY_ATTEMPTS` bounds how many rotating proxy endpoints are tried
+per request so bad proxy configuration fails visibly instead of walking the full port range.
 
 ## State Backends
 

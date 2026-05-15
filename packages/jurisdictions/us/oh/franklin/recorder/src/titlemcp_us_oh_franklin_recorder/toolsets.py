@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from title_mcp.domain.models import Jurisdiction
 from title_mcp.platform import TitleMCPPlatform
@@ -15,7 +16,16 @@ class FranklinAuditorToolset:
     toolset_id = "us-oh-franklin-auditor"
 
     def register(self, mcp: FastMCP, platform: TitleMCPPlatform) -> None:
-        @mcp.tool()
+        @mcp.tool(
+            title="Franklin County Auditor Search",
+            annotations=ToolAnnotations(
+                title="Franklin County Auditor Search",
+                readOnlyHint=True,
+                destructiveHint=False,
+                idempotentHint=True,
+                openWorldHint=True,
+            ),
+        )
         async def franklin_county_auditor_search(
             mode: str | None = None,
             parcel_id: str | None = None,

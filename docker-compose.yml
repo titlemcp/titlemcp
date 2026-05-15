@@ -1,0 +1,66 @@
+services:
+  titlemcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: razi-title-mcp:latest
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TITLE_MCP_ENVIRONMENT: docker
+      TITLE_MCP_LOG_LEVEL: ${TITLE_MCP_LOG_LEVEL:-INFO}
+      TITLE_MCP_LOG_JSON: ${TITLE_MCP_LOG_JSON:-true}
+      TITLE_MCP_MCP_TRANSPORT: streamable-http
+      TITLE_MCP_MCP_HOST: 0.0.0.0
+      TITLE_MCP_MCP_PORT: 8000
+      TITLE_MCP_INSPECTOR_URL: ${TITLE_MCP_INSPECTOR_URL:-http://localhost:6274/}
+      TITLE_MCP_INSPECTOR_BACKEND_URL: ${TITLE_MCP_INSPECTOR_BACKEND_URL:-http://titlemcp:8000/mcp}
+      TITLE_MCP_MCP_ALLOWED_HOSTS: "${TITLE_MCP_MCP_ALLOWED_HOSTS:-localhost:*,127.0.0.1:*,titlemcp:*,0.0.0.0:*}"
+      TITLE_MCP_MCP_ALLOWED_ORIGINS: "${TITLE_MCP_MCP_ALLOWED_ORIGINS:-http://localhost:*,http://127.0.0.1:*,http://0.0.0.0:*}"
+      TITLE_MCP_STATE_BACKEND: ${TITLE_MCP_STATE_BACKEND:-memory}
+      TITLE_MCP_POSTGRES_DSN: ${TITLE_MCP_DOCKER_POSTGRES_DSN:-postgresql://title_mcp:title_mcp@postgres:5432/title_mcp}
+    ports:
+      - "${TITLE_MCP_PORT:-8000}:8000"
+    restart: unless-stopped
+
+  mcp-inspector:
+    image: ghcr.io/modelcontextprotocol/inspector:latest
+    depends_on:
+      - titlemcp
+    command:
+      - "--"
+      - "--transport"
+      - "streamable-http"
+      - "--server-url"
+      - "${TITLE_MCP_INSPECTOR_BACKEND_URL:-http://titlemcp:8000/mcp}"
+    environment:
+      HOST: 0.0.0.0
+      CLIENT_PORT: 6274
+      SERVER_PORT: 6277
+      MCP_AUTO_OPEN_ENABLED: false
+      ALLOWED_ORIGINS: "${MCP_INSPECTOR_ALLOWED_ORIGINS:-http://localhost:6274,http://127.0.0.1:6274,http://0.0.0.0:6274}"
+    ports:
+      - "127.0.0.1:${MCP_INSPECTOR_CLIENT_PORT:-6274}:6274"
+      - "127.0.0.1:${MCP_INSPECTOR_PROXY_PORT:-6277}:6277"
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    profiles:
+      - postgres
+    environment:
+      POSTGRES_DB: title_mcp
+      POSTGRES_USER: title_mcp
+      POSTGRES_PASSWORD: title_mcp
+    volumes:
+      - titlemcp-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U title_mcp -d title_mcp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  titlemcp-postgres-data:

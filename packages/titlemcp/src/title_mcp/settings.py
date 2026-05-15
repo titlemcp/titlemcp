@@ -1,8 +1,9 @@
+import json
 from functools import lru_cache
-from typing import Literal
+from typing import Annotated, Any, Literal
 
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class TitleMCPSettings(BaseSettings):
@@ -25,6 +26,28 @@ class TitleMCPSettings(BaseSettings):
     mcp_transport: Literal["stdio", "sse", "streamable-http"] = "stdio"
     mcp_host: str = "127.0.0.1"
     mcp_port: int = 8000
+    mcp_public_url: str | None = None
+    inspector_url: str | None = None
+    inspector_backend_url: str | None = None
+    mcp_dns_rebinding_protection: bool = True
+    mcp_allowed_hosts: Annotated[list[str], NoDecode] = Field(default_factory=list)
+    mcp_allowed_origins: Annotated[list[str], NoDecode] = Field(default_factory=list)
+
+    @field_validator("mcp_allowed_hosts", "mcp_allowed_origins", mode="before")
+    @classmethod
+    def parse_security_list(cls, value: Any) -> Any:
+        if value is None or isinstance(value, list):
+            return value
+        if isinstance(value, str):
+            stripped = value.strip()
+            if not stripped:
+                return []
+            try:
+                decoded = json.loads(stripped)
+            except json.JSONDecodeError:
+                return [item.strip() for item in stripped.split(",") if item.strip()]
+            return decoded
+        return value
 
     ollama_model: str = "qwen3"
     ollama_server_command: str = "python"

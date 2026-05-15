@@ -12,6 +12,12 @@ TITLE_MCP_LOG_JSON=false
 TITLE_MCP_MCP_TRANSPORT=stdio
 TITLE_MCP_MCP_HOST=127.0.0.1
 TITLE_MCP_MCP_PORT=8000
+TITLE_MCP_MCP_PUBLIC_URL=
+TITLE_MCP_INSPECTOR_URL=
+TITLE_MCP_INSPECTOR_BACKEND_URL=
+TITLE_MCP_MCP_DNS_REBINDING_PROTECTION=true
+TITLE_MCP_MCP_ALLOWED_HOSTS=
+TITLE_MCP_MCP_ALLOWED_ORIGINS=
 ```
 
 Common transports:
@@ -19,6 +25,31 @@ Common transports:
 - `stdio`: normal MCP client mode.
 - `streamable-http`: HTTP deployment mode.
 - `sse`: server-sent events mode.
+
+The HTTP discovery response at `/` advertises an absolute MCP endpoint as
+`mcp.url`. By default it is derived from the request host. Set
+`TITLE_MCP_MCP_PUBLIC_URL` when a proxy or deployment URL should be advertised
+instead.
+
+Set `TITLE_MCP_INSPECTOR_URL` to the browser URL for MCP Inspector and
+`TITLE_MCP_INSPECTOR_BACKEND_URL` to the backend URL the Inspector proxy should
+connect to. When both services run through `docker compose`, the backend URL is
+`http://titlemcp:8000/mcp` because that is the service name visible from the
+Inspector container. The compose service passes that URL to Inspector at startup
+so direct visits to `http://localhost:6274/` default to Streamable HTTP instead
+of Inspector's sample STDIO server.
+
+HTTP deployments can opt into explicit DNS-rebinding protection allowlists:
+
+```env
+TITLE_MCP_MCP_ALLOWED_HOSTS=localhost:*,127.0.0.1:*,titlemcp:*
+TITLE_MCP_MCP_ALLOWED_ORIGINS=http://localhost:*,http://127.0.0.1:*
+```
+
+`docker-compose.yml` sets these for local Inspector usage. If you expose the
+Inspector on a different host or port, set `MCP_INSPECTOR_ALLOWED_ORIGINS` for
+the Inspector proxy as well, for example
+`MCP_INSPECTOR_ALLOWED_ORIGINS=http://localhost:6275`.
 
 ## State Backend
 
@@ -41,9 +72,9 @@ Install the Postgres extra:
 .venv/bin/pip install -e "packages/titlemcp[postgres]"
 ```
 
-## Regrid
+## Parcel Provider
 
-Regrid parcel lookup requires smart proxy configuration.
+Parcel lookup requires smart proxy configuration.
 
 ```env
 TITLE_MCP_SMART_PROXY=user:password@proxy.example.com
@@ -59,7 +90,7 @@ Notes:
 - `SMART_PROXY` is also supported as a legacy variable.
 - Set the smart proxy host/auth without a rotating port. TitleMCP appends ports
   from the configured range.
-- The Regrid connector disables `requests` environment proxy discovery so
+- The parcel connector disables `requests` environment proxy discovery so
   `TITLE_MCP_SMART_PROXY` is not mistaken for a generic proxy variable.
 - The connector logs each proxy attempt with credentials redacted.
 

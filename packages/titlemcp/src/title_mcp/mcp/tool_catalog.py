@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 from title_mcp.capabilities import CapabilityType
 from title_mcp.domain.models import (
@@ -30,7 +31,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
     async def ensure_ready() -> None:
         await platform.initialize()
 
-    @mcp.tool()
+    @mcp.tool(
+        title="HOA Contact Search",
+        annotations=_read_only_open_world("HOA Contact Search"),
+    )
     async def hoa_contact_search(
         hoa_name: str,
         state: str | None = None,
@@ -68,12 +72,15 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
         )
         return result.model_dump(mode="json")
 
-    @mcp.tool()
-    async def regrid_parcel_lookup(
+    @mcp.tool(
+        title="Parcel Lookup",
+        annotations=_read_only_open_world("Parcel Lookup"),
+    )
+    async def parcel_lookup(
         address: str,
         requested_by: str = "mcp",
     ) -> dict[str, Any]:
-        """Lookup parcel information by address using Regrid through the smart proxy."""
+        """Lookup parcel information by address."""
         await ensure_ready()
         connector = platform.sources.get(RegridParcelSourceConnector.source_id)
         if connector is None:
@@ -86,9 +93,12 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
                 requested_by=requested_by,
             )
         )
-        return result.model_dump(mode="json")
+        return _public_parcel_lookup_result(result.model_dump(mode="json"))
 
-    @mcp.tool()
+    @mcp.tool(
+        title="PACER Bankruptcy Search",
+        annotations=_read_only_open_world("PACER Bankruptcy Search"),
+    )
     async def pacer_bankruptcy_search(
         last_name: str | None = None,
         ssn: str | None = None,
@@ -140,7 +150,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
         )
         return result.model_dump(mode="json")
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Start Title Workflow",
+        annotations=_state_changing("Start Title Workflow"),
+    )
     async def start_title_workflow(
         kind: WorkflowKind,
         file_number: str,
@@ -180,7 +193,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             "Workflow created. It will pause for human review when required.",
         ).model_dump(mode="json")
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Analyze Document",
+        annotations=_state_changing("Analyze Document"),
+    )
     async def analyze_document(
         file_number: str,
         document_uri: str,
@@ -207,7 +223,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             require_human_review=True,
         )
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Request Public Records Search",
+        annotations=_state_changing("Request Public Records Search"),
+    )
     async def request_public_records_search(
         file_number: str,
         state: str,
@@ -242,7 +261,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             require_human_review=True,
         )
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Request HOA Estoppel",
+        annotations=_state_changing("Request HOA Estoppel"),
+    )
     async def request_hoa_estoppel(
         file_number: str,
         state: str,
@@ -271,7 +293,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             require_human_review=True,
         )
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Request Municipal Lien Search",
+        annotations=_state_changing("Request Municipal Lien Search"),
+    )
     async def request_municipal_lien_search(
         file_number: str,
         state: str,
@@ -294,7 +319,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             require_human_review=True,
         )
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Request Tax Certificate",
+        annotations=_state_changing("Request Tax Certificate"),
+    )
     async def request_tax_certificate(
         file_number: str,
         state: str,
@@ -315,7 +343,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             require_human_review=True,
         )
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Track Release",
+        annotations=_state_changing("Track Release"),
+    )
     async def track_release(
         file_number: str,
         state: str,
@@ -342,7 +373,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             require_human_review=True,
         )
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Parse Payoff Letter",
+        annotations=_state_changing("Parse Payoff Letter"),
+    )
     async def parse_payoff_letter(
         file_number: str,
         document_uri: str,
@@ -364,7 +398,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             require_human_review=True,
         )
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Generate Checklist Packet",
+        annotations=_state_changing("Generate Checklist Packet"),
+    )
     async def generate_checklist_packet(
         file_number: str,
         state: str,
@@ -385,7 +422,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             require_human_review=True,
         )
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Get Workflow Status",
+        annotations=_read_only_local("Get Workflow Status"),
+    )
     async def get_workflow_status(workflow_id: str) -> dict[str, Any]:
         """Return full workflow state, tasks, review status, and audit events."""
         await ensure_ready()
@@ -395,7 +435,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             "Workflow status loaded.",
         ).model_dump(mode="json")
 
-    @mcp.tool()
+    @mcp.tool(
+        title="List Workflows",
+        annotations=_read_only_local("List Workflows"),
+    )
     async def list_workflows(
         file_number: str | None = None,
         status: WorkflowStatus | None = None,
@@ -414,7 +457,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             workflows=[platform.workflows.summarize(record) for record in records]
         ).model_dump(mode="json")
 
-    @mcp.tool()
+    @mcp.tool(
+        title="Submit Human Review",
+        annotations=_state_changing("Submit Human Review"),
+    )
     async def submit_human_review(
         workflow_id: str,
         decision: ReviewDecision,
@@ -434,7 +480,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             "Human review recorded.",
         ).model_dump(mode="json")
 
-    @mcp.tool()
+    @mcp.tool(
+        title="List Title Capabilities",
+        annotations=_read_only_local("List Title Capabilities"),
+    )
     async def list_title_capabilities(
         country: str | None = None,
         state: str | None = None,
@@ -478,7 +527,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             ]
         }
 
-    @mcp.tool()
+    @mcp.tool(
+        title="List Source Connectors",
+        annotations=_read_only_local("List Source Connectors"),
+    )
     async def list_source_connectors(
         country: str | None = None,
         state: str | None = None,
@@ -516,7 +568,10 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
             ]
         }
 
-    @mcp.tool()
+    @mcp.tool(
+        title="List Vendor Connectors",
+        annotations=_read_only_local("List Vendor Connectors"),
+    )
     async def list_vendor_connectors(
         country: str | None = None,
         state: str | None = None,
@@ -553,6 +608,73 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
                 connector.descriptor.model_dump(mode="json") for connector in connectors
             ]
         }
+
+
+def _read_only_open_world(title: str) -> ToolAnnotations:
+    return ToolAnnotations(
+        title=title,
+        readOnlyHint=True,
+        destructiveHint=False,
+        idempotentHint=True,
+        openWorldHint=True,
+    )
+
+
+def _public_parcel_lookup_result(result: dict[str, Any]) -> dict[str, Any]:
+    result = dict(result)
+    result["source_id"] = "parcel-lookup"
+    result["citations"] = [
+        {**citation, "label": "Parcel Lookup", "uri": None}
+        for citation in result.get("citations", [])
+        if isinstance(citation, dict)
+    ]
+    result["warnings"] = [
+        _hide_parcel_provider_name(warning) for warning in result.get("warnings", [])
+    ]
+
+    public_records: list[dict[str, Any]] = []
+    for record in result.get("records", []):
+        if not isinstance(record, dict):
+            continue
+        public_record = dict(record)
+        source = public_record.get("source")
+        if isinstance(source, dict):
+            public_record["source"] = {
+                **source,
+                "source_id": "parcel-lookup",
+                "source_name": "Parcel Lookup",
+                "source_url": None,
+            }
+        public_record.pop("source_specific", None)
+        public_records.append(public_record)
+    result["records"] = public_records
+    return result
+
+
+def _hide_parcel_provider_name(value: Any) -> str:
+    return str(value).replace("Regrid parcel lookup", "Parcel lookup").replace(
+        "Regrid Parcel Search", "Parcel Lookup"
+    )
+
+
+def _read_only_local(title: str) -> ToolAnnotations:
+    return ToolAnnotations(
+        title=title,
+        readOnlyHint=True,
+        destructiveHint=False,
+        idempotentHint=True,
+        openWorldHint=False,
+    )
+
+
+def _state_changing(title: str) -> ToolAnnotations:
+    return ToolAnnotations(
+        title=title,
+        readOnlyHint=False,
+        destructiveHint=False,
+        idempotentHint=False,
+        openWorldHint=False,
+    )
 
 
 def _address(

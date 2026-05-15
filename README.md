@@ -56,6 +56,35 @@ Run the MCP server from the source checkout:
 PYTHONPATH=packages/titlemcp/src .venv/bin/python -m title_mcp.mcp.server
 ```
 
+Run the Dockerized server and MCP Inspector:
+
+```bash
+docker compose up --build
+```
+
+Open the server catalog at `http://localhost:8000/` or the MCP Inspector at
+`http://localhost:6274/`. The catalog response includes `mcp.url` and an
+`inspector.url` with the backend prefilled for Docker. The Dockerized Inspector
+also defaults to:
+
+```text
+Transport: Streamable HTTP
+URL: http://titlemcp:8000/mcp
+```
+
+The Inspector proxy is bound to localhost by default. It requires a session token;
+read the token from `docker compose logs mcp-inspector`. If you use the prefilled
+URL printed by the container, replace `0.0.0.0` with `localhost` in your browser.
+If the Inspector returns `Forbidden - invalid origin`, open it through
+`http://localhost:6274/` or set `MCP_INSPECTOR_ALLOWED_ORIGINS` to include the
+browser origin you are using.
+
+The Inspector Resources tab includes `titlemcp://server/info`,
+`titlemcp://server/runtime`, `titlemcp://tools/catalog`, and
+`titlemcp://workflows/kinds`. The Prompts tab includes starter templates for
+workflow intake, parcel lookup review, HOA contact review, and sample prompts
+derived from the Ollama examples.
+
 Build the core package:
 
 ```bash

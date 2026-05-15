@@ -35,8 +35,12 @@ that the model chooses it. The tool returns
 `title_mcp.property_assessment_record` and preserves the raw Franklin Auditor
 payload under `source_specific.franklin_auditor`.
 
-This sample uses a wrapper server so the jurisdiction package can be loaded from
-the source checkout.
+Install the Franklin jurisdiction package in editable mode so the standard
+server can load its `title_mcp.toolsets` entry point:
+
+```bash
+.venv/bin/pip install -e packages/jurisdictions/us/oh/franklin/recorder
+```
 
 ## HOA Contact Search
 
