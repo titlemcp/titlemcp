@@ -4,8 +4,8 @@ TitleMCP is a toolkit for title companies that want to expand their MCP server
 tool surface with practical title and real estate operations capabilities. It is
 designed to expose reusable, structured tools for local LLMs, hosted agents, and
 workflow systems: parcel lookups, county auditor searches, PACER bankruptcy
-checks, public-records requests, tax certificates, HOA estoppels, release
-tracking, payoff parsing, and other title workflows.
+checks, HOA contact discovery, public-records requests, tax certificates, HOA
+estoppels, release tracking, payoff parsing, and other title workflows.
 
 The project is intentionally tool-first. Each MCP tool should return predictable
 domain records, preserve source-specific evidence, and leave legal or

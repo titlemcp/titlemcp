@@ -24,6 +24,7 @@ Examples in this codebase:
 
 - Regrid parcel lookup returns `title_mcp.parcel_record`.
 - PACER bankruptcy search returns `title_mcp.pacer_bankruptcy_search`.
+- HOA contact search returns `title_mcp.hoa_contact_search`.
 - Franklin County Auditor returns `title_mcp.property_assessment_record`.
 
 Rules of thumb:

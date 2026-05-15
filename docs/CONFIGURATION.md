@@ -76,6 +76,18 @@ TITLE_MCP_PACER_TIMEOUT_SECONDS=30
 Use QA credentials and `TITLE_MCP_PACER_QA_MODE=true` for non-billable testing.
 Production PACER queries may be billable.
 
+## SerpAPI
+
+HOA contact lookup uses SerpAPI's Google Search API.
+
+```env
+TITLE_MCP_SERPAPI_API_KEY=
+TITLE_MCP_SERPAPI_TIMEOUT_SECONDS=30
+```
+
+Keep API keys in `.env` or deployment secrets, never in sample code or committed
+configuration.
+
 ## Ollama
 
 ```env

@@ -15,6 +15,7 @@ from title_mcp.domain.models import (
 from title_mcp.domain.responses import WorkflowListResponse
 from title_mcp.platform import TitleMCPPlatform
 from title_mcp.sources import (
+    HoaContactSerpApiSourceConnector,
     PacerBankruptcySourceConnector,
     RegridParcelSourceConnector,
     SourceKind,
@@ -28,6 +29,44 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
 
     async def ensure_ready() -> None:
         await platform.initialize()
+
+    @mcp.tool()
+    async def hoa_contact_search(
+        hoa_name: str,
+        state: str | None = None,
+        max_results: int = 10,
+        requested_by: str = "mcp",
+    ) -> dict[str, Any]:
+        """
+        Search for HOA contact information by association name and optional state.
+
+        Returns SerpAPI Google search candidates plus the fetched page text of
+        the top result under records[0].first_result_page.text. Use that page
+        text as the primary source to extract structured contact details
+        (HOA name, management company, mailing address, phone numbers, email
+        addresses, website). The candidate-level fields are best-effort
+        snippet extractions and may miss values present on the live page.
+        """
+        await ensure_ready()
+        connector = platform.sources.get(HoaContactSerpApiSourceConnector.source_id)
+        if connector is None:
+            connector = HoaContactSerpApiSourceConnector(settings=platform.settings)
+
+        criteria: dict[str, Any] = {
+            "hoa_name": hoa_name,
+            "state": state,
+            "max_results": max_results,
+        }
+        criteria = {key: value for key, value in criteria.items() if value is not None}
+        result = await connector.query(
+            SourceQuery(
+                jurisdiction=Jurisdiction(country="US"),
+                kind=SourceKind.HOA,
+                criteria=criteria,
+                requested_by=requested_by,
+            )
+        )
+        return result.model_dump(mode="json")
 
     @mcp.tool()
     async def regrid_parcel_lookup(

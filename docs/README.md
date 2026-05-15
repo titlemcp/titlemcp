@@ -12,8 +12,8 @@ Start here if you are new to the project:
 2. [Tool Reference](TOOLS.md): what tools exist today and what each returns.
 3. [Configuration](CONFIGURATION.md): environment variables for PACER, state
    backends, logging, extension loading, and optional source connectors.
-4. [Samples](SAMPLES.md): Ollama examples for Franklin County Auditor and
-   PACER.
+4. [Samples](SAMPLES.md): Ollama examples for Franklin County Auditor, HOA
+   contact search, and PACER.
 5. [Extending TitleMCP](EXTENDING.md): where to add adapters, source connectors,
    vendor connectors, domain models, and optional toolsets.
 
@@ -23,6 +23,7 @@ TitleMCP is built around MCP tools that return predictable domain records:
 
 - `title_mcp.property_assessment_record` for county auditor and assessment
   sources.
+- `title_mcp.hoa_contact_search` for HOA contact discovery.
 - `title_mcp.parcel_record` for parcel/property data providers.
 - `title_mcp.pacer_bankruptcy_search` for PACER bankruptcy party searches.
 - Workflow response models for estoppels, municipal liens, tax certificates,

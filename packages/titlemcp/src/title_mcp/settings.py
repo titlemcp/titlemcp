@@ -45,6 +45,9 @@ class TitleMCPSettings(BaseSettings):
     regrid_timeout_seconds: float = Field(default=10.0, ge=1.0, le=120.0)
     regrid_cookie_timeout_seconds: float = Field(default=5.0, ge=1.0, le=120.0)
 
+    serpapi_api_key: str | None = None
+    serpapi_timeout_seconds: float = Field(default=30.0, ge=1.0, le=120.0)
+
     background_worker_concurrency: int = Field(default=4, ge=1, le=64)
     default_human_review_required: bool = True
     jurisdiction_config_path: str | None = None

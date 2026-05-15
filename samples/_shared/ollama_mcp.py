@@ -94,12 +94,21 @@ def summarize_source_result(text: str) -> str:
                 parts.append(f"{key}={first_record[key]!r}")
         if isinstance(first_record.get("query"), dict):
             query = first_record["query"]
-            if query.get("address"):
-                parts.append(f"address={query['address']!r}")
+            for key in ("hoa_name", "state", "address", "business_name", "last_name"):
+                if query.get(key):
+                    parts.append(f"{key}={query[key]!r}")
         if isinstance(first_record.get("search"), dict):
             search_query = first_record["search"].get("query")
             if isinstance(search_query, dict) and search_query.get("address"):
                 parts.append(f"address={search_query['address']!r}")
+        if isinstance(first_record.get("best_match"), dict):
+            best_match = first_record["best_match"]
+            if best_match.get("name"):
+                parts.append(f"best_match={best_match['name']!r}")
+        for key in ("email_addresses", "phone_numbers", "addresses", "websites"):
+            values = first_record.get(key)
+            if isinstance(values, list):
+                parts.append(f"{key}={len(values)}")
         if isinstance(first_record.get("summary"), dict):
             summary = first_record["summary"]
             if summary.get("title_officer_review_required") is not None:

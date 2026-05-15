@@ -38,6 +38,22 @@ payload under `source_specific.franklin_auditor`.
 This sample uses a wrapper server so the jurisdiction package can be loaded from
 the source checkout.
 
+## HOA Contact Search
+
+Search by HOA name and state:
+
+```bash
+python samples/hoa_serpapi_ollama/ollama_client.py \
+  --hoa-name "Tartan Fields Homeowners Association" \
+  --state Ohio
+```
+
+If `TITLE_MCP_SERPAPI_API_KEY` is missing, the tool should still be triggered
+and return `requires_configuration`.
+
+The tool returns `title_mcp.hoa_contact_search` with contact candidates,
+websites, addresses, phone numbers, and email addresses when available.
+
 ## PACER Bankruptcy Search
 
 Business search:

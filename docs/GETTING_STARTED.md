@@ -8,6 +8,7 @@ This guide assumes you are running TitleMCP from a local source checkout.
 - A virtual environment
 - Optional: Ollama running locally for the sample clients
 - Optional: PACER credentials for live PACER bankruptcy searches
+- Optional: a SerpAPI key for live HOA contact searches
 
 ## 1. Create The Environment
 
@@ -68,6 +69,14 @@ Franklin County Auditor parcel search:
 python samples/franklin_county_ollama/ollama_client.py \
   --scenario parcel \
   --parcel-id "030-000526-00"
+```
+
+HOA contact search:
+
+```bash
+python samples/hoa_serpapi_ollama/ollama_client.py \
+  --hoa-name "Tartan Fields Homeowners Association" \
+  --state Ohio
 ```
 
 PACER business bankruptcy search:

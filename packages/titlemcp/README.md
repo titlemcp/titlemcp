@@ -168,6 +168,23 @@ titlemcp-ollama \
 
 Set `TITLE_MCP_OLLAMA_MODEL` to change the model.
 
+## HOA Contact Search
+
+The core MCP server includes `hoa_contact_search`, which searches Google through SerpAPI for HOA
+contact candidates by association name and optional state. The tool returns
+`title_mcp.hoa_contact_search` records with candidate websites, addresses, phone numbers, and email
+addresses when those fields are available from search result snippets or place panels.
+The connector first identifies a likely official HOA domain, then performs a second
+`site:<domain>` search for contact, management, assessment, payment, and board pages.
+
+```env
+TITLE_MCP_SERPAPI_API_KEY=
+TITLE_MCP_SERPAPI_TIMEOUT_SECONDS=30
+```
+
+Keep SerpAPI credentials in `.env` or deployment secrets. Do not hardcode keys in client samples or
+application code.
+
 ## PACER Bankruptcy Search
 
 The core MCP server includes `pacer_bankruptcy_search`, which uses the PACER Case Locator

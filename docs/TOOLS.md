@@ -5,6 +5,30 @@ first-party Franklin County package.
 
 ## Source Lookup Tools
 
+### `hoa_contact_search`
+
+Searches Google through SerpAPI for HOA contact information by association name
+and optional state. The connector first looks for the likely official HOA
+domain, then runs a second contact search restricted with `site:<domain>` when a
+domain is found.
+
+Input:
+
+```json
+{
+  "hoa_name": "Example Woods HOA",
+  "state": "Ohio"
+}
+```
+
+Returns a canonical `title_mcp.hoa_contact_search` record with candidate HOA
+contacts, websites, addresses, phone numbers, and email addresses when available
+from the search result snippets or place panels. Raw candidate evidence is
+preserved under each candidate and SerpAPI metadata is preserved under
+`source_specific.serpapi`.
+
+Configuration: `TITLE_MCP_SERPAPI_API_KEY`.
+
 ### `regrid_parcel_lookup`
 
 Looks up parcel data by address using Regrid through the configured smart proxy.
