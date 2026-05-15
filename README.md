@@ -1,4 +1,4 @@
-# Razi Title MCP Monorepo
+# Title MCP Monorepo
 
 TitleMCP is a toolkit for title companies that want to expand their MCP server
 tool surface with practical title and real estate operations capabilities. It is
