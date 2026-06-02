@@ -16,6 +16,9 @@ Start here if you are new to the project:
    contact search, and PACER.
 5. [Extending TitleMCP](EXTENDING.md): where to add adapters, source connectors,
    vendor connectors, domain models, and optional toolsets.
+6. [Agent & contributor guide](../AGENTS.md): the conventions every agent and
+   contributor must follow — Pydantic principles and the tool/test/sample
+   contract for new endpoints.
 
 ## What TitleMCP Is
 
