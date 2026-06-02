@@ -140,3 +140,54 @@ Regenerate it from the core package:
 - Architecture: `packages/titlemcp/docs/ARCHITECTURE.md`
 - Jurisdiction packages: `packages/titlemcp/docs/JURISDICTION_PACKAGES.md`
 - Publishing: `packages/titlemcp/docs/PUBLISHING.md`
+
+## Contributing
+
+Contributions are welcome — new jurisdiction packages, source and vendor
+connectors, documentation, and fixes. A few conventions keep the project
+consistent.
+
+**Read [AGENTS.md](AGENTS.md) first.** It is the source of truth for the repo's
+Pydantic v2 conventions, the tool/connector/test/sample contract for new
+endpoints, the review-first rule, and the definition of done. Match the existing
+patterns rather than introducing new ones.
+
+### Workflow
+
+The project uses the standard GitHub fork-and-pull-request flow:
+
+1. **Fork** the repository and clone your fork.
+2. **Branch** off `main` (e.g. `feat/...`, `fix/...`, `docs/...`).
+3. **Make your change**, keeping each pull request focused on one thing.
+4. **Add tests and a runnable sample** for any new tool or connector — code-only
+   changes are not considered complete without them (see AGENTS.md §5–6).
+5. **Run lint and the test suite** locally (below) and confirm they pass.
+6. **Open a pull request** against `main` with a clear description of what
+   changed and why.
+
+Contributors without write access should fork; maintainers can push a branch
+directly.
+
+### Before you open a pull request
+
+```bash
+# Lint (Ruff: line length 100, target py312, rules E,F,I,UP,B)
+.venv/bin/ruff check .
+
+# Core test suite
+PYTHONPATH=packages/titlemcp/src .venv/bin/python -m unittest discover \
+  -s packages/titlemcp/tests -v
+```
+
+For jurisdiction packages, also run that package's own test suite and the audit
+script described in the [Jurisdiction Packages](#jurisdiction-packages) section
+above.
+
+### What reviewers look for
+
+- Everything at a boundary is a Pydantic v2 model — never a loose `dict`.
+- Connectors return `REQUIRES_CONFIGURATION` or `FAILED` instead of raising, and
+  default `requires_human_review=True` for title-impacting facts.
+- Tools surface facts; they never make legal, underwriting, or recording
+  decisions. The project stays **review-first**.
+- Secrets are never logged, and sensitive identifiers are redacted.
