@@ -16,6 +16,11 @@ workflow automation.
 
 This repository is organized as a Python package monorepo for TitleMCP.
 
+> **Working with an AI agent or contributing code?** Read [AGENTS.md](AGENTS.md)
+> first. It is the source of truth for Pydantic conventions, the tool/test/sample
+> contract for new endpoints, and the review-first rule. (`CLAUDE.md` and
+> `.github/copilot-instructions.md` point here too.)
+
 ## Start Here
 
 New to the project? Start with the beginner docs:
@@ -26,6 +31,7 @@ New to the project? Start with the beginner docs:
 - [Configuration](docs/CONFIGURATION.md)
 - [Samples](docs/SAMPLES.md)
 - [Extending TitleMCP](docs/EXTENDING.md)
+- [Agent & contributor guide](AGENTS.md)
 
 ```text
 packages/
