@@ -57,14 +57,14 @@ class RegridTests(unittest.IsolatedAsyncioTestCase):
         )
 
     def test_search_query_variants_try_comma_free_address_first(self) -> None:
-        variants = _search_query_variants("1150 Glenn Ave, Columbus, OH")
+        variants = _search_query_variants("100 Example Ave, Columbus, OH")
 
         self.assertEqual(
             variants,
             [
-                "1150 Glenn Ave Columbus OH",
-                "1150 Glenn Ave",
-                "1150 Glenn Ave, Columbus, OH",
+                "100 Example Ave Columbus OH",
+                "100 Example Ave",
+                "100 Example Ave, Columbus, OH",
             ],
         )
 
@@ -77,12 +77,12 @@ class RegridTests(unittest.IsolatedAsyncioTestCase):
             session=session,
         )
 
-        record = service.lookup("1150 Glenn Ave, Columbus, OH")
+        record = service.lookup("100 Example Ave, Columbus, OH")
 
         self.assertIsNotNone(record)
         assert record is not None
-        self.assertEqual(record.source["search_query_used"], "1150 Glenn Ave Columbus OH")
-        self.assertEqual(session.search_queries, ["1150 Glenn Ave Columbus OH"])
+        self.assertEqual(record.source["search_query_used"], "100 Example Ave Columbus OH")
+        self.assertEqual(session.search_queries, ["100 Example Ave Columbus OH"])
 
     def test_service_lookup_merges_search_result_with_detail(self) -> None:
         service = RegridParcelQueryService(
@@ -92,12 +92,12 @@ class RegridTests(unittest.IsolatedAsyncioTestCase):
             session=_FakeRegridSession(),
         )
 
-        record = service.lookup("1150 Glenn Ave")
+        record = service.lookup("100 Example Ave")
 
         self.assertIsNotNone(record)
         assert record is not None
         self.assertEqual(record.path, "/us/oh/franklin/example")
-        self.assertEqual(record.fields["parcelnumb"], "03000052600")
+        self.assertEqual(record.fields["parcelnumb"], "01000012300")
         self.assertEqual(record.geometry["type"], "Polygon")
 
     async def test_source_requires_smart_proxy_configuration(self) -> None:
@@ -116,7 +116,7 @@ class RegridTests(unittest.IsolatedAsyncioTestCase):
             SourceQuery(
                 jurisdiction=Jurisdiction(country="US"),
                 kind=SourceKind.VENDOR_API,
-                criteria={"address": "1150 Glenn Ave"},
+                criteria={"address": "100 Example Ave"},
             )
         )
 
@@ -130,20 +130,20 @@ class RegridTests(unittest.IsolatedAsyncioTestCase):
             SourceQuery(
                 jurisdiction=Jurisdiction(country="US"),
                 kind=SourceKind.VENDOR_API,
-                criteria={"address": "1150 Glenn Ave"},
+                criteria={"address": "100 Example Ave"},
             )
         )
 
         self.assertEqual(result.status, SourceResultStatus.SUCCEEDED)
         self.assertEqual(result.records[0]["schema_name"], "title_mcp.parcel_record")
         self.assertEqual(result.records[0]["record_type"], "parcel")
-        self.assertEqual(result.records[0]["identifiers"]["parcel_number"], "03000052600")
-        self.assertEqual(result.records[0]["site"]["address_display"], "1150 GLENN AVE")
+        self.assertEqual(result.records[0]["identifiers"]["parcel_number"], "01000012300")
+        self.assertEqual(result.records[0]["site"]["address_display"], "100 EXAMPLE AVE")
         self.assertEqual(result.records[0]["jurisdiction"]["county"], "Franklin")
         self.assertEqual(result.records[0]["land_use"]["use_code"], "510")
         self.assertEqual(
             result.records[0]["source_specific"]["regrid"]["fields"]["parcelnumb"],
-            "03000052600",
+            "01000012300",
         )
         self.assertTrue(result.metadata["smart_proxy_enabled"])
 
@@ -181,7 +181,7 @@ class _FakeRegridSession:
             return _FakeRegridResponse(
                 [
                     {
-                        "label": "1150 Glenn Ave",
+                        "label": "100 Example Ave",
                         "path": "/us/oh/franklin/example",
                     }
                 ]
@@ -189,8 +189,8 @@ class _FakeRegridSession:
         return _FakeRegridResponse(
             {
                 "fields": {
-                    "parcelnumb": "03000052600",
-                    "address": "1150 GLENN AVE",
+                    "parcelnumb": "01000012300",
+                    "address": "100 EXAMPLE AVE",
                     "county": "Franklin County",
                     "state2": "OH",
                     "usecode": "510",
@@ -229,12 +229,12 @@ class _FakeRegridService:
                 "smart_proxy_enabled": True,
             },
             query={"address": address},
-            label="1150 Glenn Ave",
+            label="100 Example Ave",
             path="/us/oh/franklin/example",
             fields={
-                "parcelnumb": "03000052600",
-                "parcelnumb_no_formatting": "03000052600",
-                "address": "1150 GLENN AVE",
+                "parcelnumb": "01000012300",
+                "parcelnumb_no_formatting": "01000012300",
+                "address": "100 EXAMPLE AVE",
                 "scity": "GRANDVIEW HEIGHTS",
                 "county": "Franklin County",
                 "state2": "OH",

@@ -349,7 +349,7 @@ def register_inspector_support(
         description="Sample natural-language parcel lookup prompt based on the Ollama sample.",
     )
     def sample_parcel_lookup(
-        address: str = "1150 Glenn Ave, Columbus, OH",
+        address: str = "100 Example Ave, Columbus, OH",
         summarize: bool = False,
     ) -> str:
         prompt = (
@@ -421,7 +421,7 @@ def register_inspector_support(
     )
     def sample_franklin_county_auditor_search(
         scenario: str = "parcel",
-        parcel_id: str = "030-000526-00",
+        parcel_id: str = "010-000123-00",
         address: str = "373 S HIGH ST, COLUMBUS, OH",
         owner_name: str = "CITY OF COLUMBUS",
         summarize: bool = False,

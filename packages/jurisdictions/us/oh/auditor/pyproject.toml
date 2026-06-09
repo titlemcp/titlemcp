@@ -1,0 +1,38 @@
+[project]
+name = "titlemcp-us-oh-auditor"
+version = "0.1.0"
+description = "Ohio county auditor property-search tools for TitleMCP (Tyler iasWorld counties)."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "titlemcp>=0.1.0",
+    "titlemcp-platform-iasworld>=0.1.0",
+]
+
+[project.entry-points."title_mcp.adapters"]
+us_oh_auditor = "titlemcp_us_oh_auditor.adapters:OhioCountyAuditorAdapter"
+
+[project.entry-points."title_mcp.plugins"]
+us_oh_auditor = "titlemcp_us_oh_auditor.plugin:OhioAuditorPlugin"
+
+[project.entry-points."title_mcp.toolsets"]
+us_oh_auditor = "titlemcp_us_oh_auditor.toolsets:OhioAuditorToolset"
+
+[project.entry-points."title_mcp.capabilities"]
+us_oh_auditor = "titlemcp_us_oh_auditor.manifest:capability_manifest"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/pyproject.toml",
+    "/titlemcp-capability.toml",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/titlemcp_us_oh_auditor"]

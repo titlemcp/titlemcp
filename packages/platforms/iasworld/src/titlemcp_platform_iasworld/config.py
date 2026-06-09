@@ -1,0 +1,152 @@
+from __future__ import annotations
+
+import re
+from enum import StrEnum
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+from title_mcp.adapters.base import JurisdictionScope
+from title_mcp.domain.models import Jurisdiction
+
+
+class AuditorSearchMode(StrEnum):
+    ADDRESS = "address"
+    OWNER = "owner"
+    PARCEL_ID = "parid"
+
+
+class DetailProfile(StrEnum):
+    """Which iasWorld datalet detail layout a county uses.
+
+    Both are iasWorld, but the datalet templates differ in section names and
+    field labels:
+
+    - ``CLASSIC`` (Franklin): a combined ``Owner`` section plus ``Most Recent
+      Transfer`` / ``<year> Tax Status`` / ``<year> Auditor`` / ``Annual Taxes``.
+    - ``PUBLIC_ACCESS`` (Clermont): split ``Parcel`` / ``Owner`` / ``Tax Mailing
+      Name and Address`` / ``Legal`` / ``Taxes Charged`` sections with numbered
+      labels (``Owner 1``, ``Address 1``, ``Legal Desc 1``).
+    """
+
+    CLASSIC = "classic"
+    PUBLIC_ACCESS = "public_access"
+
+
+def _normalize_mode(value: str | AuditorSearchMode) -> AuditorSearchMode:
+    if isinstance(value, AuditorSearchMode):
+        return value
+    normalized = str(value).lower().strip()
+    aliases = {
+        "parcel": AuditorSearchMode.PARCEL_ID,
+        "parcel_id": AuditorSearchMode.PARCEL_ID,
+        "parid": AuditorSearchMode.PARCEL_ID,
+        "owner": AuditorSearchMode.OWNER,
+        "address": AuditorSearchMode.ADDRESS,
+    }
+    try:
+        return aliases[normalized]
+    except KeyError as exc:
+        raise ValueError("mode must be one of address, owner, or parid") from exc
+
+
+def resolve_auditor_search_mode(
+    mode: str | AuditorSearchMode | None = None,
+    *,
+    parcel_id: str | None = None,
+    owner_name: str | None = None,
+    address: str | None = None,
+    address_number: str | int | None = None,
+    street_name: str | None = None,
+) -> AuditorSearchMode:
+    if mode:
+        try:
+            return _normalize_mode(mode)
+        except ValueError:
+            pass
+    if parcel_id:
+        return AuditorSearchMode.PARCEL_ID
+    if owner_name:
+        return AuditorSearchMode.OWNER
+    if address or address_number or street_name:
+        return AuditorSearchMode.ADDRESS
+    return AuditorSearchMode.ADDRESS
+
+
+class IasWorldSiteConfig(BaseModel):
+    """Per-county configuration for a Tyler iasWorld auditor/property site.
+
+    The iasWorld scraping behavior (search forms, datalet parsing, canonical
+    mapping) is identical across counties. Only these knobs differ:
+
+    - ``base_url``: the parent of ``search/commonsearch.aspx`` and
+      ``Datalets/Datalet.aspx`` (e.g. ``https://property.<county>.com/_web/`` or a
+      bare domain like ``https://www.mcrealestate.org/``).
+    - ``district_code``: the iasWorld ``jur`` parameter (Franklin ``025``,
+      Montgomery/Stark ``000``).
+    - ``mode_map``: overrides the ``mode=`` URL value per search mode (Summit and
+      Lake serve a unified ``realprop`` search instead of ``address``).
+    """
+
+    model_config = ConfigDict(str_strip_whitespace=True, frozen=True)
+
+    source_id: str
+    county: str
+    state: str
+    country: str = "US"
+    name: str
+    base_url: str
+    district_code: str = "000"
+    owner: str | None = None
+    priority: int = Field(default=230, ge=0)
+    mode_map: dict[AuditorSearchMode, str] = Field(default_factory=dict)
+    # Most Ohio iasWorld counties use purely numeric parcel IDs (Franklin
+    # "01000012300"); set False for counties with alphanumeric parcels such as
+    # Clermont ("100200C003D", "100200.034C") so letters/dots are preserved.
+    numeric_parcel_ids: bool = True
+    # Which datalet detail layout the county serves (see DetailProfile).
+    detail_profile: DetailProfile = DetailProfile.CLASSIC
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("country", "state", mode="before")
+    @classmethod
+    def _upper(cls, value: str) -> str:
+        return str(value).strip().upper()
+
+    @field_validator("base_url", mode="before")
+    @classmethod
+    def _ensure_trailing_slash(cls, value: str) -> str:
+        text = str(value).strip()
+        return text if text.endswith("/") else f"{text}/"
+
+    def url_mode(self, mode: AuditorSearchMode) -> str:
+        return self.mode_map.get(mode, mode.value)
+
+    def search_url(self, mode: AuditorSearchMode | str) -> str:
+        mode_value = self.url_mode(_normalize_mode(mode))
+        return f"{self.base_url}search/commonsearch.aspx?mode={mode_value}"
+
+    @property
+    def official_search_pages(self) -> dict[str, str]:
+        return {mode.value: self.search_url(mode) for mode in AuditorSearchMode}
+
+    @property
+    def slug(self) -> str:
+        slug = re.sub(r"[^a-z0-9]+", "_", self.county.lower()).strip("_")
+        return slug or "county"
+
+    @property
+    def tool_name(self) -> str:
+        return f"{self.slug}_auditor_search"
+
+    @property
+    def tool_title(self) -> str:
+        return f"{self.county} Auditor Search"
+
+    @property
+    def jurisdiction(self) -> Jurisdiction:
+        return Jurisdiction(country=self.country, state=self.state, county=self.county)
+
+    @property
+    def jurisdiction_scope(self) -> JurisdictionScope:
+        return JurisdictionScope(country=self.country, state=self.state, county=self.county)

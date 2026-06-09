@@ -47,7 +47,9 @@ for title-impacting decisions.
 
 ```text
 packages/titlemcp/                         core Python package
-packages/jurisdictions/us/oh/franklin/     Franklin County package
+packages/platforms/iasworld/               shared Tyler iasWorld auditor scraper
+packages/jurisdictions/us/oh/franklin/     Franklin County recorder package
+packages/jurisdictions/us/oh/auditor/      Ohio county auditor package (iasWorld)
 samples/                                   runnable Ollama examples
 docs/                                      beginner-facing documentation
 packages/titlemcp/docs/                    deeper package architecture docs
@@ -61,4 +63,5 @@ The beginner docs in this folder point to deeper reference files when needed:
 - [Core architecture](../packages/titlemcp/docs/ARCHITECTURE.md)
 - [Jurisdiction packages](../packages/titlemcp/docs/JURISDICTION_PACKAGES.md)
 - [Jurisdiction structure](../packages/titlemcp/docs/JURISDICTION_STRUCTURE.md)
+- [Ohio auditor expansion roadmap](OHIO_AUDITOR_EXPANSION.md)
 - [Publishing](../packages/titlemcp/docs/PUBLISHING.md)

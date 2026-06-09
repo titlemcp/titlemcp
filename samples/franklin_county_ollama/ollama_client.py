@@ -16,16 +16,12 @@ FRANKLIN_TOOL_NAME = "franklin_county_auditor_search"
 
 
 def local_src_paths(root: Path) -> list[Path]:
+    # The Franklin auditor tool now ships in the shared iasWorld platform package
+    # plus the multi-county titlemcp-us-oh-auditor package.
     return [
         root / "packages" / "titlemcp" / "src",
-        root
-        / "packages"
-        / "jurisdictions"
-        / "us"
-        / "oh"
-        / "franklin"
-        / "recorder"
-        / "src",
+        root / "packages" / "platforms" / "iasworld" / "src",
+        root / "packages" / "jurisdictions" / "us" / "oh" / "auditor" / "src",
     ]
 
 
@@ -89,17 +85,17 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--parcel-id",
-        default="030-000526-00",
+        default="010-000123-00",
         help="Franklin County parcel ID for the parcel scenario",
     )
     parser.add_argument(
         "--address",
-        default="1150 GLENN AVE",
+        default="100 EXAMPLE AVE",
         help="Franklin County property address for the address scenario",
     )
     parser.add_argument(
         "--owner-name",
-        default="ZWINK ROBERT V",
+        default="DOE JANE A",
         help="Owner name for the owner scenario",
     )
     parser.add_argument("--prompt", default=None, help="Override the default prompt")

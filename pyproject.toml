@@ -10,6 +10,7 @@ src = [
     "packages/titlemcp/src",
     "packages/titlemcp/tests",
     "packages/titlemcp/examples",
+    "packages/platforms/iasworld/src",
     "packages/jurisdictions",
     "scripts",
 ]

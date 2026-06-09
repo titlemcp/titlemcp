@@ -37,7 +37,7 @@ Input:
 
 ```json
 {
-  "address": "1150 Glenn Ave, Columbus, OH"
+  "address": "100 Example Ave, Columbus, OH"
 }
 ```
 
@@ -92,21 +92,23 @@ Production PACER searches may be billable. Use QA credentials and
 
 ### `franklin_county_auditor_search`
 
-Provided by the Franklin County Ohio jurisdiction package. Searches Franklin
-County Auditor property records by parcel ID, owner, or address.
+Provided by the Ohio auditor jurisdiction package (`titlemcp-us-oh-auditor`),
+built on the shared `titlemcp-platform-iasworld` scraper. Searches Franklin
+County Auditor property records by parcel ID, owner, or address. Other Ohio
+iasWorld counties expose the same tool as `<county>_auditor_search`.
 
 Parcel input:
 
 ```json
 {
   "mode": "parid",
-  "parcel_id": "030-000526-00",
+  "parcel_id": "010-000123-00",
   "include_details": true
 }
 ```
 
-Returns canonical `title_mcp.property_assessment_record` records with raw
-Franklin Auditor detail preserved under `source_specific.franklin_auditor`.
+Returns canonical `title_mcp.property_assessment_record` records with the raw
+auditor detail preserved under `source_specific.iasworld_auditor`.
 
 ## Workflow Tools
 

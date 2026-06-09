@@ -35,12 +35,12 @@ python samples/franklin_county_ollama/ollama_client.py --model qwen3
 ```
 
 The default prompt asks conversationally for the Franklin County auditor record
-for parcel `030-000526-00`. To search a different parcel:
+for parcel `010-000123-00`. To search a different parcel:
 
 ```bash
 python samples/franklin_county_ollama/ollama_client.py \
   --model qwen3 \
-  --parcel-id 030-000526-00
+  --parcel-id 010-000123-00
 ```
 
 You can also test address or owner prompts:
@@ -49,14 +49,14 @@ You can also test address or owner prompts:
 python samples/franklin_county_ollama/ollama_client.py \
   --model qwen3 \
   --scenario address \
-  --address "1150 GLENN AVE"
+  --address "100 EXAMPLE AVE"
 ```
 
 ```bash
 python samples/franklin_county_ollama/ollama_client.py \
   --model qwen3 \
   --scenario owner \
-  --owner-name "ZWINK ROBERT V"
+  --owner-name "DOE JANE A"
 ```
 
 If Ollama answers without requesting the Franklin Auditor MCP tool, the sample

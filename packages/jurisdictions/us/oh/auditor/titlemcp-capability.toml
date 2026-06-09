@@ -1,0 +1,28 @@
+[capability]
+capability_id = "us-oh-auditor"
+package_name = "titlemcp-us-oh-auditor"
+version = "0.1.0"
+
+[jurisdiction]
+# Multi-county package. The covered iasWorld counties are enumerated in
+# src/titlemcp_us_oh_auditor/sites.py (OH_IASWORLD_SITES).
+country = "US"
+state = "OH"
+
+[workflows.tax_certificate]
+status = "draft"
+adapter = "implemented"
+source_connector = "implemented"
+human_review_required = true
+
+[readiness]
+docs = true
+unit_tests = true
+fixtures = false
+integration_tests = false
+no_live_credentials = true
+pypi_metadata = true
+reviewer_approved = false
+
+[release]
+publish = false
