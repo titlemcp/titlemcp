@@ -2,133 +2,27 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
-from enum import StrEnum
 from html.parser import HTMLParser
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import HTTPCookieProcessor, Request, build_opener
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from titlemcp_platform_iasworld.config import (
+    AuditorSearchMode,
+    DetailProfile,
+    IasWorldSiteConfig,
+)
+from titlemcp_platform_iasworld.models import (
+    IasWorldAuditorParcelDetail,
+    IasWorldAuditorSearchHit,
+    IasWorldAuditorSearchQuery,
+    IasWorldAuditorSearchResponse,
+)
 
 
-class AuditorSearchMode(StrEnum):
-    ADDRESS = "address"
-    OWNER = "owner"
-    PARCEL_ID = "parid"
-
-
-class FranklinAuditorSearchQuery(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True)
-
-    mode: AuditorSearchMode | str = AuditorSearchMode.ADDRESS
-    parcel_id: str | None = None
-    owner_name: str | None = None
-    address: str | None = None
-    address_number: str | int | None = None
-    street_name: str | None = None
-    street_direction: str | None = None
-    unit: str | None = None
-    page_number: int = Field(default=1, ge=1)
-    page_size: int = Field(default=25, ge=1, le=50)
-    include_details: bool = True
-    max_results: int = Field(default=10, ge=1, le=50)
-    max_detail_records: int = Field(default=1, ge=0, le=10)
-
-    @field_validator("mode", mode="before")
-    @classmethod
-    def normalize_mode(cls, value: str | AuditorSearchMode) -> AuditorSearchMode:
-        return _normalize_mode(value)
-
-
-class FranklinAuditorSearchHit(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True)
-
-    parcel_id: str | None = None
-    parcel_number: str | None = None
-    parcel_token: str | None = None
-    jurisdiction: str | None = None
-    tax_year: str | None = None
-    address: str | None = None
-    owner: str | None = None
-    legal_description: str | None = None
-    detail_url: str | None = None
-    raw_cells: list[str] = Field(default_factory=list)
-
-
-class FranklinAuditorParcelDetail(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True)
-
-    parcel_id: str | None = None
-    parcel_number: str | None = None
-    parcel_token: str | None = None
-    jurisdiction: str | None = None
-    tax_year: str | None = None
-    map_routing: str | None = None
-    owner_display: str | None = None
-    site_address: str | None = None
-    permalink: str | None = None
-    owners: list[str] = Field(default_factory=list)
-    owner_mailing_address: list[str] = Field(default_factory=list)
-    site_property_address: str | None = None
-    legal_description: list[str] = Field(default_factory=list)
-    legal_acres: str | None = None
-    most_recent_transfer: dict[str, Any] = Field(default_factory=dict)
-    tax_status: dict[str, Any] = Field(default_factory=dict)
-    appraised_value: dict[str, Any] = Field(default_factory=dict)
-    taxable_value: dict[str, Any] = Field(default_factory=dict)
-    annual_taxes: dict[str, Any] = Field(default_factory=dict)
-    dwelling_data: dict[str, Any] = Field(default_factory=dict)
-    site_data: dict[str, Any] = Field(default_factory=dict)
-    sections: dict[str, Any] = Field(default_factory=dict)
-    raw_section_rows: dict[str, list[list[str]]] = Field(default_factory=dict)
-    source_url: str | None = None
-    retrieved_at: str = Field(
-        default_factory=lambda: datetime.now(UTC).isoformat(timespec="seconds")
-    )
-
-
-class FranklinAuditorSearchResponse(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True)
-
-    query: FranklinAuditorSearchQuery
-    search_url: str
-    search_mode: AuditorSearchMode
-    result_count: int
-    results: list[FranklinAuditorSearchHit] = Field(default_factory=list)
-    details: list[FranklinAuditorParcelDetail] = Field(default_factory=list)
-    warnings: list[str] = Field(default_factory=list)
-    retrieved_at: str = Field(
-        default_factory=lambda: datetime.now(UTC).isoformat(timespec="seconds")
-    )
-
-
-class FranklinAuditorClientError(RuntimeError):
+class IasWorldAuditorClientError(RuntimeError):
     pass
-
-
-def resolve_auditor_search_mode(
-    mode: str | AuditorSearchMode | None = None,
-    *,
-    parcel_id: str | None = None,
-    owner_name: str | None = None,
-    address: str | None = None,
-    address_number: str | int | None = None,
-    street_name: str | None = None,
-) -> AuditorSearchMode:
-    if mode:
-        try:
-            return _normalize_mode(mode)
-        except ValueError:
-            pass
-    if parcel_id:
-        return AuditorSearchMode.PARCEL_ID
-    if owner_name:
-        return AuditorSearchMode.OWNER
-    if address or address_number or street_name:
-        return AuditorSearchMode.ADDRESS
-    return AuditorSearchMode.ADDRESS
 
 
 @dataclass
@@ -179,9 +73,10 @@ class _FormParser(HTMLParser):
 
 
 class _SearchResultsParser(HTMLParser):
-    def __init__(self) -> None:
+    def __init__(self, *, numeric_parcel_ids: bool = True) -> None:
         super().__init__(convert_charrefs=True)
-        self.rows: list[FranklinAuditorSearchHit] = []
+        self._numeric_parcel_ids = numeric_parcel_ids
+        self.rows: list[IasWorldAuditorSearchHit] = []
         self._in_result_row = False
         self._in_cell = False
         self._cell_parts: list[str] = []
@@ -224,9 +119,11 @@ class _SearchResultsParser(HTMLParser):
         if len(cells) < 3:
             return
         parcel_id = cells[0]
-        compact = _compact_parcel_id(parcel_id)
-        jurisdiction, tax_year = _parse_parcel_token(self._parcel_token)
-        hit = FranklinAuditorSearchHit(
+        compact = _compact_parcel_id(parcel_id, numeric_only=self._numeric_parcel_ids)
+        jurisdiction, tax_year = _parse_parcel_token(
+            self._parcel_token, numeric_only=self._numeric_parcel_ids
+        )
+        hit = IasWorldAuditorSearchHit(
             parcel_id=parcel_id,
             parcel_number=compact,
             parcel_token=self._parcel_token,
@@ -276,19 +173,35 @@ class _TableParser(HTMLParser):
             self.tables.append(self._stack.pop())
 
 
-class FranklinAuditorClient:
-    base_url = "https://property.franklincountyauditor.com/_web/"
+class IasWorldAuditorClient:
+    """Generic scraper for a Tyler iasWorld county auditor/property site.
 
-    def __init__(self, *, timeout: float = 30.0, opener: Any | None = None) -> None:
+    All site-specific behavior (base URL, ``jur`` district code, the ``mode=``
+    search value) is supplied via :class:`IasWorldSiteConfig`; the search-form
+    submission and datalet parsing are identical across iasWorld counties.
+    """
+
+    def __init__(
+        self,
+        config: IasWorldSiteConfig,
+        *,
+        timeout: float = 30.0,
+        opener: Any | None = None,
+    ) -> None:
+        self.config = config
         self.timeout = timeout
         self._opener = opener or build_opener(HTTPCookieProcessor())
 
-    def search(self, query: FranklinAuditorSearchQuery) -> FranklinAuditorSearchResponse:
-        query = FranklinAuditorSearchQuery.model_validate(query)
+    @property
+    def base_url(self) -> str:
+        return self.config.base_url
+
+    def search(self, query: IasWorldAuditorSearchQuery) -> IasWorldAuditorSearchResponse:
+        query = IasWorldAuditorSearchQuery.model_validate(query)
         attempts = self._search_attempts(query)
         warnings: list[str] = []
-        hits: list[FranklinAuditorSearchHit] = []
-        search_url = self._search_url(query.mode)
+        hits: list[IasWorldAuditorSearchHit] = []
+        search_url = self.config.search_url(query.mode)
         site_year: str | None = None
 
         for fields, sort_by in attempts:
@@ -302,7 +215,7 @@ class FranklinAuditorClient:
             detail = self._parse_detail_if_present(html, final_url)
             if detail and detail.parcel_number:
                 hits = [
-                    FranklinAuditorSearchHit(
+                    IasWorldAuditorSearchHit(
                         parcel_id=detail.parcel_id,
                         parcel_number=detail.parcel_number,
                         parcel_token=detail.parcel_token,
@@ -314,7 +227,7 @@ class FranklinAuditorClient:
                     )
                 ]
                 details = [detail] if query.include_details else []
-                return FranklinAuditorSearchResponse(
+                return IasWorldAuditorSearchResponse(
                     query=query,
                     search_url=search_url,
                     search_mode=query.mode,
@@ -324,7 +237,7 @@ class FranklinAuditorClient:
                     warnings=warnings,
                 )
 
-        details: list[FranklinAuditorParcelDetail] = []
+        details: list[IasWorldAuditorParcelDetail] = []
         if query.include_details and query.max_detail_records > 0:
             for hit in hits[: query.max_detail_records]:
                 try:
@@ -335,10 +248,10 @@ class FranklinAuditorClient:
                     detail = self.parse_detail(detail_html, source_url=final_url)
                     details.append(detail)
                     hit.detail_url = final_url
-                except FranklinAuditorClientError as exc:
+                except IasWorldAuditorClientError as exc:
                     warnings.append(str(exc))
 
-        return FranklinAuditorSearchResponse(
+        return IasWorldAuditorSearchResponse(
             query=query,
             search_url=search_url,
             search_mode=query.mode,
@@ -352,31 +265,35 @@ class FranklinAuditorClient:
         self,
         *,
         parcel_number: str,
-        jurisdiction: str = "025",
+        jurisdiction: str | None = None,
         tax_year: str | int | None = None,
     ) -> str:
         params: dict[str, str] = {
             "mode": "",
             "UseSearch": "no",
-            "pin": _compact_parcel_id(parcel_number),
-            "jur": jurisdiction,
+            "pin": _compact_parcel_id(
+                parcel_number, numeric_only=self.config.numeric_parcel_ids
+            ),
+            "jur": jurisdiction or self.config.district_code,
         }
         if tax_year:
             params["taxyr"] = str(tax_year)
-        return f"{self.base_url}Datalets/Datalet.aspx?{urlencode(params)}"
+        return f"{self.config.base_url}Datalets/Datalet.aspx?{urlencode(params)}"
 
     def detail_url_for_hit(
         self,
-        hit: FranklinAuditorSearchHit,
+        hit: IasWorldAuditorSearchHit,
         site_year: str | None = None,
     ) -> str | None:
-        jurisdiction, parcel_number, tax_year = _parse_parcel_token_full(hit.parcel_token)
+        jurisdiction, parcel_number, tax_year = _parse_parcel_token_full(
+            hit.parcel_token, numeric_only=self.config.numeric_parcel_ids
+        )
         parcel_number = parcel_number or hit.parcel_number
         if not parcel_number:
             return None
         return self.detail_url(
             parcel_number=parcel_number,
-            jurisdiction=jurisdiction or "025",
+            jurisdiction=jurisdiction or self.config.district_code,
             tax_year=tax_year or site_year,
         )
 
@@ -385,7 +302,7 @@ class FranklinAuditorClient:
         html: str,
         *,
         source_url: str | None = None,
-    ) -> FranklinAuditorParcelDetail:
+    ) -> IasWorldAuditorParcelDetail:
         parser = _TableParser()
         parser.feed(html)
         table_by_id = {
@@ -413,35 +330,21 @@ class FranklinAuditorClient:
             for section_id, rows in raw_section_rows.items()
         }
 
-        owner_section = _kv_section(raw_section_rows.get("Owner", []))
-        transfer = _kv_section(raw_section_rows.get("Most Recent Transfer", []))
-        tax_status_title = _section_name_ending(raw_section_rows, "Tax Status")
-        tax_status = _kv_section(raw_section_rows.get(tax_status_title, []))
-        appraised_title = _appraised_value_section_name(raw_section_rows)
-        taxable_title = _section_name_containing(raw_section_rows, "Taxable Value")
-
-        parcel_number = _compact_parcel_id(header_data.get("parcel_id"))
+        parcel_number = _compact_parcel_id(
+            header_data.get("parcel_id"), numeric_only=self.config.numeric_parcel_ids
+        )
         if not parcel_number:
             parcel_number = _hidden_input_value(html, "hdPin")
         jurisdiction = _hidden_input_value(html, "hdJur") or _hidden_input_value(html, "hdXJur")
         tax_year = _hidden_input_value(html, "hdTaxYear") or _hidden_input_value(html, "hdXTaxYr")
         parcel_token = _parcel_token(jurisdiction, parcel_number, tax_year)
-        owner_values = _as_list(owner_section.get("Owner"))
-        mailing_address = [
-            value
-            for value in [
-                _string_or_none(owner_section.get("Owner Mailing /")),
-                _string_or_none(
-                    _without_correction_request_values(owner_section.get("Contact Address"))
-                ),
-            ]
-            if value
-        ]
-        site_property_address = _string_or_none(
-            _without_correction_request_values(owner_section.get("Site (Property) Address"))
-        )
 
-        return FranklinAuditorParcelDetail(
+        if self.config.detail_profile == DetailProfile.PUBLIC_ACCESS:
+            profile_fields = _detail_fields_public_access(raw_section_rows, tax_year=tax_year)
+        else:
+            profile_fields = _detail_fields_classic(raw_section_rows)
+
+        return IasWorldAuditorParcelDetail(
             parcel_id=header_data.get("parcel_id"),
             parcel_number=parcel_number,
             parcel_token=parcel_token,
@@ -450,31 +353,19 @@ class FranklinAuditorClient:
             map_routing=header_data.get("map_routing"),
             owner_display=header_data.get("owner"),
             site_address=header_data.get("address"),
-            permalink=_extract_first_url(_as_list(owner_section.get("Parcel Permalink"))),
-            owners=owner_values,
-            owner_mailing_address=mailing_address,
-            site_property_address=site_property_address,
-            legal_description=_as_list(owner_section.get("Legal Description")),
-            legal_acres=_string_or_none(owner_section.get("Legal Acres")),
-            most_recent_transfer=transfer,
-            tax_status=tax_status,
-            appraised_value=_table_section(raw_section_rows.get(appraised_title, [])),
-            taxable_value=_table_section(raw_section_rows.get(taxable_title, [])),
-            annual_taxes=_table_section(raw_section_rows.get("Annual Taxes", [])),
-            dwelling_data=_table_section(raw_section_rows.get("Dwelling Data", [])),
-            site_data=_table_section(raw_section_rows.get("Site Data", [])),
             sections=sections,
             raw_section_rows=raw_section_rows,
             source_url=source_url,
+            **profile_fields,
         )
 
     def _submit_search(
         self,
-        query: FranklinAuditorSearchQuery,
+        query: IasWorldAuditorSearchQuery,
         fields: dict[str, str],
         sort_by: str,
     ) -> tuple[str, str, str | None]:
-        search_url = self._search_url(query.mode)
+        search_url = self.config.search_url(query.mode)
         form_html, _ = self._get(search_url)
         form_data, site_year = self._parse_form(form_html)
         page_size = _allowed_page_size(query.page_size)
@@ -515,8 +406,7 @@ class FranklinAuditorClient:
     ) -> tuple[str, str]:
         headers = {
             "User-Agent": (
-                "Mozilla/5.0 (compatible; TitleMCP/0.1; "
-                "+https://property.franklincountyauditor.com/)"
+                f"Mozilla/5.0 (compatible; TitleMCP/0.1; +{self.config.base_url})"
             ),
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         }
@@ -530,13 +420,9 @@ class FranklinAuditorClient:
                 body = response.read().decode("utf-8", errors="replace")
                 return body, response.geturl()
         except HTTPError as exc:
-            raise FranklinAuditorClientError(f"Franklin Auditor request failed: {exc}") from exc
+            raise IasWorldAuditorClientError(f"iasWorld request failed: {exc}") from exc
         except URLError as exc:
-            raise FranklinAuditorClientError(f"Franklin Auditor request failed: {exc}") from exc
-
-    def _search_url(self, mode: AuditorSearchMode | str) -> str:
-        mode_value = _normalize_mode(mode).value
-        return f"{self.base_url}search/commonsearch.aspx?mode={mode_value}"
+            raise IasWorldAuditorClientError(f"iasWorld request failed: {exc}") from exc
 
     def _parse_form(self, html: str) -> tuple[dict[str, str], str | None]:
         parser = _FormParser()
@@ -544,8 +430,8 @@ class FranklinAuditorClient:
         site_year_match = re.search(r'var\s+siteYear\s*=\s*"([^"]+)"', html)
         return parser.form_data, site_year_match.group(1) if site_year_match else None
 
-    def _parse_search_results(self, html: str) -> list[FranklinAuditorSearchHit]:
-        parser = _SearchResultsParser()
+    def _parse_search_results(self, html: str) -> list[IasWorldAuditorSearchHit]:
+        parser = _SearchResultsParser(numeric_parcel_ids=self.config.numeric_parcel_ids)
         parser.feed(html)
         for hit in parser.rows:
             if not hit.detail_url:
@@ -556,7 +442,7 @@ class FranklinAuditorClient:
         self,
         html: str,
         final_url: str,
-    ) -> FranklinAuditorParcelDetail | None:
+    ) -> IasWorldAuditorParcelDetail | None:
         if "DataletHeader" not in html:
             return None
         detail = self.parse_detail(html, source_url=final_url)
@@ -564,28 +450,35 @@ class FranklinAuditorClient:
 
     def _search_attempts(
         self,
-        query: FranklinAuditorSearchQuery,
+        query: IasWorldAuditorSearchQuery,
     ) -> list[tuple[dict[str, str], str]]:
         if query.mode == AuditorSearchMode.OWNER:
             return _dedupe_attempts(_owner_attempts(query))
         if query.mode == AuditorSearchMode.PARCEL_ID:
-            return _dedupe_attempts(_parcel_attempts(query))
+            return _dedupe_attempts(
+                _parcel_attempts(query, numeric_parcel_ids=self.config.numeric_parcel_ids)
+            )
         return _dedupe_attempts(_address_attempts(query))
 
     def _rank_hits(
         self,
-        query: FranklinAuditorSearchQuery,
-        hits: list[FranklinAuditorSearchHit],
-    ) -> list[FranklinAuditorSearchHit]:
-        return sorted(hits, key=lambda hit: _hit_rank(query, hit))
+        query: IasWorldAuditorSearchQuery,
+        hits: list[IasWorldAuditorSearchHit],
+    ) -> list[IasWorldAuditorSearchHit]:
+        return sorted(
+            hits,
+            key=lambda hit: _hit_rank(
+                query, hit, numeric_parcel_ids=self.config.numeric_parcel_ids
+            ),
+        )
 
 
 def _address_attempts(
-    query: FranklinAuditorSearchQuery,
+    query: IasWorldAuditorSearchQuery,
 ) -> list[tuple[dict[str, str], str]]:
     number, direction, street, unit = _address_parts(query)
     if not street:
-        raise FranklinAuditorClientError("Address searches require street_name or address.")
+        raise IasWorldAuditorClientError("Address searches require street_name or address.")
 
     base = {
         "inpAdrdir": direction or "",
@@ -602,11 +495,11 @@ def _address_attempts(
 
 
 def _owner_attempts(
-    query: FranklinAuditorSearchQuery,
+    query: IasWorldAuditorSearchQuery,
 ) -> list[tuple[dict[str, str], str]]:
     owner_name = query.owner_name or ""
     if not owner_name:
-        raise FranklinAuditorClientError("Owner searches require owner_name.")
+        raise IasWorldAuditorClientError("Owner searches require owner_name.")
     attempts = [({"inpOwner": owner_name}, "PARID")]
     first_token = re.split(r"\s+", owner_name.strip())[0]
     if len(first_token) >= 4:
@@ -615,13 +508,20 @@ def _owner_attempts(
 
 
 def _parcel_attempts(
-    query: FranklinAuditorSearchQuery,
+    query: IasWorldAuditorSearchQuery,
+    *,
+    numeric_parcel_ids: bool = True,
 ) -> list[tuple[dict[str, str], str]]:
     parcel_id = query.parcel_id or ""
     if not parcel_id:
-        raise FranklinAuditorClientError("Parcel ID searches require parcel_id.")
-    compact = _compact_parcel_id(parcel_id, keep_wildcards=True)
+        raise IasWorldAuditorClientError("Parcel ID searches require parcel_id.")
+    compact = _compact_parcel_id(
+        parcel_id, keep_wildcards=True, numeric_only=numeric_parcel_ids
+    )
     attempts = [({"inpParid": compact}, "PARID")]
+    if not numeric_parcel_ids:
+        # Digit-slice wildcard fallbacks only make sense for numeric parcels.
+        return attempts
     digits = _compact_parcel_id(parcel_id)
     if "*" not in compact and len(digits) >= 9:
         attempts.append(({"inpParid": f"{digits[:3]}*{digits[6:9]}"}, "PARID"))
@@ -630,7 +530,7 @@ def _parcel_attempts(
     return attempts
 
 
-def _address_parts(query: FranklinAuditorSearchQuery) -> tuple[str, str, str, str]:
+def _address_parts(query: IasWorldAuditorSearchQuery) -> tuple[str, str, str, str]:
     number = str(query.address_number or "").strip()
     direction = (query.street_direction or "").strip().upper()
     street = query.street_name or ""
@@ -702,10 +602,15 @@ def _dedupe_attempts(
     return deduped
 
 
-def _hit_rank(query: FranklinAuditorSearchQuery, hit: FranklinAuditorSearchHit) -> tuple[int, str]:
+def _hit_rank(
+    query: IasWorldAuditorSearchQuery,
+    hit: IasWorldAuditorSearchHit,
+    *,
+    numeric_parcel_ids: bool = True,
+) -> tuple[int, str]:
     score = 10
     if query.parcel_id:
-        wanted = _compact_parcel_id(query.parcel_id)
+        wanted = _compact_parcel_id(query.parcel_id, numeric_only=numeric_parcel_ids)
         if hit.parcel_number == wanted:
             score = 0
     if query.mode == AuditorSearchMode.ADDRESS and hit.address:
@@ -725,32 +630,28 @@ def _attrs(attrs: list[tuple[str, str | None]]) -> dict[str, str]:
     return {key.lower(): value or "" for key, value in attrs}
 
 
-def _normalize_mode(value: str | AuditorSearchMode) -> AuditorSearchMode:
-    if isinstance(value, AuditorSearchMode):
-        return value
-    normalized = str(value).lower().strip()
-    aliases = {
-        "parcel": AuditorSearchMode.PARCEL_ID,
-        "parcel_id": AuditorSearchMode.PARCEL_ID,
-        "parid": AuditorSearchMode.PARCEL_ID,
-        "owner": AuditorSearchMode.OWNER,
-        "address": AuditorSearchMode.ADDRESS,
-    }
-    try:
-        return aliases[normalized]
-    except KeyError as exc:
-        raise ValueError("mode must be one of address, owner, or parid") from exc
-
-
 def _clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", value.replace("\xa0", " ")).strip()
 
 
-def _compact_parcel_id(value: str | None, *, keep_wildcards: bool = False) -> str:
+def _compact_parcel_id(
+    value: str | None,
+    *,
+    keep_wildcards: bool = False,
+    numeric_only: bool = True,
+) -> str:
     if not value:
         return ""
-    pattern = r"[^0-9*]" if keep_wildcards else r"\D"
-    return re.sub(pattern, "", value)
+    if numeric_only:
+        pattern = r"[^0-9*]" if keep_wildcards else r"\D"
+        return re.sub(pattern, "", value)
+    # Alphanumeric parcels (e.g. Clermont "100200C003D", "100200.034C"): drop
+    # whitespace and dash separators but preserve letters, digits, and dots.
+    cleaned = re.sub(r"[\s-]", "", value)
+    cleaned = re.sub(r"[^0-9A-Za-z.*]", "", cleaned).upper()
+    if not keep_wildcards:
+        cleaned = cleaned.replace("*", "")
+    return cleaned
 
 
 def _allowed_page_size(value: int) -> int:
@@ -762,20 +663,31 @@ def _allowed_page_size(value: int) -> int:
 
 
 def _looks_like_parcel_token(value: str) -> bool:
-    return bool(re.match(r"^\d{3}:[0-9A-Za-z*:-]+:\d{4}$", value))
+    return bool(re.match(r"^\d{3}:[0-9A-Za-z.*:-]+:\d{4}$", value))
 
 
-def _parse_parcel_token(value: str | None) -> tuple[str | None, str | None]:
-    jurisdiction, _parcel_number, tax_year = _parse_parcel_token_full(value)
+def _parse_parcel_token(
+    value: str | None,
+    *,
+    numeric_only: bool = True,
+) -> tuple[str | None, str | None]:
+    jurisdiction, _parcel_number, tax_year = _parse_parcel_token_full(
+        value, numeric_only=numeric_only
+    )
     return jurisdiction, tax_year
 
 
-def _parse_parcel_token_full(value: str | None) -> tuple[str | None, str | None, str | None]:
+def _parse_parcel_token_full(
+    value: str | None,
+    *,
+    numeric_only: bool = True,
+) -> tuple[str | None, str | None, str | None]:
     if not value:
         return None, None, None
     parts = value.split(":")
     if len(parts) >= 3:
-        return parts[0] or None, _compact_parcel_id(parts[1]) or None, parts[2] or None
+        parcel = _compact_parcel_id(parts[1], numeric_only=numeric_only) or None
+        return parts[0] or None, parcel, parts[2] or None
     return None, None, None
 
 
@@ -865,6 +777,138 @@ def _table_section(rows: list[list[str]]) -> dict[str, Any]:
         padded = row + [""] * max(0, len(headers) - len(row))
         records.append(dict(zip(headers, padded, strict=False)))
     return {"headers": headers, "rows": records}
+
+
+def _detail_fields_classic(raw_section_rows: dict[str, list[list[str]]]) -> dict[str, Any]:
+    """Field extraction for the Franklin-style combined-``Owner`` datalet layout."""
+    owner_section = _kv_section(raw_section_rows.get("Owner", []))
+    transfer = _kv_section(raw_section_rows.get("Most Recent Transfer", []))
+    tax_status_title = _section_name_ending(raw_section_rows, "Tax Status")
+    tax_status = _kv_section(raw_section_rows.get(tax_status_title, []))
+    appraised_title = _appraised_value_section_name(raw_section_rows)
+    taxable_title = _section_name_containing(raw_section_rows, "Taxable Value")
+    mailing_address = [
+        value
+        for value in [
+            _string_or_none(owner_section.get("Owner Mailing /")),
+            _string_or_none(
+                _without_correction_request_values(owner_section.get("Contact Address"))
+            ),
+        ]
+        if value
+    ]
+    site_property_address = _string_or_none(
+        _without_correction_request_values(owner_section.get("Site (Property) Address"))
+    )
+    return {
+        "permalink": _extract_first_url(_as_list(owner_section.get("Parcel Permalink"))),
+        "owners": _as_list(owner_section.get("Owner")),
+        "owner_mailing_address": mailing_address,
+        "site_property_address": site_property_address,
+        "legal_description": _as_list(owner_section.get("Legal Description")),
+        "legal_acres": _string_or_none(owner_section.get("Legal Acres")),
+        "most_recent_transfer": transfer,
+        "tax_status": tax_status,
+        "appraised_value": _table_section(raw_section_rows.get(appraised_title, [])),
+        "taxable_value": _table_section(raw_section_rows.get(taxable_title, [])),
+        "annual_taxes": _table_section(raw_section_rows.get("Annual Taxes", [])),
+        "dwelling_data": _table_section(raw_section_rows.get("Dwelling Data", [])),
+        "site_data": _table_section(raw_section_rows.get("Site Data", [])),
+    }
+
+
+def _detail_fields_public_access(
+    raw_section_rows: dict[str, list[list[str]]],
+    *,
+    tax_year: str | None = None,
+) -> dict[str, Any]:
+    """Field extraction for the iasWorld "Public Access" split-section layout.
+
+    Normalizes into the same shape as the classic profile (and the same
+    ``tax_status`` keys) so the canonical mapper stays profile-agnostic.
+    """
+    parcel = _kv_section(raw_section_rows.get("Parcel", []))
+    owner = _kv_section(raw_section_rows.get("Owner", []))
+    mailing = _kv_section(raw_section_rows.get("Tax Mailing Name and Address", []))
+    legal = _kv_section(raw_section_rows.get("Legal", []))
+
+    mailing_lines = _numbered_values(mailing, "Address")
+    tax_status: dict[str, Any] = {}
+    for source_label, canonical_label in (
+        ("Class", "Property Class"),
+        ("Land Use Code", "Land Use"),
+        ("Neighborhood", "Appraisal Neighborhood"),
+    ):
+        value = _first_value(parcel.get(source_label))
+        if value:
+            tax_status[canonical_label] = value
+    zip_code = _zip_from_lines(mailing_lines)
+    if zip_code:
+        tax_status["Zip Code"] = zip_code
+
+    return {
+        "permalink": None,
+        "owners": _numbered_values(owner, "Owner"),
+        "owner_mailing_address": mailing_lines,
+        "site_property_address": _first_value(parcel.get("Address")),
+        "legal_description": _numbered_values(legal, "Legal Desc"),
+        "legal_acres": _first_value(parcel.get("Total Acres")),
+        "most_recent_transfer": {},
+        "tax_status": tax_status,
+        "appraised_value": {},
+        "taxable_value": {},
+        "annual_taxes": _public_access_annual_taxes(
+            raw_section_rows.get("Taxes Charged", []), tax_year
+        ),
+        "dwelling_data": {},
+        "site_data": {},
+    }
+
+
+def _numbered_values(kv: dict[str, Any], prefix: str) -> list[str]:
+    """Collect values of numbered labels (``Owner 1``, ``Address 1`` …) in order."""
+    pattern = re.compile(rf"^{re.escape(prefix)}\s+(\d+)$")
+    numbered: list[tuple[int, str]] = []
+    for key, value in kv.items():
+        match = pattern.match(key)
+        if not match:
+            continue
+        for item in _as_list(value):
+            if item:
+                numbered.append((int(match.group(1)), item))
+    return [value for _index, value in sorted(numbered, key=lambda pair: pair[0])]
+
+
+def _first_value(value: Any) -> str | None:
+    """First non-empty value — Public Access cells sometimes carry trailing note rows."""
+    if isinstance(value, list):
+        return next((_string_or_none(item) for item in value if _string_or_none(item)), None)
+    return _string_or_none(value)
+
+
+def _zip_from_lines(lines: list[str]) -> str | None:
+    for line in lines:
+        match = re.search(r"\b(\d{5})(?:-\d{4})?\b", line)
+        if match:
+            return match.group(1)
+    return None
+
+
+def _public_access_annual_taxes(
+    charged_rows: list[list[str]],
+    tax_year: str | None,
+) -> dict[str, Any]:
+    table = _table_section(charged_rows)
+    rows = table.get("rows") if isinstance(table, dict) else None
+    if not isinstance(rows, list) or not rows:
+        return {}
+    total_charged = _string_or_none(rows[0].get("Total Charged"))
+    if not total_charged:
+        return {}
+    return {
+        "headers": ["Tax Year", "Net Annual Tax"],
+        "rows": [{"Tax Year": tax_year or "", "Net Annual Tax": total_charged}],
+    }
 
 
 def _section_name_ending(

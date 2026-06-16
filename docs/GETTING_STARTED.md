@@ -68,7 +68,7 @@ Franklin County Auditor parcel search:
 ```bash
 python samples/franklin_county_ollama/ollama_client.py \
   --scenario parcel \
-  --parcel-id "030-000526-00"
+  --parcel-id "010-000123-00"
 ```
 
 HOA contact search:

@@ -1,0 +1,24 @@
+[project]
+name = "titlemcp-platform-iasworld"
+version = "0.1.0"
+description = "Shared Tyler iasWorld county auditor/property-search scraper for TitleMCP."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "titlemcp>=0.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/pyproject.toml",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/titlemcp_platform_iasworld"]

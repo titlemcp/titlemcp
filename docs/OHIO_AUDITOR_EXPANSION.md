@@ -1,0 +1,167 @@
+# Ohio County Auditor Expansion
+
+Roadmap for expanding county-auditor property-search coverage across Ohio.
+Living document — update the county tables and status as work lands.
+
+## The core idea: it's a *platform*, not a county
+
+The original Franklin County auditor scraper is not really "Franklin code." It
+is a client for **Tyler Technologies' iasWorld** property platform — the
+`search/commonsearch.aspx` + `Datalets/Datalet.aspx` stack, the `inpNumber` /
+`inpStreet` / `inpParid` form fields, `tr.SearchResults` rows, `DataletHeader`
+tables, and the `jur:parid:taxyr` parcel token.
+
+**Many Ohio county auditors run this exact software.** So the scraper, the typed
+models, and the canonical mapping are reusable as-is; only a few per-county knobs
+differ. A new iasWorld county becomes a **config entry**, not a new scraper.
+
+The canonical output (`title_mcp.domain.auditor.PropertyAssessmentRecord`) is
+already county-agnostic, so every county — iasWorld or bespoke — emits the same
+record shape and downstream stays uniform.
+
+## Architecture
+
+```text
+packages/platforms/iasworld/            titlemcp-platform-iasworld   (shared)
+  config.py     IasWorldSiteConfig + AuditorSearchMode + mode resolution
+  models.py     typed query / hit / detail / response models
+  client.py     IasWorldAuditorClient + HTML parsers (the generic scraper)
+  canonical.py  iasWorld response -> PropertyAssessmentRecord
+  factory.py    build_auditor_source_connector(config)
+  tooling.py    register_auditor_tool(mcp, platform, config)
+
+packages/jurisdictions/us/oh/auditor/   titlemcp-us-oh-auditor       (config table)
+  sites.py      OH_IASWORLD_SITES = [FRANKLIN, ...]   <- the per-county table
+  plugin.py     title_mcp.plugins  -> registers one source connector per county
+  toolsets.py   title_mcp.toolsets -> registers one <county>_auditor_search tool
+  adapters.py   title_mcp.adapters -> OH tax_certificate workflow planning
+  manifest.py   title_mcp.capabilities
+```
+
+The config-driven source connectors register through the `title_mcp.plugins`
+hook (which receives the registries and can register many connectors at once),
+because a `title_mcp.sources` entry point can only instantiate one no-arg
+connector class.
+
+### `IasWorldSiteConfig` knobs
+
+Everything that differs between iasWorld counties:
+
+| Knob | Example | Notes |
+| --- | --- | --- |
+| `base_url` | `https://property.franklincountyauditor.com/_web/` | Parent of `search/` and `Datalets/`. May be a bare domain (`https://www.mcrealestate.org/`) or a path prefix (`.../lucascare/`). A trailing slash is added if missing. |
+| `district_code` | `025` (Franklin), `000` (Clermont/Montgomery) | The iasWorld `jur` query parameter. |
+| `mode_map` | `{ADDRESS: "realprop"}` | Overrides the `mode=` URL value; Summit and Lake serve a unified `realprop` search instead of `address`. |
+| `numeric_parcel_ids` | `False` (Clermont) | Default `True` compacts parcels to digits (Franklin `01000012300`); `False` preserves alphanumeric parcels (Clermont `100200C003D`, `100200.034C`). |
+
+`source_id`, `county`, `state`, `name`, `owner`, and `priority` round out the
+config. New knobs are added when the first county actually needs one rather than
+speculatively — `numeric_parcel_ids` was added exactly this way when Clermont
+turned out to use alphanumeric parcels. Likely future knobs: `section_overrides`
+for datalet section-name quirks.
+
+## Phase 0 — platform recon (complete)
+
+Fingerprinting of Ohio's largest counties. iasWorld counties reuse the shared
+scraper; bespoke counties need their own connectors (but the same canonical
+output).
+
+### iasWorld (reuse shared scraper)
+
+| County | Search base URL | District / notes |
+| --- | --- | --- |
+| Franklin | `property.franklincountyauditor.com/_web/` | `jur=025`, numeric parcels — **enabled** |
+| Clermont | `clermontauditorrealestate.org/_web/` | `jur=000`, **alphanumeric** parcels — **enabled** |
+| Montgomery | `www.mcrealestate.org/` | `jur=000`, no `/_web/` prefix |
+| Stark | `realestate.starkcountyohio.gov/` | `jur=000` |
+| Butler | `propertysearch.bcohio.gov/` | |
+| Lucas | `icare.co.lucas.oh.us/lucascare/` | branded "AREIS"; path prefix |
+| Summit | `propertyaccess.summitoh.net/` | uses `mode=realprop` |
+| Lake | `auditor.lakecountyohio.gov/` | page identifies as "iasWorld"; `mode=realprop` |
+
+### Bespoke (need their own connector — grouped by vendor)
+
+| Vendor / platform | Counties | Note |
+| --- | --- | --- |
+| DEVNET **wEdge** | Hamilton | `wedge.hcauditor.org` |
+| **MyPlace** (in-house SPA) | Cuyahoga | base64-encoded routes |
+| **Manatron** (Tyler family, different product) | Delaware | `*.manatron.com` — not iasWorld |
+| **PivotPoint** / Schneider | Mahoning | `*.pivotpoint.us` |
+| Custom ASP.NET MVC | Lorain, Greene | shared `/Search/Name` routing — likely one scraper covers both |
+| Custom ASP.NET MVC / Razor | Warren | `.cshtml` routes |
+
+> Warren and Lorain returned HTTP 403 to automated fetches (bot protection);
+> their verdicts rest on indexed URLs. Confirm in a browser before building.
+
+## Roadmap
+
+### Phase 1 — extract & migrate Franklin (complete)
+
+- Stood up `titlemcp-platform-iasworld` by lifting the Franklin auditor scraper +
+  canonical mapper out of the recorder package and parameterizing over
+  `IasWorldSiteConfig`.
+- Created `titlemcp-us-oh-auditor` with Franklin as config entry #1.
+- Removed the auditor from `titlemcp-us-oh-franklin-recorder` (it now ships only
+  the recorder). The Franklin auditor tool, source id (`us-oh-franklin-auditor`),
+  and tool name (`franklin_county_auditor_search`) are unchanged.
+- Behavior preserved: the Franklin fixtures pass against the extracted scraper.
+- Note: the canonical `source_specific` key was renamed
+  `franklin_auditor` -> `iasworld_auditor` (platform-generic).
+
+### Phase 2 — roll out iasWorld counties
+
+**Clermont is enabled** (alongside the extraction) as the first proof that a
+second county is mostly a config entry. It also surfaced the first real platform
+variation — alphanumeric parcel IDs — which was absorbed by one shared knob
+(`numeric_parcel_ids`) that every future alphanumeric-parcel county now inherits
+for free. That is the extraction's payoff in one PR.
+
+Remaining: Montgomery, Stark, Butler, Lucas, Summit, Lake — roughly in that order.
+Each county is one PR:
+
+1. Append an `IasWorldSiteConfig` to `OH_IASWORLD_SITES` in `sites.py`.
+2. Capture a real search + detail HTML **fixture** for that site.
+3. Add a fixture-backed contract test (search parse, detail parse, canonical
+   mapping, missing/empty path).
+4. Add a runnable Ollama sample (`samples/<county>_auditor_ollama/`) whose prompt
+   does **not** name the tool, plus its README and links.
+5. Update the county table here and in the package README.
+
+> Clermont's connector was validated end-to-end against the live site (search,
+> alphanumeric parcels, and the Public Access detail profile all populate the
+> canonical record). Its committed test fixtures use **synthetic** owner/parcel
+> data — no real property records are checked into this open-source repo.
+
+Add per-site politeness (User-Agent already derives from `base_url`; add rate
+limiting / backoff) once multiple live counties are in play.
+
+### Phase 3 — bespoke connectors
+
+Separate packages per vendor, all emitting `PropertyAssessmentRecord`. Order by
+leverage: Hamilton (wEdge) and the shared Lorain+Greene MVC scraper cover the
+most ground per unit of work; Cuyahoga (MyPlace) is the highest-value single
+county but the most custom. Manatron (Delaware) could become its own shared
+platform package if other Ohio counties run it.
+
+## Per-county definition of done
+
+Mirrors the four-part contract in [`AGENTS.md`](../AGENTS.md):
+
+- [ ] `IasWorldSiteConfig` entry in `sites.py` (or a bespoke connector).
+- [ ] Source connector returns canonical records; `requires_human_review=True`.
+- [ ] Contract tests: input normalization, canonical mapping, missing/empty path.
+- [ ] Representative HTML fixture committed.
+- [ ] Runnable sample + README + links in `samples/README.md` and `docs/SAMPLES.md`.
+- [ ] `ruff check` clean; package + core suites green.
+
+## Risks / open questions
+
+- **Fixtures are the real Phase 2 cost.** The scraping logic is free; each county
+  needs a captured search + detail page. Without one, a county stays disabled.
+- **`mode=realprop` counties** (Summit, Lake) may need form-field handling beyond
+  the URL `mode` override — verify when enabling them.
+- **One readiness gate, many counties.** `titlemcp-us-oh-auditor` publishes as one
+  package; a flaky county can hold the whole release. Consider per-site readiness
+  flags in the config if this bites.
+- **Bot protection** (403s on Warren/Lorain) means live connectors may need
+  session/header care; keep live-network tests out of the default suite.

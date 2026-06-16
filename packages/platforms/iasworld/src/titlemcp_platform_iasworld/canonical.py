@@ -23,15 +23,15 @@ from title_mcp.domain.auditor import (
     PropertyAssessmentValueTable,
 )
 from title_mcp.domain.models import Address, Jurisdiction
-from titlemcp_us_oh_franklin_recorder.auditor import (
-    FranklinAuditorParcelDetail,
-    FranklinAuditorSearchHit,
-    FranklinAuditorSearchResponse,
+from titlemcp_platform_iasworld.models import (
+    IasWorldAuditorParcelDetail,
+    IasWorldAuditorSearchHit,
+    IasWorldAuditorSearchResponse,
 )
 
 
-def canonical_property_assessments_from_franklin_response(
-    response: FranklinAuditorSearchResponse,
+def canonical_property_assessments_from_iasworld_response(
+    response: IasWorldAuditorSearchResponse,
     *,
     source_id: str,
     source_name: str,
@@ -79,9 +79,9 @@ def canonical_property_assessments_from_franklin_response(
 
 def _record_from_hit_and_detail(
     *,
-    response: FranklinAuditorSearchResponse,
-    hit: FranklinAuditorSearchHit | None,
-    detail: FranklinAuditorParcelDetail | None,
+    response: IasWorldAuditorSearchResponse,
+    hit: IasWorldAuditorSearchHit | None,
+    detail: IasWorldAuditorParcelDetail | None,
     result_index: int | None,
     source_id: str,
     source_name: str,
@@ -149,6 +149,7 @@ def _record_from_hit_and_detail(
         site_address=_address_from_lines(
             site_address_lines,
             postal_code=_string_or_none(tax_status.get("Zip Code")),
+            state=jurisdiction.state,
         ),
         site_address_lines=site_address_lines,
         legal_description_lines=detail.legal_description if detail else [],
@@ -197,7 +198,7 @@ def _record_from_hit_and_detail(
         dwelling=_dwelling(detail),
         site=_site(detail),
         source_specific={
-            "franklin_auditor": {
+            "iasworld_auditor": {
                 "hit": hit.model_dump(mode="json") if hit else None,
                 "detail": detail.model_dump(mode="json") if detail else None,
             }
@@ -205,14 +206,14 @@ def _record_from_hit_and_detail(
     )
 
 
-def _raw_owner(detail: FranklinAuditorParcelDetail | None) -> dict[str, Any]:
+def _raw_owner(detail: IasWorldAuditorParcelDetail | None) -> dict[str, Any]:
     if not detail:
         return {}
     owner_section = detail.sections.get("Owner")
     return owner_section if isinstance(owner_section, dict) else {}
 
 
-def _transfer(detail: FranklinAuditorParcelDetail | None) -> PropertyAssessmentTransfer | None:
+def _transfer(detail: IasWorldAuditorParcelDetail | None) -> PropertyAssessmentTransfer | None:
     if not detail or not detail.most_recent_transfer:
         return None
     raw = detail.most_recent_transfer
@@ -226,7 +227,7 @@ def _transfer(detail: FranklinAuditorParcelDetail | None) -> PropertyAssessmentT
 
 
 def _tax_status(
-    detail: FranklinAuditorParcelDetail | None,
+    detail: IasWorldAuditorParcelDetail | None,
     tax_year: str | None,
 ) -> PropertyAssessmentTaxStatus:
     raw = detail.tax_status if detail else {}
@@ -290,7 +291,7 @@ def _value_table(
     )
 
 
-def _taxes(detail: FranklinAuditorParcelDetail | None) -> PropertyAssessmentTaxSummary:
+def _taxes(detail: IasWorldAuditorParcelDetail | None) -> PropertyAssessmentTaxSummary:
     table = detail.annual_taxes if detail else {}
     rows = table.get("rows") if isinstance(table, dict) else None
     taxes: list[PropertyAssessmentAnnualTax] = []
@@ -309,7 +310,7 @@ def _taxes(detail: FranklinAuditorParcelDetail | None) -> PropertyAssessmentTaxS
     return PropertyAssessmentTaxSummary(annual=taxes, raw=table if isinstance(table, dict) else {})
 
 
-def _dwelling(detail: FranklinAuditorParcelDetail | None) -> PropertyAssessmentDwelling | None:
+def _dwelling(detail: IasWorldAuditorParcelDetail | None) -> PropertyAssessmentDwelling | None:
     first = _first_table_row(detail.dwelling_data if detail else {})
     if not first:
         return None
@@ -324,7 +325,7 @@ def _dwelling(detail: FranklinAuditorParcelDetail | None) -> PropertyAssessmentD
     )
 
 
-def _site(detail: FranklinAuditorParcelDetail | None) -> PropertyAssessmentSite | None:
+def _site(detail: IasWorldAuditorParcelDetail | None) -> PropertyAssessmentSite | None:
     first = _first_table_row(detail.site_data if detail else {})
     if not first:
         return None
@@ -343,7 +344,7 @@ def _first_table_row(table: dict[str, Any]) -> dict[str, Any] | None:
     return next((row for row in rows if isinstance(row, dict)), None)
 
 
-def _tax_year_from_detail(detail: FranklinAuditorParcelDetail | None) -> str | None:
+def _tax_year_from_detail(detail: IasWorldAuditorParcelDetail | None) -> str | None:
     if not detail:
         return None
     annual_tax = _first_table_row(detail.annual_taxes)
@@ -402,6 +403,7 @@ def _address_from_lines(
     lines: list[str],
     *,
     postal_code: str | None = None,
+    state: str | None = None,
 ) -> Address | None:
     if not lines:
         return None
@@ -416,7 +418,7 @@ def _address_from_lines(
         else:
             address.line2 = city_line
     elif postal_code:
-        address.state = "OH"
+        address.state = state
         address.postal_code = postal_code
     return address
 

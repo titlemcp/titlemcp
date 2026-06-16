@@ -49,12 +49,17 @@ postgres = [
 ]
 "us-oh-franklin" = [
     "titlemcp-us-oh-franklin-recorder>=0.1.0",
+    "titlemcp-us-oh-auditor>=0.1.0",
 ]
 "us-oh-franklin-recorder" = [
     "titlemcp-us-oh-franklin-recorder>=0.1.0",
 ]
+"us-oh-auditor" = [
+    "titlemcp-us-oh-auditor>=0.1.0",
+]
 jurisdictions = [
     "titlemcp-us-oh-franklin-recorder>=0.1.0",
+    "titlemcp-us-oh-auditor>=0.1.0",
 ]
 publish = [
     "build>=1.2.0",

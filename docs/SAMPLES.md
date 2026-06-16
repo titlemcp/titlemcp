@@ -19,7 +19,7 @@ Parcel search:
 ```bash
 python samples/franklin_county_ollama/ollama_client.py \
   --scenario parcel \
-  --parcel-id "030-000526-00"
+  --parcel-id "010-000123-00"
 ```
 
 Address search:
@@ -27,19 +27,21 @@ Address search:
 ```bash
 python samples/franklin_county_ollama/ollama_client.py \
   --scenario address \
-  --address "1150 Glenn Ave"
+  --address "100 Example Ave"
 ```
 
 The prompt does not name `franklin_county_auditor_search`; the sample verifies
 that the model chooses it. The tool returns
-`title_mcp.property_assessment_record` and preserves the raw Franklin Auditor
-payload under `source_specific.franklin_auditor`.
+`title_mcp.property_assessment_record` and preserves the raw auditor payload
+under `source_specific.iasworld_auditor`.
 
-Install the Franklin jurisdiction package in editable mode so the standard
-server can load its `title_mcp.toolsets` entry point:
+Install the shared iasWorld platform package and the Ohio auditor package in
+editable mode so the standard server can load the `title_mcp.toolsets` entry
+point:
 
 ```bash
-.venv/bin/pip install -e packages/jurisdictions/us/oh/franklin/recorder
+.venv/bin/pip install -e packages/platforms/iasworld
+.venv/bin/pip install -e packages/jurisdictions/us/oh/auditor
 ```
 
 ## HOA Contact Search
