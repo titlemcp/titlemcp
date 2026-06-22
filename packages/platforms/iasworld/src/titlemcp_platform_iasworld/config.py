@@ -86,6 +86,11 @@ class IasWorldSiteConfig(BaseModel):
       Montgomery/Stark ``000``).
     - ``mode_map``: overrides the ``mode=`` URL value per search mode (Summit and
       Lake serve a unified ``realprop`` search instead of ``address``).
+    - ``form_field_overrides``: renames the POST field names the client submits.
+      Most counties share the classic iasWorld names (``inpNumber``, ``inpOwner``,
+      ``inpAdrdir``, ``inpUnit``); Lake's unified ``realprop`` form instead uses
+      ``inpNo`` for the address number and ``inpOwner1`` for the owner. Keys are
+      the logical (classic) field names; values are the names this site expects.
     """
 
     model_config = ConfigDict(str_strip_whitespace=True, frozen=True)
@@ -100,12 +105,21 @@ class IasWorldSiteConfig(BaseModel):
     owner: str | None = None
     priority: int = Field(default=230, ge=0)
     mode_map: dict[AuditorSearchMode, str] = Field(default_factory=dict)
+    # Renames the POST field names submitted to the search form. Empty (the
+    # default) means the classic iasWorld names; Lake's realprop form needs
+    # {"inpNumber": "inpNo", "inpOwner": "inpOwner1"} (see docstring).
+    form_field_overrides: dict[str, str] = Field(default_factory=dict)
     # Most Ohio iasWorld counties use purely numeric parcel IDs (Franklin
     # "01000012300"); set False for counties with alphanumeric parcels such as
     # Clermont ("100200C003D", "100200.034C") so letters/dots are preserved.
     numeric_parcel_ids: bool = True
     # Which datalet detail layout the county serves (see DetailProfile).
     detail_profile: DetailProfile = DetailProfile.CLASSIC
+    # Some counties' parcel IDs contain significant internal spaces (Montgomery
+    # "A01 00000 0001") that the search form expects verbatim; the default strips
+    # whitespace when compacting. Set True to preserve spaces in alphanumeric
+    # parcels. Only meaningful when numeric_parcel_ids=False.
+    preserve_parcel_whitespace: bool = False
     metadata: dict[str, Any] = Field(default_factory=dict)
 
     @field_validator("country", "state", mode="before")
