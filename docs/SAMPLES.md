@@ -121,6 +121,32 @@ payload under `source_specific.iasworld_auditor`. Lake's datalet detail is a thi
 layout, parsed by `detail_profile=LAKE`. It uses the same editable installs as the
 Franklin auditor sample above.
 
+## Butler County Auditor
+
+Parcel search:
+
+```bash
+python samples/butler_auditor_ollama/ollama_client.py \
+  --scenario parcel \
+  --parcel-id "A0000001"
+```
+
+Address search:
+
+```bash
+python samples/butler_auditor_ollama/ollama_client.py \
+  --scenario address \
+  --address "100 Example Ave"
+```
+
+The prompt does not name `butler_county_auditor_search`; the sample verifies
+that the model chooses it. Butler runs the same shared iasWorld platform as
+Franklin (config entry only), so the tool returns
+`title_mcp.property_assessment_record` and preserves the raw auditor payload
+under `source_specific.iasworld_auditor`. Its parcels are alphanumeric
+(`A0000001`). It uses the same editable installs as the Franklin auditor sample
+above.
+
 ## HOA Contact Search
 
 Search by HOA name and state:

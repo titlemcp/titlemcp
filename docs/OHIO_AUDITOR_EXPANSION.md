@@ -77,7 +77,7 @@ output).
 | Clermont | `clermontauditorrealestate.org/_web/` | `jur=000`, **alphanumeric** parcels — **enabled** |
 | Montgomery | `www.mcrealestate.org/` | `jur=000`, no `/_web/` prefix, **alphanumeric** parcels, CLASSIC detail (all verified live) — **enabled** |
 | Stark | `realestate.starkcountyohio.gov/` | `jur=000` |
-| Butler | `propertysearch.bcohio.gov/` | |
+| Butler | `propertysearch.bcohio.gov/` | `jur=000`, **alphanumeric** parcels, PUBLIC_ACCESS detail (all verified live) — **enabled** |
 | Lucas | `icare.co.lucas.oh.us/lucascare/` | branded "AREIS"; path prefix; `jur=048` (verified live), numeric parcels, CLASSIC detail — **enabled** |
 | Summit | `propertyaccess.summitoh.net/` | uses `mode=realprop` |
 | Lake | `auditor.lakecountyohio.gov/` | `jur=000`, **alphanumeric** parcels, unified `mode=realprop` search with renamed form fields (`inpNo`/`inpOwner1`), LAKE detail (all verified live) — **enabled** |
@@ -153,7 +153,14 @@ has now landed (`detail_profile=LAKE`). The `form_field_overrides`
 change is minimal and backward-compatible (no overrides = classic names; Franklin
 and Clermont are unaffected, with a focused platform test pinning both).
 
-Remaining: Stark, Butler, Summit — roughly in that order. Each county is one PR:
+**Butler is enabled** as another config-only county on the shared iasWorld stack
+(`propertysearch.bcohio.gov/`). Re-verified live once site maintenance lifted (an
+owner search returned result rows with a reachable datalet): `jur=000`, parcels
+are alphanumeric (e.g. `A0000001`) so `numeric_parcel_ids=False`, and the datalet
+detail uses the Public Access split layout with numbered labels (`Owner 1`,
+`Address 1`), so `detail_profile=PUBLIC_ACCESS` — not the `CLASSIC` default.
+
+Remaining: Stark, Summit — roughly in that order. Each county is one PR:
 
 1. Append an `IasWorldSiteConfig` to `OH_IASWORLD_SITES` in `sites.py`.
 2. Capture a real search + detail HTML **fixture** for that site.

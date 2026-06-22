@@ -24,6 +24,7 @@ new `IasWorldSiteConfig` entry plus a fixture-backed contract test and a sample.
 | Montgomery | `us-oh-montgomery-auditor` | alphanumeric | enabled |
 | Lucas | `us-oh-lucas-auditor` | numeric | enabled |
 | Lake | `us-oh-lake-auditor` | alphanumeric | enabled |
+| Butler | `us-oh-butler-auditor` | alphanumeric | enabled |
 
 Lake's auditor identifies as iasWorld but serves a single unified `realprop`
 search for parcel/owner/address; two config knobs handle it (`mode_map` to the
@@ -37,7 +38,7 @@ rather than the detail page, and this datalet tab has no transfer/sales section,
 so `most_recent_transfer` stays empty.
 
 Confirmed on iasWorld and queued for enablement (need a captured fixture):
-Stark, Butler, Summit. See
+Stark, Summit. See
 [`docs/OHIO_AUDITOR_EXPANSION.md`](../../../../../docs/OHIO_AUDITOR_EXPANSION.md).
 
 ## How it registers

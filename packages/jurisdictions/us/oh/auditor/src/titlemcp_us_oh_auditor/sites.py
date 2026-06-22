@@ -7,7 +7,7 @@ from titlemcp_platform_iasworld import AuditorSearchMode, DetailProfile, IasWorl
 # a sample) — the scraping/canonical logic lives in titlemcp-platform-iasworld.
 #
 # Counties confirmed on iasWorld but not yet enabled (need a captured fixture):
-# Stark, Butler, Summit. See
+# Stark, Summit. See
 # docs/OHIO_AUDITOR_EXPANSION.md for the rollout order and platform recon.
 
 FRANKLIN = IasWorldSiteConfig(
@@ -122,10 +122,31 @@ LAKE = IasWorldSiteConfig(
     priority=230,
 )
 
+# Butler runs the same iasWorld stack: commonsearch.aspx (mode=owner/address/parid)
+# and Datalet.aspx, "Powered by iasWorld Public Access" (Tyler). The jur district
+# code 000 was confirmed from a live Datalet.aspx URL. Its parcels are 14-character
+# alphanumeric tokens (e.g. "A0000001"), so numeric_parcel_ids=False like Clermont.
+# Re-verified live (an owner search returned result rows): the datalet detail uses
+# the Public Access split layout with numbered labels ("Owner 1", "Address 1"), so
+# detail_profile=PUBLIC_ACCESS like Clermont — not the CLASSIC default.
+BUTLER = IasWorldSiteConfig(
+    source_id="us-oh-butler-auditor",
+    county="Butler County",
+    state="OH",
+    name="Butler County, Ohio Auditor Property Search",
+    base_url="https://propertysearch.bcohio.gov/",
+    district_code="000",
+    numeric_parcel_ids=False,
+    detail_profile=DetailProfile.PUBLIC_ACCESS,
+    owner="Butler County Auditor",
+    priority=230,
+)
+
 OH_IASWORLD_SITES: list[IasWorldSiteConfig] = [
     FRANKLIN,
     CLERMONT,
     MONTGOMERY,
     LUCAS,
     LAKE,
+    BUTLER,
 ]
