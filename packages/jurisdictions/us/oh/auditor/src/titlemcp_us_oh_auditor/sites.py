@@ -7,7 +7,7 @@ from titlemcp_platform_iasworld import DetailProfile, IasWorldSiteConfig
 # a sample) — the scraping/canonical logic lives in titlemcp-platform-iasworld.
 #
 # Counties confirmed on iasWorld but not yet enabled (need a captured fixture):
-# Montgomery, Stark, Butler, Lucas, Summit, Lake. See
+# Stark, Butler, Lucas, Summit, Lake. See
 # docs/OHIO_AUDITOR_EXPANSION.md for the rollout order and platform recon.
 
 FRANKLIN = IasWorldSiteConfig(
@@ -39,7 +39,32 @@ CLERMONT = IasWorldSiteConfig(
     priority=230,
 )
 
+# Montgomery is the same iasWorld stack, but its base_url is a bare domain
+# (https://www.mcrealestate.org/) — the parent of search/ and Datalets/ with no
+# "/_web/" prefix. Two knobs were confirmed against the live site: jur=000 (seen
+# in the datalet URLs), and the primary Parcel ID is alphanumeric (example
+# "A01 00000 0001") so numeric_parcel_ids=False, like Clermont. Re-verified live:
+# the datalet detail is the combined-Owner CLASSIC layout (no numbered "Owner 1"/
+# "Address 1" Public Access sections), so detail_profile=CLASSIC (the default) is
+# correct. All knobs now confirmed against live result/datalet pages.
+MONTGOMERY = IasWorldSiteConfig(
+    source_id="us-oh-montgomery-auditor",
+    county="Montgomery County",
+    state="OH",
+    name="Montgomery County, Ohio Auditor Property Search",
+    base_url="https://www.mcrealestate.org/",
+    district_code="000",
+    numeric_parcel_ids=False,
+    # Newer iasWorld build: parcels carry significant internal spaces
+    # ("A01 00000 0001") the form expects verbatim. The owner/address column
+    # swap is handled automatically by header detection.
+    preserve_parcel_whitespace=True,
+    owner="Montgomery County Auditor",
+    priority=230,
+)
+
 OH_IASWORLD_SITES: list[IasWorldSiteConfig] = [
     FRANKLIN,
     CLERMONT,
+    MONTGOMERY,
 ]
