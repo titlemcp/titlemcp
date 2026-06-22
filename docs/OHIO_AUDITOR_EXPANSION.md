@@ -75,7 +75,7 @@ output).
 | Montgomery | `www.mcrealestate.org/` | `jur=000`, no `/_web/` prefix, **alphanumeric** parcels, CLASSIC detail (all verified live) — **enabled** |
 | Stark | `realestate.starkcountyohio.gov/` | `jur=000` |
 | Butler | `propertysearch.bcohio.gov/` | |
-| Lucas | `icare.co.lucas.oh.us/lucascare/` | branded "AREIS"; path prefix |
+| Lucas | `icare.co.lucas.oh.us/lucascare/` | branded "AREIS"; path prefix; `jur=048` (verified live), numeric parcels, CLASSIC detail — **enabled** |
 | Summit | `propertyaccess.summitoh.net/` | uses `mode=realprop` |
 | Lake | `auditor.lakecountyohio.gov/` | page identifies as "iasWorld"; `mode=realprop` |
 
@@ -125,6 +125,16 @@ profile could not be inspected live (maintenance / bot protection) so it keeps
 the safe `detail_profile=CLASSIC` default pending live confirmation.
 
 Remaining: Stark, Butler, Lucas, Summit, Lake — roughly in that order.
+**Lucas is enabled** as the first AREIS-branded, path-prefix base-URL county
+(`.../lucascare/`), confirming the platform layer handles a non-`/_web/` base. All
+knobs were re-verified against the live site (an owner search returned result rows
+with a reachable datalet): the parcel token is **`jur=048`** — not the `000`
+regional default — so `district_code="048"`; parcels are numeric (`0100000`), so
+`numeric_parcel_ids` stays the default `True`; and the datalet detail is the
+combined-Owner `CLASSIC` layout (labels `Owner`/`Prior Owner`, not the numbered
+Public Access sections), so `detail_profile` stays `CLASSIC`.
+
+Remaining: Montgomery, Stark, Butler, Summit, Lake — roughly in that order.
 Each county is one PR:
 
 1. Append an `IasWorldSiteConfig` to `OH_IASWORLD_SITES` in `sites.py`.
