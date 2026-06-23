@@ -72,31 +72,78 @@ class _FormParser(HTMLParser):
         return data
 
 
+def _classify_header(label: str) -> str | None:
+    """Map a results-table header label to a canonical field, or None to ignore.
+
+    iasWorld builds vary the labels ("Parcel ID" / "Parcel #" / "Parcel"; "Parcel
+    Location" / "Parcel Address" / "Address"; "Owner"), and interleave columns the
+    canonical record does not use (LUC, Route, TaxYr, Land Use, the select-all
+    checkbox). Address-ish labels are checked before "parcel" so "Parcel Location"
+    and "Parcel Address" map to address, not parcel.
+    """
+    text = re.sub(r"[^a-z0-9 ]", " ", label.lower())
+    text = re.sub(r"\s+", " ", text).strip()
+    if not text:
+        return None
+    if "location" in text or "address" in text or "situs" in text:
+        return "address"
+    if "owner" in text:
+        return "owner"
+    if "parcel" in text or text == "pin":
+        return "parcel"
+    if "legal" in text:
+        return "legal"
+    return None
+
+
 class _SearchResultsParser(HTMLParser):
-    def __init__(self, *, numeric_parcel_ids: bool = True) -> None:
+    """Parse the iasWorld results table.
+
+    Columns are mapped by their ``<th>`` header labels (``_classify_header``) so
+    any build's column order — including owner/address swaps and interleaved
+    extra columns — is handled automatically. Tables without headers fall back to
+    the classic positional order (parcel, address, owner, legal).
+    """
+
+    def __init__(
+        self,
+        *,
+        numeric_parcel_ids: bool = True,
+        preserve_parcel_whitespace: bool = False,
+    ) -> None:
         super().__init__(convert_charrefs=True)
         self._numeric_parcel_ids = numeric_parcel_ids
+        self._preserve_parcel_whitespace = preserve_parcel_whitespace
         self.rows: list[IasWorldAuditorSearchHit] = []
-        self._in_result_row = False
+        # Field name (or None) per header column index, from the latest header row.
+        self._headers: list[str | None] = []
+        self._in_row = False
+        self._row_is_data = False
+        self._row_has_header = False
+        self._pending_headers: list[str | None] = []
         self._in_cell = False
+        self._cell_is_header = False
         self._cell_parts: list[str] = []
         self._cells: list[str] = []
-        self._onclick: str | None = None
         self._parcel_token: str | None = None
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attributes = _attrs(attrs)
-        if tag == "tr" and "SearchResults" in attributes.get("class", ""):
-            self._in_result_row = True
-            self._in_cell = False
-            self._cell_parts = []
+        if tag == "tr":
+            self._in_row = True
+            self._row_is_data = "SearchResults" in attributes.get("class", "")
+            self._row_has_header = False
+            self._pending_headers = []
             self._cells = []
-            self._onclick = attributes.get("onclick")
             self._parcel_token = None
-        elif self._in_result_row and tag == "td":
+            self._in_cell = False
+        elif self._in_row and tag in ("td", "th"):
             self._in_cell = True
+            self._cell_is_header = tag == "th"
             self._cell_parts = []
-        elif self._in_result_row and tag == "input":
+            if tag == "th":
+                self._row_has_header = True
+        elif self._in_row and self._row_is_data and tag == "input":
             value = attributes.get("value", "")
             if _looks_like_parcel_token(value):
                 self._parcel_token = value
@@ -106,20 +153,57 @@ class _SearchResultsParser(HTMLParser):
             self._cell_parts.append(data)
 
     def handle_endtag(self, tag: str) -> None:
-        if tag == "td" and self._in_cell:
-            self._cells.append(_clean_text(" ".join(self._cell_parts)))
+        if tag in ("td", "th") and self._in_cell:
+            text = _clean_text(" ".join(self._cell_parts))
+            if self._cell_is_header:
+                self._pending_headers.append(_classify_header(text))
+            else:
+                self._cells.append(text)
             self._in_cell = False
             self._cell_parts = []
-        elif tag == "tr" and self._in_result_row:
-            self._finish_row()
-            self._in_result_row = False
+        elif tag == "tr" and self._in_row:
+            if self._row_has_header:
+                # Only adopt a genuine column header (one naming a parcel column);
+                # ignore stray single-cell header rows like "Selection Manager".
+                if any(field == "parcel" for field in self._pending_headers):
+                    self._headers = self._pending_headers
+            elif self._row_is_data:
+                self._finish_row()
+            self._in_row = False
+
+    def _map_columns(self, cells: list[str]) -> dict[str, str] | None:
+        # Header-driven: align labelled columns to data cells. A data row may have
+        # one extra leading cell (the unlabelled select checkbox) vs the headers.
+        if self._headers:
+            offset = 1 if len(cells) == len(self._headers) + 1 else 0
+            mapped: dict[str, str] = {}
+            for index, field in enumerate(self._headers):
+                if field is None:
+                    continue
+                cell_index = index + offset
+                if 0 <= cell_index < len(cells) and cells[cell_index]:
+                    mapped.setdefault(field, cells[cell_index])
+            if "parcel" in mapped:
+                return mapped
+        # Fallback: classic positional order on the non-empty cells.
+        nonempty = [cell for cell in cells if cell]
+        if len(nonempty) < 3:
+            return None
+        mapped = {"parcel": nonempty[0], "address": nonempty[1], "owner": nonempty[2]}
+        if len(nonempty) > 3:
+            mapped["legal"] = nonempty[3]
+        return mapped
 
     def _finish_row(self) -> None:
-        cells = [cell for cell in self._cells if cell]
-        if len(cells) < 3:
+        mapped = self._map_columns(self._cells)
+        if not mapped:
             return
-        parcel_id = cells[0]
-        compact = _compact_parcel_id(parcel_id, numeric_only=self._numeric_parcel_ids)
+        parcel_id = mapped["parcel"]
+        compact = _compact_parcel_id(
+            parcel_id,
+            numeric_only=self._numeric_parcel_ids,
+            preserve_whitespace=self._preserve_parcel_whitespace,
+        )
         jurisdiction, tax_year = _parse_parcel_token(
             self._parcel_token, numeric_only=self._numeric_parcel_ids
         )
@@ -129,10 +213,10 @@ class _SearchResultsParser(HTMLParser):
             parcel_token=self._parcel_token,
             jurisdiction=jurisdiction,
             tax_year=tax_year,
-            address=cells[1] if len(cells) > 1 else None,
-            owner=cells[2] if len(cells) > 2 else None,
-            legal_description=cells[3] if len(cells) > 3 else None,
-            raw_cells=cells,
+            address=mapped.get("address"),
+            owner=mapped.get("owner"),
+            legal_description=mapped.get("legal"),
+            raw_cells=[cell for cell in self._cells if cell],
         )
         self.rows.append(hit)
 
@@ -272,7 +356,9 @@ class IasWorldAuditorClient:
             "mode": "",
             "UseSearch": "no",
             "pin": _compact_parcel_id(
-                parcel_number, numeric_only=self.config.numeric_parcel_ids
+                parcel_number,
+                numeric_only=self.config.numeric_parcel_ids,
+                preserve_whitespace=self.config.preserve_parcel_whitespace,
             ),
             "jur": jurisdiction or self.config.district_code,
         }
@@ -381,8 +467,20 @@ class IasWorldAuditorClient:
                 "hdAction": "Search",
             }
         )
-        form_data.update(fields)
+        form_data.update(self._apply_field_overrides(fields))
         return (*self._post(search_url, form_data, referer=search_url), site_year)
+
+    def _apply_field_overrides(self, fields: dict[str, str]) -> dict[str, str]:
+        """Rename POST field keys for sites whose form labels differ.
+
+        Most iasWorld counties share the classic field names; Lake's unified
+        ``realprop`` form uses ``inpNo``/``inpOwner1`` instead of
+        ``inpNumber``/``inpOwner``. With no overrides the dict is unchanged.
+        """
+        overrides = self.config.form_field_overrides
+        if not overrides:
+            return fields
+        return {overrides.get(key, key): value for key, value in fields.items()}
 
     def _get(self, url: str) -> tuple[str, str]:
         return self._request(url)
@@ -431,7 +529,10 @@ class IasWorldAuditorClient:
         return parser.form_data, site_year_match.group(1) if site_year_match else None
 
     def _parse_search_results(self, html: str) -> list[IasWorldAuditorSearchHit]:
-        parser = _SearchResultsParser(numeric_parcel_ids=self.config.numeric_parcel_ids)
+        parser = _SearchResultsParser(
+            numeric_parcel_ids=self.config.numeric_parcel_ids,
+            preserve_parcel_whitespace=self.config.preserve_parcel_whitespace,
+        )
         parser.feed(html)
         for hit in parser.rows:
             if not hit.detail_url:
@@ -456,7 +557,11 @@ class IasWorldAuditorClient:
             return _dedupe_attempts(_owner_attempts(query))
         if query.mode == AuditorSearchMode.PARCEL_ID:
             return _dedupe_attempts(
-                _parcel_attempts(query, numeric_parcel_ids=self.config.numeric_parcel_ids)
+                _parcel_attempts(
+                    query,
+                    numeric_parcel_ids=self.config.numeric_parcel_ids,
+                    preserve_whitespace=self.config.preserve_parcel_whitespace,
+                )
             )
         return _dedupe_attempts(_address_attempts(query))
 
@@ -511,12 +616,16 @@ def _parcel_attempts(
     query: IasWorldAuditorSearchQuery,
     *,
     numeric_parcel_ids: bool = True,
+    preserve_whitespace: bool = False,
 ) -> list[tuple[dict[str, str], str]]:
     parcel_id = query.parcel_id or ""
     if not parcel_id:
         raise IasWorldAuditorClientError("Parcel ID searches require parcel_id.")
     compact = _compact_parcel_id(
-        parcel_id, keep_wildcards=True, numeric_only=numeric_parcel_ids
+        parcel_id,
+        keep_wildcards=True,
+        numeric_only=numeric_parcel_ids,
+        preserve_whitespace=preserve_whitespace,
     )
     attempts = [({"inpParid": compact}, "PARID")]
     if not numeric_parcel_ids:
@@ -639,16 +748,24 @@ def _compact_parcel_id(
     *,
     keep_wildcards: bool = False,
     numeric_only: bool = True,
+    preserve_whitespace: bool = False,
 ) -> str:
     if not value:
         return ""
     if numeric_only:
         pattern = r"[^0-9*]" if keep_wildcards else r"\D"
         return re.sub(pattern, "", value)
-    # Alphanumeric parcels (e.g. Clermont "100200C003D", "100200.034C"): drop
-    # whitespace and dash separators but preserve letters, digits, and dots.
-    cleaned = re.sub(r"[\s-]", "", value)
-    cleaned = re.sub(r"[^0-9A-Za-z.*]", "", cleaned).upper()
+    # Alphanumeric parcels (e.g. Clermont "100200C003D", "100200.034C"): drop dash
+    # separators but preserve letters, digits, and dots. By default whitespace is
+    # also dropped; counties whose parcel form expects significant internal spaces
+    # (Montgomery "A01 00000 0001") set preserve_whitespace=True.
+    if preserve_whitespace:
+        cleaned = re.sub(r"-", "", value)
+        cleaned = re.sub(r"[^0-9A-Za-z.* ]", "", cleaned).upper()
+        cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    else:
+        cleaned = re.sub(r"[\s-]", "", value)
+        cleaned = re.sub(r"[^0-9A-Za-z.*]", "", cleaned).upper()
     if not keep_wildcards:
         cleaned = cleaned.replace("*", "")
     return cleaned

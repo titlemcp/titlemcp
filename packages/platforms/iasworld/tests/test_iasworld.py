@@ -71,6 +71,94 @@ class IasWorldClientTests(unittest.TestCase):
         )
 
 
+class IasWorldNewerBuildTests(unittest.TestCase):
+    # Newer iasWorld builds vary the results-table column order (owner/address
+    # swapped, extra interleaved columns). Columns are mapped by their <th> header
+    # labels, so no per-county column config is needed.
+
+    def _config(self, **overrides: object) -> IasWorldSiteConfig:
+        base = dict(
+            source_id="us-oh-montgomery-auditor",
+            county="Montgomery County",
+            state="OH",
+            name="Montgomery County, Ohio Auditor",
+            base_url="https://www.mcrealestate.org/",
+            district_code="000",
+            numeric_parcel_ids=False,
+        )
+        base.update(overrides)
+        return IasWorldSiteConfig(**base)
+
+    def test_header_detection_maps_swapped_owner_address(self) -> None:
+        # Montgomery build: headers Parcel ID / Owner / Parcel Location.
+        html = (
+            "<table>"
+            "<tr><th>Parcel ID</th><th>Owner</th><th>Parcel Location</th></tr>"
+            "<tr class='SearchResults'>"
+            "<td>A01 00000 0001</td>"
+            "<td>DOE JANE A</td>"
+            "<td>100 EXAMPLE AVE</td>"
+            "</tr></table>"
+        )
+        rows = IasWorldAuditorClient(self._config())._parse_search_results(html)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0].parcel_id, "A01 00000 0001")
+        self.assertEqual(rows[0].owner, "DOE JANE A")
+        self.assertEqual(rows[0].address, "100 EXAMPLE AVE")
+
+    def test_header_detection_skips_interleaved_and_checkbox_columns(self) -> None:
+        # Summit build: All / Parcel / LUC / Route / Address / Owner / TaxYr, with a
+        # leading empty select-checkbox cell and a stray "Selection Manager" header.
+        html = (
+            "<table>"
+            "<tr><th>All</th><th>Parcel</th><th>LUC</th><th>Route</th>"
+            "<th>Address</th><th>Owner</th><th>TaxYr</th></tr>"
+            "<tr><th>Selection Manager</th></tr>"
+            "<tr class='SearchResults'>"
+            "<td></td><td>0100000</td><td>510</td><td>000000000000000</td>"
+            "<td>100 EXAMPLE ST NW</td><td>DOE JOHN Q</td><td>2025</td>"
+            "</tr></table>"
+        )
+        rows = IasWorldAuditorClient(self._config())._parse_search_results(html)
+        self.assertEqual(rows[0].parcel_id, "0100000")
+        self.assertEqual(rows[0].address, "100 EXAMPLE ST NW")
+        self.assertEqual(rows[0].owner, "DOE JOHN Q")
+
+    def test_no_header_falls_back_to_classic_positional(self) -> None:
+        # A table without <th> headers keeps the classic parcel/address/owner order.
+        html = (
+            "<table><tr class='SearchResults'>"
+            "<td>010-000123-00</td><td>100 EXAMPLE AVE</td><td>DOE JANE A</td>"
+            "</tr></table>"
+        )
+        rows = IasWorldAuditorClient(FRANKLIN)._parse_search_results(html)
+        self.assertEqual(rows[0].parcel_id, "010-000123-00")
+        self.assertEqual(rows[0].address, "100 EXAMPLE AVE")
+        self.assertEqual(rows[0].owner, "DOE JANE A")
+
+    def test_preserve_parcel_whitespace_keeps_internal_spaces(self) -> None:
+        from titlemcp_platform_iasworld.client import _compact_parcel_id
+
+        # Default strips whitespace; the knob preserves the spaces the form needs.
+        self.assertEqual(
+            _compact_parcel_id("A01 00000 0001", numeric_only=False), "A01000000001"
+        )
+        self.assertEqual(
+            _compact_parcel_id("A01 00000 0001", numeric_only=False, preserve_whitespace=True),
+            "A01 00000 0001",
+        )
+
+    def test_parcel_search_submits_spaced_parcel_when_preserved(self) -> None:
+        from titlemcp_platform_iasworld.client import _parcel_attempts
+        from titlemcp_platform_iasworld.models import IasWorldAuditorSearchQuery
+
+        query = IasWorldAuditorSearchQuery(
+            mode=AuditorSearchMode.PARCEL_ID, parcel_id="A01 00000 0001"
+        )
+        attempts = _parcel_attempts(query, numeric_parcel_ids=False, preserve_whitespace=True)
+        self.assertEqual(attempts[0][0]["inpParid"], "A01 00000 0001")
+
+
 class IasWorldConfigTests(unittest.TestCase):
     def test_search_and_detail_urls_use_base_url_and_district(self) -> None:
         client = IasWorldAuditorClient(FRANKLIN)
@@ -126,6 +214,138 @@ class IasWorldConfigTests(unittest.TestCase):
     def test_tool_name_and_title_derived_from_county(self) -> None:
         self.assertEqual(FRANKLIN.tool_name, "franklin_county_auditor_search")
         self.assertEqual(FRANKLIN.tool_title, "Franklin County Auditor Search")
+
+
+# Lake County serves a unified iasWorld "realprop" search whose form renames two
+# POST fields. These tests pin both halves of that knob: every mode routes to the
+# realprop URL, and the address-number / owner field names are remapped — while
+# the classic counties (no overrides) keep posting inpNumber / inpOwner.
+LAKE = IasWorldSiteConfig(
+    source_id="us-oh-lake-auditor",
+    county="Lake County",
+    state="OH",
+    name="Lake County, Ohio Auditor Property Search",
+    base_url="https://auditor.lakecountyohio.gov/",
+    district_code="000",
+    numeric_parcel_ids=False,
+    mode_map={
+        AuditorSearchMode.ADDRESS: "realprop",
+        AuditorSearchMode.OWNER: "realprop",
+        AuditorSearchMode.PARCEL_ID: "realprop",
+    },
+    form_field_overrides={"inpNumber": "inpNo", "inpOwner": "inpOwner1"},
+)
+
+
+class IasWorldFormFieldOverrideTests(unittest.TestCase):
+    def test_realprop_mode_map_routes_every_mode(self) -> None:
+        for mode in (
+            AuditorSearchMode.ADDRESS,
+            AuditorSearchMode.OWNER,
+            AuditorSearchMode.PARCEL_ID,
+        ):
+            self.assertEqual(
+                LAKE.search_url(mode),
+                "https://auditor.lakecountyohio.gov/search/commonsearch.aspx?mode=realprop",
+            )
+
+    def test_overrides_rename_address_and_owner_fields(self) -> None:
+        client = IasWorldAuditorClient(LAKE)
+
+        renamed = client._apply_field_overrides(
+            {"inpNumber": "100", "inpAdrdir": "N", "inpStreet": "EXAMPLE", "inpUnit": ""}
+        )
+
+        # Address number is remapped; street/direction/unit keep their names.
+        self.assertEqual(
+            renamed, {"inpNo": "100", "inpAdrdir": "N", "inpStreet": "EXAMPLE", "inpUnit": ""}
+        )
+
+        owner_fields = client._apply_field_overrides({"inpOwner": "DOE JANE A"})
+        self.assertEqual(owner_fields, {"inpOwner1": "DOE JANE A"})
+
+        # Parcel field is shared and never renamed.
+        self.assertEqual(
+            client._apply_field_overrides({"inpParid": "00A0000000002"}),
+            {"inpParid": "00A0000000002"},
+        )
+
+    def test_classic_counties_keep_field_names(self) -> None:
+        # Backward-compatibility guard: no overrides means the dict passes through.
+        client = IasWorldAuditorClient(FRANKLIN)
+
+        self.assertEqual(
+            client._apply_field_overrides({"inpNumber": "100", "inpOwner": "DOE JANE A"}),
+            {"inpNumber": "100", "inpOwner": "DOE JANE A"},
+        )
+
+    def test_submitted_post_body_uses_lake_field_names(self) -> None:
+        # End-to-end through _submit_search with a fake opener that captures the
+        # POST body, proving the remap reaches the wire for an owner search.
+        opener = _CaptureOpener(LAKE_SEARCH_HTML)
+        client = IasWorldAuditorClient(LAKE, opener=opener)
+
+        client.search(
+            IasWorldAuditorSearchQuery(
+                mode=AuditorSearchMode.OWNER,
+                owner_name="DOE JANE A",
+                include_details=False,
+            )
+        )
+
+        self.assertTrue(opener.post_bodies, "expected at least one POST")
+        body = opener.post_bodies[0]
+        self.assertIn("inpOwner1=", body)
+        self.assertNotIn("inpOwner=", body)
+
+
+LAKE_SEARCH_HTML = """
+<table id="searchResults">
+  <tr class="SearchResults"
+      onclick="javascript:selectSearchRow('../Datalets/Datalet.aspx?sIndex=0&idx=1')">
+    <td><input name="chkPin" value="000:00A0000000002:2026"></td>
+    <td><div>00A0000000002</div></td>
+    <td><div>100 EXAMPLE ST</div></td>
+    <td><div>DOE JANE A</div></td>
+    <td><div>EXAMPLE SUBDIVISION LOT 1</div></td>
+  </tr>
+</table>
+"""
+
+
+class _CaptureResponse:
+    def __init__(self, body: str, url: str) -> None:
+        self._body = body.encode("utf-8")
+        self._url = url
+
+    def read(self) -> bytes:
+        return self._body
+
+    def geturl(self) -> str:
+        return self._url
+
+    def __enter__(self) -> _CaptureResponse:
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        return None
+
+
+class _CaptureOpener:
+    """Minimal opener stand-in that records POST bodies and serves fixed HTML."""
+
+    def __init__(self, search_html: str) -> None:
+        self._search_html = search_html
+        self.post_bodies: list[str] = []
+
+    def open(self, request: object, timeout: float | None = None) -> _CaptureResponse:
+        data = getattr(request, "data", None)
+        url = getattr(request, "full_url", "https://auditor.lakecountyohio.gov/")
+        if data is None:
+            # The initial GET of the search form.
+            return _CaptureResponse("<form></form>", url)
+        self.post_bodies.append(data.decode("utf-8"))
+        return _CaptureResponse(self._search_html, url)
 
 
 class IasWorldCanonicalTests(unittest.TestCase):
