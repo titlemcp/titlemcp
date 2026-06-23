@@ -21,9 +21,10 @@ new `IasWorldSiteConfig` entry plus a fixture-backed contract test and a sample.
 | --- | --- | --- | --- |
 | Franklin | `us-oh-franklin-auditor` | numeric | enabled |
 | Clermont | `us-oh-clermont-auditor` | alphanumeric | enabled |
+| Montgomery | `us-oh-montgomery-auditor` | alphanumeric | enabled |
 
 Confirmed on iasWorld and queued for enablement (need a captured fixture):
-Montgomery, Stark, Butler, Lucas, Summit, Lake. See
+Stark, Butler, Lucas, Summit, Lake. See
 [`docs/OHIO_AUDITOR_EXPANSION.md`](../../../../../docs/OHIO_AUDITOR_EXPANSION.md).
 
 ## How it registers

@@ -10,7 +10,7 @@ from pathlib import Path
 from titlemcp_us_oh_auditor.adapters import OhioCountyAuditorAdapter
 from titlemcp_us_oh_auditor.manifest import capability_manifest
 from titlemcp_us_oh_auditor.plugin import OhioAuditorPlugin
-from titlemcp_us_oh_auditor.sites import CLERMONT, FRANKLIN, OH_IASWORLD_SITES
+from titlemcp_us_oh_auditor.sites import CLERMONT, FRANKLIN, MONTGOMERY, OH_IASWORLD_SITES
 from titlemcp_us_oh_auditor.toolsets import OhioAuditorToolset
 
 from title_mcp.domain.models import Jurisdiction, WorkflowKind
@@ -55,6 +55,18 @@ class OhioAuditorContractTests(unittest.TestCase):
         self.assertEqual(CLERMONT.district_code, "000")
         self.assertFalse(CLERMONT.numeric_parcel_ids)
         self.assertEqual(CLERMONT.tool_name, "clermont_county_auditor_search")
+
+    def test_sites_table_includes_montgomery_with_alphanumeric_parcels(self) -> None:
+        # Montgomery: a bare-domain base_url (no /_web/ prefix) and an alphanumeric
+        # primary Parcel ID ("A01 00107 0001"), so numeric_parcel_ids=False. jur=000
+        # and the alphanumeric parcels were both confirmed against the live site.
+        self.assertIn(MONTGOMERY, OH_IASWORLD_SITES)
+        self.assertEqual(MONTGOMERY.source_id, "us-oh-montgomery-auditor")
+        self.assertEqual(MONTGOMERY.district_code, "000")
+        self.assertEqual(MONTGOMERY.base_url, "https://www.mcrealestate.org/")
+        self.assertFalse(MONTGOMERY.numeric_parcel_ids)
+        self.assertTrue(MONTGOMERY.preserve_parcel_whitespace)
+        self.assertEqual(MONTGOMERY.tool_name, "montgomery_county_auditor_search")
 
     def test_adapter_supports_ohio_tax_certificate(self) -> None:
         adapter = OhioCountyAuditorAdapter()

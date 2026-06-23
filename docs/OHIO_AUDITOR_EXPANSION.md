@@ -72,7 +72,7 @@ output).
 | --- | --- | --- |
 | Franklin | `property.franklincountyauditor.com/_web/` | `jur=025`, numeric parcels — **enabled** |
 | Clermont | `clermontauditorrealestate.org/_web/` | `jur=000`, **alphanumeric** parcels — **enabled** |
-| Montgomery | `www.mcrealestate.org/` | `jur=000`, no `/_web/` prefix |
+| Montgomery | `www.mcrealestate.org/` | `jur=000`, no `/_web/` prefix, **alphanumeric** parcels, CLASSIC detail (all verified live) — **enabled** |
 | Stark | `realestate.starkcountyohio.gov/` | `jur=000` |
 | Butler | `propertysearch.bcohio.gov/` | |
 | Lucas | `icare.co.lucas.oh.us/lucascare/` | branded "AREIS"; path prefix |
@@ -116,7 +116,15 @@ variation — alphanumeric parcel IDs — which was absorbed by one shared knob
 (`numeric_parcel_ids`) that every future alphanumeric-parcel county now inherits
 for free. That is the extraction's payoff in one PR.
 
-Remaining: Montgomery, Stark, Butler, Lucas, Summit, Lake — roughly in that order.
+**Montgomery is enabled** as the third county and the first bare-domain base_url
+(`https://www.mcrealestate.org/`, no `/_web/` prefix) — another config-only entry.
+It also reuses the alphanumeric-parcel knob (`numeric_parcel_ids=False`) for its
+letter-prefixed Parcel IDs (example `A01 00000 0001`). `jur=000` and the
+alphanumeric parcels were confirmed against the live site; the datalet detail
+profile could not be inspected live (maintenance / bot protection) so it keeps
+the safe `detail_profile=CLASSIC` default pending live confirmation.
+
+Remaining: Stark, Butler, Lucas, Summit, Lake — roughly in that order.
 Each county is one PR:
 
 1. Append an `IasWorldSiteConfig` to `OH_IASWORLD_SITES` in `sites.py`.
