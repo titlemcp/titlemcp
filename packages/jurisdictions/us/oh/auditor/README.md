@@ -25,6 +25,10 @@ new `IasWorldSiteConfig` entry plus a fixture-backed contract test and a sample.
 
 Confirmed on iasWorld and queued for enablement (need a captured fixture):
 Stark, Butler, Lucas, Summit, Lake. See
+| Lucas | `us-oh-lucas-auditor` | numeric | enabled |
+
+Confirmed on iasWorld and queued for enablement (need a captured fixture):
+Montgomery, Stark, Butler, Summit, Lake. See
 [`docs/OHIO_AUDITOR_EXPANSION.md`](../../../../../docs/OHIO_AUDITOR_EXPANSION.md).
 
 ## How it registers

@@ -7,7 +7,7 @@ from titlemcp_platform_iasworld import DetailProfile, IasWorldSiteConfig
 # a sample) — the scraping/canonical logic lives in titlemcp-platform-iasworld.
 #
 # Counties confirmed on iasWorld but not yet enabled (need a captured fixture):
-# Stark, Butler, Lucas, Summit, Lake. See
+# Stark, Butler, Summit, Lake. See
 # docs/OHIO_AUDITOR_EXPANSION.md for the rollout order and platform recon.
 
 FRANKLIN = IasWorldSiteConfig(
@@ -63,8 +63,29 @@ MONTGOMERY = IasWorldSiteConfig(
     priority=230,
 )
 
+# Lucas County serves its iasWorld site under the AREIS brand at a path-prefix
+# base_url (the parent of search/ and Datalets/ is .../lucascare/), "Powered by
+# iasWorld Public Access" with the standard commonsearch.aspx / inpParid stack.
+# All knobs re-verified live (an owner search returned result rows): the parcel
+# token is jur 048 (e.g. "048:0100000:2026"), so district_code="048" — NOT the
+# 000 regional default. Parcels are numeric ("0100000"), so the default
+# numeric_parcel_ids=True is kept; the datalet detail uses the combined-Owner
+# CLASSIC layout (labels "Owner"/"Prior Owner", not the numbered Public Access
+# sections), so detail_profile stays CLASSIC. See docs/OHIO_AUDITOR_EXPANSION.md.
+LUCAS = IasWorldSiteConfig(
+    source_id="us-oh-lucas-auditor",
+    county="Lucas County",
+    state="OH",
+    name="Lucas County, Ohio Auditor Property Search (AREIS)",
+    base_url="https://icare.co.lucas.oh.us/lucascare/",
+    district_code="048",
+    owner="Lucas County Auditor",
+    priority=230,
+)
+
 OH_IASWORLD_SITES: list[IasWorldSiteConfig] = [
     FRANKLIN,
     CLERMONT,
     MONTGOMERY,
+    LUCAS,
 ]

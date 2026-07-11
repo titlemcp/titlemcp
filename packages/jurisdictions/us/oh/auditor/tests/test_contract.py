@@ -10,7 +10,7 @@ from pathlib import Path
 from titlemcp_us_oh_auditor.adapters import OhioCountyAuditorAdapter
 from titlemcp_us_oh_auditor.manifest import capability_manifest
 from titlemcp_us_oh_auditor.plugin import OhioAuditorPlugin
-from titlemcp_us_oh_auditor.sites import CLERMONT, FRANKLIN, MONTGOMERY, OH_IASWORLD_SITES
+from titlemcp_us_oh_auditor.sites import CLERMONT, FRANKLIN, LUCAS, MONTGOMERY, OH_IASWORLD_SITES
 from titlemcp_us_oh_auditor.toolsets import OhioAuditorToolset
 
 from title_mcp.domain.models import Jurisdiction, WorkflowKind
@@ -67,6 +67,20 @@ class OhioAuditorContractTests(unittest.TestCase):
         self.assertFalse(MONTGOMERY.numeric_parcel_ids)
         self.assertTrue(MONTGOMERY.preserve_parcel_whitespace)
         self.assertEqual(MONTGOMERY.tool_name, "montgomery_county_auditor_search")
+    def test_sites_table_includes_lucas_with_path_prefix_base_url(self) -> None:
+        # Lucas (AREIS branding) is another config-only county. Its base_url is a
+        # path prefix (.../lucascare/) rather than a bare domain or /_web/ stack;
+        # the config preserves the trailing slash so search/ and Datalets/ resolve.
+        self.assertIn(LUCAS, OH_IASWORLD_SITES)
+        self.assertEqual(LUCAS.source_id, "us-oh-lucas-auditor")
+        self.assertEqual(LUCAS.district_code, "048")
+        self.assertEqual(LUCAS.base_url, "https://icare.co.lucas.oh.us/lucascare/")
+        self.assertTrue(LUCAS.numeric_parcel_ids)
+        self.assertEqual(LUCAS.tool_name, "lucas_county_auditor_search")
+        self.assertEqual(
+            LUCAS.search_url(AuditorSearchMode.PARCEL_ID),
+            "https://icare.co.lucas.oh.us/lucascare/search/commonsearch.aspx?mode=parid",
+        )
 
     def test_adapter_supports_ohio_tax_certificate(self) -> None:
         adapter = OhioCountyAuditorAdapter()
