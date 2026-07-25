@@ -52,6 +52,22 @@ Parcel search (Montgomery parcels are alphanumeric):
 python samples/montgomery_auditor_ollama/ollama_client.py \
   --scenario parcel \
   --parcel-id "A01 00000 0001"
+```
+
+Address search:
+
+```bash
+python samples/montgomery_auditor_ollama/ollama_client.py \
+  --scenario address \
+  --address "100 Example Ave"
+```
+
+The prompt does not name `montgomery_county_auditor_search`; the sample verifies
+that the model chooses it. Montgomery runs the same Tyler iasWorld platform as
+Franklin, so the tool returns `title_mcp.property_assessment_record` and preserves
+the raw auditor payload under `source_specific.iasworld_auditor`. It uses the
+shared iasWorld platform and Ohio auditor packages installed above.
+
 ## Lucas County Auditor
 
 Parcel search:
@@ -65,31 +81,45 @@ python samples/lucas_auditor_ollama/ollama_client.py \
 Address search:
 
 ```bash
-python samples/montgomery_auditor_ollama/ollama_client.py \
 python samples/lucas_auditor_ollama/ollama_client.py \
   --scenario address \
   --address "100 Example Ave"
 ```
 
-The prompt does not name `montgomery_county_auditor_search`; the sample verifies
-that the model chooses it. Montgomery runs the same Tyler iasWorld platform as
-Franklin, so the tool returns `title_mcp.property_assessment_record` and preserves
-the raw auditor payload under `source_specific.iasworld_auditor`. It uses the
-shared iasWorld platform and Ohio auditor packages installed above.
 The prompt does not name `lucas_county_auditor_search`; the sample verifies that
 the model chooses it. Lucas County's auditor site is branded AREIS and runs the
 Tyler iasWorld "Public Access" platform under a path-prefix base URL
 (`.../lucascare/`). The tool returns `title_mcp.property_assessment_record` and
-preserves the raw auditor payload under `source_specific.iasworld_auditor`.
+preserves the raw auditor payload under `source_specific.iasworld_auditor`. It
+uses the same editable installs as the Franklin auditor sample above.
 
-Install the shared iasWorld platform package and the Ohio auditor package in
-editable mode so the standard server can load the `title_mcp.toolsets` entry
-point:
+## Lake County Auditor
+
+Parcel search:
 
 ```bash
-.venv/bin/pip install -e packages/platforms/iasworld
-.venv/bin/pip install -e packages/jurisdictions/us/oh/auditor
+python samples/lake_auditor_ollama/ollama_client.py \
+  --scenario parcel \
+  --parcel-id "00A0000000002"
 ```
+
+Address search:
+
+```bash
+python samples/lake_auditor_ollama/ollama_client.py \
+  --scenario address \
+  --address "100 Example St"
+```
+
+The prompt does not name `lake_county_auditor_search`; the sample verifies that
+the model chooses it. Lake County's auditor site identifies as iasWorld but
+serves a single unified `realprop` search for parcel, owner, and address; a
+`mode_map` routes every mode to that URL and `form_field_overrides` rename the two
+POST fields it uses (`inpNumber` -> `inpNo`, `inpOwner` -> `inpOwner1`). The tool
+returns `title_mcp.property_assessment_record` and preserves the raw auditor
+payload under `source_specific.iasworld_auditor`. Lake's datalet detail is a third
+layout, parsed by `detail_profile=LAKE`. It uses the same editable installs as the
+Franklin auditor sample above.
 
 ## HOA Contact Search
 

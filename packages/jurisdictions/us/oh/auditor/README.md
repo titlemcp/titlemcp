@@ -22,13 +22,22 @@ new `IasWorldSiteConfig` entry plus a fixture-backed contract test and a sample.
 | Franklin | `us-oh-franklin-auditor` | numeric | enabled |
 | Clermont | `us-oh-clermont-auditor` | alphanumeric | enabled |
 | Montgomery | `us-oh-montgomery-auditor` | alphanumeric | enabled |
-
-Confirmed on iasWorld and queued for enablement (need a captured fixture):
-Stark, Butler, Lucas, Summit, Lake. See
 | Lucas | `us-oh-lucas-auditor` | numeric | enabled |
+| Lake | `us-oh-lake-auditor` | alphanumeric | enabled |
+
+Lake's auditor identifies as iasWorld but serves a single unified `realprop`
+search for parcel/owner/address; two config knobs handle it (`mode_map` to the
+`realprop` URL plus `form_field_overrides` `inpNumber`->`inpNo`,
+`inpOwner`->`inpOwner1`). Its datalet detail is a third layout, parsed by
+`detail_profile=LAKE`: owner, mailing address, legal description, tax status,
+appraised/assessed values and taxes due all populate, verified live against both
+the real-property and manufactured-home rolls. Two gaps are the site's own — Lake
+serves no `DataletHeader` table, so the site address comes from the search hit
+rather than the detail page, and this datalet tab has no transfer/sales section,
+so `most_recent_transfer` stays empty.
 
 Confirmed on iasWorld and queued for enablement (need a captured fixture):
-Montgomery, Stark, Butler, Summit, Lake. See
+Stark, Butler, Summit. See
 [`docs/OHIO_AUDITOR_EXPANSION.md`](../../../../../docs/OHIO_AUDITOR_EXPANSION.md).
 
 ## How it registers

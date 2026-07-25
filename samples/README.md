@@ -21,6 +21,13 @@ server exposing `lucas_county_auditor_search` (Lucas County's AREIS / iasWorld
 auditor site), connects to it from an Ollama client, and logs the model/tool
 exchange.
 
+## Lake County Auditor with Ollama
+
+See [lake_auditor_ollama](lake_auditor_ollama/) for a sample that starts an MCP
+server exposing `lake_county_auditor_search` (Lake County's unified iasWorld
+`realprop` search), connects to it from an Ollama client, and logs the model/tool
+exchange.
+
 ## HOA Contact Search with Ollama
 
 See [hoa_serpapi_ollama](hoa_serpapi_ollama/) for a sample that asks Ollama a

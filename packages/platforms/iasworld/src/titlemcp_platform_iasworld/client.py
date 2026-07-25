@@ -392,7 +392,7 @@ class IasWorldAuditorClient:
         parser = _TableParser()
         parser.feed(html)
         table_by_id = {
-            table.attrs["id"]: table
+            _normalize_section_id(table.attrs["id"]): table
             for table in parser.tables
             if table.attrs.get("id") and table.rows
         }
@@ -427,6 +427,8 @@ class IasWorldAuditorClient:
 
         if self.config.detail_profile == DetailProfile.PUBLIC_ACCESS:
             profile_fields = _detail_fields_public_access(raw_section_rows, tax_year=tax_year)
+        elif self.config.detail_profile == DetailProfile.LAKE:
+            profile_fields = _detail_fields_lake(raw_section_rows, tax_year=tax_year)
         else:
             profile_fields = _detail_fields_classic(raw_section_rows)
 
@@ -980,6 +982,171 @@ def _detail_fields_public_access(
         "dwelling_data": {},
         "site_data": {},
     }
+
+
+def _detail_fields_lake(
+    raw_section_rows: dict[str, list[list[str]]],
+    *,
+    tax_year: str | None = None,
+) -> dict[str, Any]:
+    """Field extraction for Lake County's datalet layout.
+
+    Lake is a third iasWorld template. It differs from both other profiles in
+    four ways, all confirmed against live parcels:
+
+    - Section ids carry trailing anchor markup ("Owner Name and Mailing
+      Address<a href=...>"), stripped by ``_normalize_section_id`` at parse
+      time, so lookups here use the clean prefix.
+    - Labels are singular (``Owner Name``, ``Legal Description``) rather than
+      the Public Access numbered form (``Owner 1``, ``Legal Desc 1``).
+    - Empty fields are written as ``-`` rather than left blank.
+    - Value tables are prefixed and column-oriented (``Appraised Land`` /
+      ``Appraised Building`` / ``Appraised Total``, keyed by ``Year``), so they
+      are reshaped into the canonical Land/Improvements/Total rows.
+
+    Lake serves no ``DataletHeader`` table, so ``site_property_address`` is not
+    available on the detail page (the owner *mailing* address is not a reliable
+    stand-in); the site address comes from the search hit instead. There is no
+    transfer/sales section on this datalet tab, so ``most_recent_transfer`` is
+    empty and remains a follow-up.
+    """
+    parcel = _lake_kv_section(raw_section_rows, "Parcel")
+    owner = _lake_kv_section(raw_section_rows, "Owner Name and Mailing Address")
+    legal = _lake_kv_section(raw_section_rows, "Legal Description Information")
+
+    mailing_lines = [
+        value
+        for value in (
+            _first_value(owner.get("Owner Mailing Address")),
+            _first_value(owner.get("City, State, Zip")),
+        )
+        if value
+    ]
+
+    tax_status: dict[str, Any] = {}
+    for source_label, canonical_label in (
+        ("Class", "Property Class"),
+        ("Land Use Code", "Land Use"),
+        ("Neighborhood", "Appraisal Neighborhood"),
+        ("Municipality", "City/Village"),
+    ):
+        value = _first_value(parcel.get(source_label))
+        if value:
+            tax_status[canonical_label] = value
+    zip_code = _zip_from_lines(mailing_lines)
+    if zip_code:
+        tax_status["Zip Code"] = zip_code
+
+    return {
+        "permalink": None,
+        "owners": _as_list(owner.get("Owner Name")),
+        "owner_mailing_address": mailing_lines,
+        "site_property_address": None,
+        "legal_description": _as_list(legal.get("Legal Description")),
+        "legal_acres": _first_value(parcel.get("Total Acres")),
+        "most_recent_transfer": {},
+        "tax_status": tax_status,
+        "appraised_value": _lake_value_table(
+            _lake_section_rows(raw_section_rows, "Appraised"), "Appraised"
+        ),
+        "taxable_value": _lake_value_table(
+            _lake_section_rows(raw_section_rows, "Assessed Value"), "Assessed"
+        ),
+        "annual_taxes": _lake_annual_taxes(
+            _lake_section_rows(raw_section_rows, "Taxes Due"), tax_year
+        ),
+        "dwelling_data": {},
+        "site_data": {},
+    }
+
+
+def _lake_section_rows(
+    raw_section_rows: dict[str, list[list[str]]],
+    prefix: str,
+) -> list[list[str]]:
+    """Lake section ids are stable only up to their leading words."""
+    for name, rows in raw_section_rows.items():
+        if name.startswith(prefix):
+            return rows
+    return []
+
+
+def _lake_kv_section(
+    raw_section_rows: dict[str, list[list[str]]],
+    prefix: str,
+) -> dict[str, Any]:
+    """Key/value section with Lake's ``-`` placeholders and label noise removed."""
+    section = _kv_section(_lake_section_rows(raw_section_rows, prefix))
+    cleaned: dict[str, Any] = {}
+    for key, value in section.items():
+        values = [item for item in _as_list(value) if item.strip(" -")]
+        if not values:
+            continue
+        # "Land Use Code **" carries a footnote marker; the value repeats the
+        # link text of the code-list anchor.
+        clean_key = key.rstrip("* ").rstrip(":").strip()
+        cleaned[clean_key] = [_lake_clean_value(item) for item in values]
+    return {key: value[0] if len(value) == 1 else value for key, value in cleaned.items()}
+
+
+def _lake_value_table(rows: list[list[str]], prefix: str) -> dict[str, Any]:
+    """Reshape Lake's prefixed, year-keyed value table into canonical columns."""
+    table = _table_section(rows)
+    records = table.get("rows") if isinstance(table, dict) else None
+    if not isinstance(records, list):
+        return {}
+    value_rows = [
+        {
+            "Category": year,
+            "Land": record.get(f"{prefix} Land", ""),
+            "Improvements": record.get(f"{prefix} Building", ""),
+            "Total": record.get(f"{prefix} Total", ""),
+        }
+        for record in records
+        if isinstance(record, dict)
+        and (year := _string_or_none(record.get("Year")))
+        and year.isdigit()
+    ]
+    if not value_rows:
+        return {}
+    return {"headers": ["Category", "Land", "Improvements", "Total"], "rows": value_rows}
+
+
+def _lake_annual_taxes(rows: list[list[str]], tax_year: str | None) -> dict[str, Any]:
+    """Lake reports a ``Taxes Due`` roll-up rather than a per-year tax table."""
+    table = _table_section(rows)
+    records = table.get("rows") if isinstance(table, dict) else None
+    if not isinstance(records, list) or not records:
+        return {}
+    total = _string_or_none(records[0].get("Total"))
+    if not total:
+        return {}
+    return {
+        "headers": ["Tax Year", "Net Annual Tax"],
+        "rows": [{"Tax Year": tax_year or "", "Net Annual Tax": total}],
+    }
+
+
+def _normalize_section_id(section_id: str) -> str:
+    """Drop trailing markup some counties embed in the datalet section id."""
+    return section_id.split("<", 1)[0].strip()
+
+
+def _lake_clean_value(value: str) -> str:
+    """Strip Lake's code-list link text and its dangling ``code -`` separator.
+
+    Lake renders coded fields as ``<code> - <description>`` and leaves the
+    separator in place when the description is empty (``01R04000 -``).
+    """
+    trimmed = _strip_suffix(value, "(Land Use Codes Descriptions)")
+    return trimmed.rstrip("- ").strip() if trimmed.endswith("-") else trimmed
+
+
+def _strip_suffix(value: str, suffix: str) -> str:
+    trimmed = value.strip()
+    if trimmed.endswith(suffix):
+        return trimmed[: -len(suffix)].strip()
+    return trimmed
 
 
 def _numbered_values(kv: dict[str, Any], prefix: str) -> list[str]:

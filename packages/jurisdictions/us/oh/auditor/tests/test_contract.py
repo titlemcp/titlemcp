@@ -10,7 +10,14 @@ from pathlib import Path
 from titlemcp_us_oh_auditor.adapters import OhioCountyAuditorAdapter
 from titlemcp_us_oh_auditor.manifest import capability_manifest
 from titlemcp_us_oh_auditor.plugin import OhioAuditorPlugin
-from titlemcp_us_oh_auditor.sites import CLERMONT, FRANKLIN, LUCAS, MONTGOMERY, OH_IASWORLD_SITES
+from titlemcp_us_oh_auditor.sites import (
+    CLERMONT,
+    FRANKLIN,
+    LAKE,
+    LUCAS,
+    MONTGOMERY,
+    OH_IASWORLD_SITES,
+)
 from titlemcp_us_oh_auditor.toolsets import OhioAuditorToolset
 
 from title_mcp.domain.models import Jurisdiction, WorkflowKind
@@ -18,6 +25,7 @@ from title_mcp.sources import SourceKind, SourceQuery, SourceResultStatus
 from title_mcp.sources.registry import SourceConnectorRegistry
 from titlemcp_platform_iasworld import (
     AuditorSearchMode,
+    DetailProfile,
     IasWorldAuditorParcelDetail,
     IasWorldAuditorSearchHit,
     IasWorldAuditorSearchQuery,
@@ -67,6 +75,7 @@ class OhioAuditorContractTests(unittest.TestCase):
         self.assertFalse(MONTGOMERY.numeric_parcel_ids)
         self.assertTrue(MONTGOMERY.preserve_parcel_whitespace)
         self.assertEqual(MONTGOMERY.tool_name, "montgomery_county_auditor_search")
+
     def test_sites_table_includes_lucas_with_path_prefix_base_url(self) -> None:
         # Lucas (AREIS branding) is another config-only county. Its base_url is a
         # path prefix (.../lucascare/) rather than a bare domain or /_web/ stack;
@@ -81,6 +90,32 @@ class OhioAuditorContractTests(unittest.TestCase):
             LUCAS.search_url(AuditorSearchMode.PARCEL_ID),
             "https://icare.co.lucas.oh.us/lucascare/search/commonsearch.aspx?mode=parid",
         )
+
+    def test_sites_table_includes_lake_with_realprop_unified_search(self) -> None:
+        # Lake serves a single unified "realprop" search for parcel/owner/address
+        # and renames two POST fields; both are config knobs (mode_map +
+        # form_field_overrides) on the shared platform. Parcels are alphanumeric.
+        self.assertIn(LAKE, OH_IASWORLD_SITES)
+        self.assertEqual(LAKE.source_id, "us-oh-lake-auditor")
+        self.assertEqual(LAKE.district_code, "000")
+        self.assertEqual(LAKE.base_url, "https://auditor.lakecountyohio.gov/")
+        self.assertFalse(LAKE.numeric_parcel_ids)
+        self.assertEqual(LAKE.tool_name, "lake_county_auditor_search")
+        # Lake's datalet is a third layout, handled by its own DetailProfile.
+        self.assertEqual(LAKE.detail_profile, DetailProfile.LAKE)
+        self.assertEqual(
+            LAKE.form_field_overrides, {"inpNumber": "inpNo", "inpOwner": "inpOwner1"}
+        )
+        # Every mode resolves to the realprop unified-search URL.
+        for mode in (
+            AuditorSearchMode.ADDRESS,
+            AuditorSearchMode.OWNER,
+            AuditorSearchMode.PARCEL_ID,
+        ):
+            self.assertEqual(
+                LAKE.search_url(mode),
+                "https://auditor.lakecountyohio.gov/search/commonsearch.aspx?mode=realprop",
+            )
 
     def test_adapter_supports_ohio_tax_certificate(self) -> None:
         adapter = OhioCountyAuditorAdapter()
