@@ -234,6 +234,7 @@ LAKE = IasWorldSiteConfig(
         AuditorSearchMode.PARCEL_ID: "realprop",
     },
     form_field_overrides={"inpNumber": "inpNo", "inpOwner": "inpOwner1"},
+    detail_profile=DetailProfile.LAKE,
 )
 
 
@@ -617,6 +618,134 @@ class _ClermontFakeClient:
             results=[hit],
             details=[detail],
         )
+
+
+# Synthetic Lake markup (fake owner/parcel/address) structured like the live Lake
+# datalet: section ids carry trailing anchor markup, empty fields are "-", labels
+# are singular, and the value tables are prefixed and keyed by Year. Lake serves
+# no DataletHeader table, which this fixture also reproduces.
+LAKE_DETAIL_HTML = """
+<table id="Parcel">
+  <tr><td>Class</td><td>R - RESIDENTIAL</td></tr>
+  <tr><td>Land Use Code **</td><td>510 - R - SINGLE FAMILY (Land Use Codes Descriptions)</td></tr>
+  <tr><td>Tax Roll</td><td>RP_OH</td></tr>
+  <tr><td>Neighborhood</td><td>01R04000 -</td></tr>
+  <tr><td>Municipality</td><td>01 - EXAMPLE TOWNSHIP</td></tr>
+  <tr><td>**Land Use Code(LUC) is for valuation purposes only.</td></tr>
+</table>
+<table id="Owner Name and Mailing Address<a href=&quot;https://example.test/smartfile&quot;><small>Change address</small></a>">
+  <tr><td>Owner Name</td><td>DOE JANE A</td></tr>
+  <tr><td>Owner Mailing Address</td><td>100 EXAMPLE ST</td></tr>
+  <tr><td>City, State, Zip</td><td>ANYTOWN OH 44000</td></tr>
+</table>
+<table id="Legal Description Information">
+  <tr><td>Multiple Parcel:</td><td>-</td></tr>
+  <tr><td>Legal Description</td><td>EXAMPLE SUBDIVISION LOT 1</td></tr>
+  <tr><td>AG Status</td><td>-</td></tr>
+  <tr><td>Subdivison/Condo Name</td><td>-</td></tr>
+</table>
+<table id="Appraised (Market - 100%) Value">
+  <tr><td>Year</td><td>Parcel ID</td><td>Appraised Land</td><td>Appraised Building</td><td>Appraised Total</td><td>CAUV</td></tr>
+  <tr><td>2025</td><td>00A0000000002</td><td>$30,000</td><td>$120,000</td><td>$150,000</td><td>$0</td></tr>
+  <tr><td>Total:</td><td></td><td>$30,000</td><td>$120,000</td><td>$150,000</td><td>$0</td></tr>
+</table>
+<table id="Assessed Value (35%)">
+  <tr><td>Year</td><td>Parcel ID</td><td>Assessed Land</td><td>Assessed Building</td><td>Assessed Total</td><td>CAUV</td></tr>
+  <tr><td>2025</td><td>00A0000000002</td><td>$10,500</td><td>$42,000</td><td>$52,500</td><td>$0</td></tr>
+  <tr><td>Total:</td><td></td><td>$10,500</td><td>$42,000</td><td>$52,500</td><td>$0</td></tr>
+</table>
+<table id="Taxes Due">
+  <tr><td>Tax Roll</td><td>Delq Taxes</td><td>1ST Half Taxes</td><td>2ND Half Taxes</td><td>Total</td></tr>
+  <tr><td>RP_OH</td><td>$0.00</td><td>$1,250.00</td><td>$1,250.00</td><td>$2,500.00</td></tr>
+</table>
+<input type="hidden" id="hdPin" value="00A0000000002" />
+<input type="hidden" id="hdTaxYear" value="2026" />
+<input type="hidden" id="hdJur" value="000" />
+"""
+
+
+class LakeDetailProfileTests(unittest.TestCase):
+    """Lake is a third datalet layout; the profile normalizes it to the shared shape."""
+
+    def setUp(self) -> None:
+        self.detail = IasWorldAuditorClient(LAKE).parse_detail(LAKE_DETAIL_HTML)
+
+    def test_identifiers_come_from_hidden_inputs_without_a_header_table(self) -> None:
+        # Lake serves no DataletHeader, so the hidden-input fallback is the only
+        # source of the parcel/jur/year triple.
+        self.assertEqual(self.detail.parcel_number, "00A0000000002")
+        self.assertEqual(self.detail.jurisdiction, "000")
+        self.assertEqual(self.detail.tax_year, "2026")
+        self.assertEqual(self.detail.parcel_token, "000:00A0000000002:2026")
+
+    def test_singular_labels_populate_owner_and_legal_fields(self) -> None:
+        self.assertEqual(self.detail.owners, ["DOE JANE A"])
+        self.assertEqual(
+            self.detail.owner_mailing_address, ["100 EXAMPLE ST", "ANYTOWN OH 44000"]
+        )
+        self.assertEqual(self.detail.legal_description, ["EXAMPLE SUBDIVISION LOT 1"])
+
+    def test_section_ids_with_trailing_anchor_markup_are_matched(self) -> None:
+        # The owner section id embeds an <a> tag; normalization must strip it.
+        self.assertIn("Owner Name and Mailing Address", self.detail.sections)
+
+    def test_tax_status_normalizes_into_the_shared_keys(self) -> None:
+        self.assertEqual(
+            self.detail.tax_status,
+            {
+                "Property Class": "R - RESIDENTIAL",
+                "Land Use": "510 - R - SINGLE FAMILY",
+                # Trailing "code -" separator dropped when the name is empty.
+                "Appraisal Neighborhood": "01R04000",
+                "City/Village": "01 - EXAMPLE TOWNSHIP",
+                "Zip Code": "44000",
+            },
+        )
+
+    def test_placeholder_dashes_do_not_reach_extracted_fields(self) -> None:
+        # Lake writes "-" for empty fields. Those must not surface as values...
+        extracted = [
+            *self.detail.legal_description,
+            *self.detail.owners,
+            *self.detail.owner_mailing_address,
+            *self.detail.tax_status.values(),
+        ]
+        self.assertNotIn("-", [str(value).strip() for value in extracted])
+
+        # ...but the raw section payload still preserves them as source evidence.
+        legal = self.detail.sections["Legal Description Information"]["fields"]
+        self.assertEqual(legal["AG Status"], "-")
+
+    def test_prefixed_value_tables_reshape_to_land_improvements_total(self) -> None:
+        self.assertEqual(
+            self.detail.appraised_value["rows"],
+            [
+                {
+                    "Category": "2025",
+                    "Land": "$30,000",
+                    "Improvements": "$120,000",
+                    "Total": "$150,000",
+                }
+            ],
+        )
+        self.assertEqual(self.detail.taxable_value["rows"][0]["Total"], "$52,500")
+
+    def test_taxes_due_rollup_becomes_the_annual_tax_row(self) -> None:
+        self.assertEqual(
+            self.detail.annual_taxes["rows"], [{"Tax Year": "2026", "Net Annual Tax": "$2,500.00"}]
+        )
+
+    def test_site_address_and_transfer_are_absent_not_guessed(self) -> None:
+        # The detail page carries neither; the mailing address is NOT a stand-in.
+        self.assertIsNone(self.detail.site_property_address)
+        self.assertEqual(self.detail.most_recent_transfer, {})
+
+    def test_other_profiles_are_unaffected_by_lake_handling(self) -> None:
+        classic = IasWorldAuditorClient(FRANKLIN).parse_detail(DETAIL_HTML)
+        public_access = IasWorldAuditorClient(CLERMONT).parse_detail(CLERMONT_DETAIL_HTML)
+
+        self.assertTrue(classic.owners)
+        self.assertEqual(public_access.site_property_address, "100 EXAMPLE DR")
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ class AuditorSearchMode(StrEnum):
 class DetailProfile(StrEnum):
     """Which iasWorld datalet detail layout a county uses.
 
-    Both are iasWorld, but the datalet templates differ in section names and
+    All are iasWorld, but the datalet templates differ in section names and
     field labels:
 
     - ``CLASSIC`` (Franklin): a combined ``Owner`` section plus ``Most Recent
@@ -27,10 +27,16 @@ class DetailProfile(StrEnum):
     - ``PUBLIC_ACCESS`` (Clermont): split ``Parcel`` / ``Owner`` / ``Tax Mailing
       Name and Address`` / ``Legal`` / ``Taxes Charged`` sections with numbered
       labels (``Owner 1``, ``Address 1``, ``Legal Desc 1``).
+    - ``LAKE`` (Lake): singular labels (``Owner Name``, ``Legal Description``)
+      under ``Owner Name and Mailing Address`` / ``Legal Description
+      Information``, prefixed value tables (``Appraised (Market - 100%) Value``,
+      ``Assessed Value (35%)``) and ``Taxes Due``. Lake serves no
+      ``DataletHeader`` table and writes ``-`` for empty fields.
     """
 
     CLASSIC = "classic"
     PUBLIC_ACCESS = "public_access"
+    LAKE = "lake"
 
 
 def _normalize_mode(value: str | AuditorSearchMode) -> AuditorSearchMode:
