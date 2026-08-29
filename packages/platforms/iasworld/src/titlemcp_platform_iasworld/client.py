@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from decimal import Decimal, InvalidOperation
+from enum import StrEnum
 from html.parser import HTMLParser
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -989,10 +991,25 @@ def _profile_mismatch_warnings(
     """
     if not raw_section_rows:
         return []
-    if any(
-        profile_fields.get(field)
-        for field in ("owners", "owner_mailing_address", "legal_description")
-    ):
+    layout = PUBLIC_ACCESS_LAYOUTS.get(profile)
+    if layout is None:
+        expected = ("owners", "owner_mailing_address", "legal_description")
+    else:
+        # Only fields this layout says its datalet carries can count as a miss.
+        # Lucas's tab genuinely serves no owner, mailing address or legal
+        # description, so an empty one there is the page, not a bad profile.
+        expected = tuple(
+            field
+            for field, source in (
+                ("owners", layout.owner),
+                ("owner_mailing_address", layout.mailing),
+                ("legal_description", layout.legal),
+            )
+            if source.declared
+        )
+    if not expected:
+        return []
+    if any(profile_fields.get(field) for field in expected):
         return []
     # The header table carries the owner independently of the profile, so its
     # presence means the page really is a populated parcel and only the
@@ -1006,35 +1023,79 @@ def _profile_mismatch_warnings(
     ]
 
 
+class LabelStyle(StrEnum):
+    """How a datalet table labels the values inside it.
+
+    The section *names* vary between counties, and so does the labelling
+    *within* a section. These are the three shapes seen so far, and they are
+    what let one extractor read every variant.
+    """
+
+    # "Owner 1", "Address 1", "Legal Desc 1" (Clermont, Butler).
+    NUMBERED = "numbered"
+    # "Mailing Address" -> value, where a blank label continues the line above
+    # (Montgomery's multi-line owner names and legal descriptions).
+    KEYED = "keyed"
+    # A one-column table: a header cell, then one value cell per row
+    # (Montgomery's "Owner" table, whose only header is "Name").
+    COLUMN = "column"
+
+
+@dataclass(frozen=True)
+class FieldSource:
+    """Where one canonical field lives on a datalet, and how it is labelled.
+
+    An empty ``sections`` means this layout's datalet does not carry the field
+    at all, which is different from carrying it and failing to read it. Only a
+    declared source counts as a miss when nothing comes back, so a county whose
+    tab genuinely has no owner is not reported as a broken profile.
+    """
+
+    sections: tuple[str, ...] = ()
+    style: LabelStyle = LabelStyle.NUMBERED
+    labels: tuple[str, ...] = ()
+
+    @property
+    def declared(self) -> bool:
+        return bool(self.sections)
+
+
 @dataclass(frozen=True)
 class PublicAccessLayout:
-    """Which datalet tables and labels one Public Access variant uses.
+    """Which datalet tables and labels one iasWorld variant uses.
 
-    Counties on this template serve the same fields under different table
-    names, so a variant is an entry in ``PUBLIC_ACCESS_LAYOUTS`` rather than a
-    new profile function. Each ``*_sections`` tuple is tried in order and the
+    Counties serve the same fields under different table names and different
+    labelling, so a variant is an entry in ``PUBLIC_ACCESS_LAYOUTS`` rather than
+    a new profile function. Each ``sections`` tuple is tried in order and the
     first table present on the page wins, so a variant only has to name what it
-    calls differently. Empty tuples mean the variant does not serve that table.
+    calls differently.
     """
 
     parcel_sections: tuple[str, ...] = ("Parcel",)
-    owner_sections: tuple[str, ...] = ("Owner",)
-    owner_prefix: str = "Owner"
-    mailing_sections: tuple[str, ...] = ("Tax Mailing Name and Address",)
-    mailing_prefix: str = "Address"
-    legal_sections: tuple[str, ...] = ("Legal",)
-    legal_prefix: str = "Legal Desc"
+    owner: FieldSource = FieldSource(("Owner",), LabelStyle.NUMBERED, ("Owner",))
+    mailing: FieldSource = FieldSource(
+        ("Tax Mailing Name and Address",), LabelStyle.NUMBERED, ("Address",)
+    )
+    legal: FieldSource = FieldSource(("Legal",), LabelStyle.NUMBERED, ("Legal Desc",))
     parcel_labels: tuple[tuple[str, str], ...] = (
         ("Class", "Property Class"),
         ("Land Use Code", "Land Use"),
         ("Neighborhood", "Appraisal Neighborhood"),
     )
+    address_label: str = "Address"
+    acres_label: str = "Total Acres"
     charged_sections: tuple[str, ...] = ("Taxes Charged",)
     charged_style: str = "total_charged"
     value_sections: tuple[str, ...] = ()
+    value_style: str = "kv"
     appraised_labels: tuple[str, str, str] | None = None
     taxable_labels: tuple[str, str, str] | None = None
+    appraised_column: str | None = None
+    taxable_column: str | None = None
     transfer_sections: tuple[str, ...] = ()
+    transfer_style: str = "table_newest_first"
+    transfer_date_label: str = "Date"
+    transfer_price_label: str = "Sale Amount"
 
 
 PUBLIC_ACCESS_LAYOUTS: dict[DetailProfile, PublicAccessLayout] = {
@@ -1044,10 +1105,13 @@ PUBLIC_ACCESS_LAYOUTS: dict[DetailProfile, PublicAccessLayout] = {
     # mailing table is named for the tax bill, and it additionally serves value,
     # transfer and half-year tax tables the plain variant has no equivalent for.
     DetailProfile.PUBLIC_ACCESS_DETAILED: PublicAccessLayout(
-        owner_sections=("Owner and Legal", "Owner"),
-        legal_sections=("Owner and Legal", "Legal"),
-        legal_prefix="Legal",
-        mailing_sections=("Taxbill Mailing Address", "Tax Mailing Name and Address"),
+        owner=FieldSource(("Owner and Legal", "Owner"), LabelStyle.NUMBERED, ("Owner",)),
+        legal=FieldSource(("Owner and Legal", "Legal"), LabelStyle.NUMBERED, ("Legal",)),
+        mailing=FieldSource(
+            ("Taxbill Mailing Address", "Tax Mailing Name and Address"),
+            LabelStyle.NUMBERED,
+            ("Address",),
+        ),
         parcel_labels=(
             ("Class", "Property Class"),
             ("Land Use Code", "Land Use"),
@@ -1061,6 +1125,54 @@ PUBLIC_ACCESS_LAYOUTS: dict[DetailProfile, PublicAccessLayout] = {
         appraised_labels=("Land (100%)", "Building (100%)", "Total Value (100%)"),
         taxable_labels=("Land (35%)", "Building (35%)", "Assessed Total (35%)"),
         transfer_sections=("Transfers",),
+    ),
+    # Montgomery: split sections again, but labelled rather than numbered. Its
+    # owner table is a single column under a "Name" header, and multi-line
+    # values continue on rows whose label cell is blank. Its "Sales" table is
+    # oldest first, unlike Butler's.
+    DetailProfile.PUBLIC_ACCESS_KEYED: PublicAccessLayout(
+        parcel_sections=("Legal",),
+        owner=FieldSource(("Owner",), LabelStyle.COLUMN, ("Name",)),
+        mailing=FieldSource(
+            ("Mailing",), LabelStyle.KEYED, ("Mailing Address", "City, State, Zip")
+        ),
+        legal=FieldSource(("Legal",), LabelStyle.KEYED, ("Legal Description",)),
+        parcel_labels=(
+            ("Land Use Description", "Land Use"),
+            ("Tax District Name", "Tax District"),
+        ),
+        address_label="",
+        acres_label="Acres",
+        charged_sections=("Tax Summary",),
+        charged_style="half_columns",
+        transfer_sections=("Sales",),
+        transfer_style="table_newest_last",
+        transfer_price_label="Sale Price",
+    ),
+    # Lucas: a "Summary - " tabbed datalet. This tab carries no owner, mailing
+    # address or legal description at all, so those sources stay undeclared and
+    # the owner comes from the search hit. Its value table is transposed:
+    # Land/Building/Total are rows and the valuation basis is the column.
+    DetailProfile.SUMMARY_SECTIONS: PublicAccessLayout(
+        parcel_sections=("Summary - General",),
+        owner=FieldSource(),
+        mailing=FieldSource(),
+        legal=FieldSource(),
+        parcel_labels=(
+            ("Class", "Property Class"),
+            ("Land Use", "Land Use"),
+            ("Tax District", "Tax District"),
+        ),
+        address_label="",
+        acres_label="",
+        charged_sections=(),
+        value_sections=("Summary - Values",),
+        value_style="transposed",
+        appraised_column="100% Values",
+        taxable_column="35% Values",
+        transfer_sections=("Summary - Most Recent Sale",),
+        transfer_style="keyed",
+        transfer_date_label="Sales Date",
     ),
 }
 
@@ -1078,12 +1190,10 @@ def _detail_fields_public_access(
     """
     layout = layout or PUBLIC_ACCESS_LAYOUTS[DetailProfile.PUBLIC_ACCESS]
     parcel = _kv_section(_first_section(raw_section_rows, layout.parcel_sections))
-    owner = _kv_section(_first_section(raw_section_rows, layout.owner_sections))
-    mailing = _kv_section(_first_section(raw_section_rows, layout.mailing_sections))
-    legal = _kv_section(_first_section(raw_section_rows, layout.legal_sections))
-    values = _kv_section(_first_section(raw_section_rows, layout.value_sections))
+    value_rows = _first_section(raw_section_rows, layout.value_sections)
+    values = _kv_section(value_rows)
 
-    mailing_lines = _numbered_values(mailing, layout.mailing_prefix)
+    mailing_lines = _field_values(raw_section_rows, layout.mailing)
     tax_status: dict[str, Any] = {}
     for source_label, canonical_label in layout.parcel_labels:
         value = _first_value(parcel.get(source_label))
@@ -1093,32 +1203,215 @@ def _detail_fields_public_access(
     if zip_code:
         tax_status["Zip Code"] = zip_code
 
+    charged_rows = _first_section(raw_section_rows, layout.charged_sections)
     if layout.charged_style == "half_year":
-        annual_taxes = _half_year_annual_taxes(
-            _first_section(raw_section_rows, layout.charged_sections), tax_year
-        )
+        annual_taxes = _half_year_annual_taxes(charged_rows, tax_year)
+    elif layout.charged_style == "half_columns":
+        annual_taxes = _half_column_annual_taxes(charged_rows, tax_year)
     else:
-        annual_taxes = _public_access_annual_taxes(
-            _first_section(raw_section_rows, layout.charged_sections), tax_year
+        annual_taxes = _public_access_annual_taxes(charged_rows, tax_year)
+
+    if layout.value_style == "transposed":
+        appraised = _transposed_value_table(
+            value_rows, layout.appraised_column, "Market (100%)"
         )
+        taxable = _transposed_value_table(value_rows, layout.taxable_column, "Assessed (35%)")
+    else:
+        appraised = _kv_value_table(values, layout.appraised_labels, "Market (100%)")
+        taxable = _kv_value_table(values, layout.taxable_labels, "Assessed (35%)")
 
     return {
         "permalink": None,
-        "owners": _numbered_values(owner, layout.owner_prefix),
+        "owners": _field_values(raw_section_rows, layout.owner),
         "owner_mailing_address": mailing_lines,
-        "site_property_address": _first_value(parcel.get("Address")),
-        "legal_description": _numbered_values(legal, layout.legal_prefix),
-        "legal_acres": _first_value(parcel.get("Total Acres")),
-        "most_recent_transfer": _public_access_transfer(
-            _first_section(raw_section_rows, layout.transfer_sections)
+        "site_property_address": (
+            _first_value(parcel.get(layout.address_label)) if layout.address_label else None
+        ),
+        "legal_description": _field_values(raw_section_rows, layout.legal),
+        "legal_acres": (
+            _first_value(parcel.get(layout.acres_label)) if layout.acres_label else None
+        ),
+        "most_recent_transfer": _layout_transfer(
+            _first_section(raw_section_rows, layout.transfer_sections), layout
         ),
         "tax_status": tax_status,
-        "appraised_value": _kv_value_table(values, layout.appraised_labels, "Market (100%)"),
-        "taxable_value": _kv_value_table(values, layout.taxable_labels, "Assessed (35%)"),
+        "appraised_value": appraised,
+        "taxable_value": taxable,
         "annual_taxes": annual_taxes,
         "dwelling_data": {},
         "site_data": {},
     }
+
+
+def _field_values(
+    raw_section_rows: dict[str, list[list[str]]],
+    source: FieldSource,
+) -> list[str]:
+    """Read one field's values however its layout labels them."""
+    rows = _first_section(raw_section_rows, source.sections)
+    if not rows:
+        return []
+    if source.style is LabelStyle.NUMBERED:
+        kv = _kv_section(rows)
+        values: list[str] = []
+        for prefix in source.labels:
+            values.extend(_numbered_values(kv, prefix))
+        return values
+    if source.style is LabelStyle.COLUMN:
+        return _column_values(rows, source.labels)
+    return _keyed_values(rows, source.labels)
+
+
+def _keyed_values(rows: list[list[str]], labels: tuple[str, ...]) -> list[str]:
+    """Values for labelled rows, following blank-label continuation rows.
+
+    Montgomery writes a multi-line legal description as ``Legal Description`` on
+    the first row and a blank label on the rest, so a continuation only counts
+    while a wanted label is open.
+    """
+    wanted = {label.casefold() for label in labels}
+    values: list[str] = []
+    collecting = False
+    for row in rows:
+        if not row:
+            continue
+        label = (row[0] or "").strip()
+        value = (row[1] or "").strip() if len(row) > 1 else ""
+        if label:
+            collecting = label.rstrip(":").casefold() in wanted
+        if collecting and value:
+            values.append(value)
+    return values
+
+
+def _column_values(rows: list[list[str]], headers: tuple[str, ...]) -> list[str]:
+    """Values from a one-column table that starts with a header cell."""
+    wanted = {header.casefold() for header in headers}
+    values: list[str] = []
+    started = False
+    for row in rows:
+        if not row:
+            continue
+        first = (row[0] or "").strip()
+        if not started:
+            started = len(row) == 1 and first.casefold() in wanted
+            continue
+        if len(row) != 1:
+            break
+        if first:
+            values.append(first)
+    return values
+
+
+def _transposed_value_table(
+    rows: list[list[str]],
+    column: str | None,
+    category: str,
+) -> dict[str, Any]:
+    """Reshape a value table whose basis is the column and Land/Total the rows."""
+    if not column or not rows:
+        return {}
+    table = _table_section(rows)
+    table_rows = table.get("rows") if isinstance(table, dict) else None
+    if not isinstance(table_rows, list):
+        return {}
+    by_label: dict[str, dict[str, Any]] = {}
+    for row in table_rows:
+        if not isinstance(row, dict):
+            continue
+        label = _string_or_none(row.get("")) or _string_or_none(row.get("Category"))
+        if label:
+            by_label[label.casefold()] = row
+
+    def cell(label: str) -> str:
+        row = by_label.get(label)
+        return (_string_or_none(row.get(column)) or "") if row else ""
+
+    land, improvements, total = cell("land"), cell("building"), cell("total")
+    if not any((land, improvements, total)):
+        return {}
+    return {
+        "headers": ["", "Land", "Improvements", "Total"],
+        "rows": [
+            {"": category, "Land": land, "Improvements": improvements, "Total": total}
+        ],
+    }
+
+
+def _layout_transfer(rows: list[list[str]], layout: PublicAccessLayout) -> dict[str, Any]:
+    """Most recent sale, however this layout orders and labels its sales table."""
+    if not rows:
+        return {}
+    if layout.transfer_style == "keyed":
+        kv = _kv_section(rows)
+        date = _first_value(kv.get(layout.transfer_date_label))
+        price = _first_value(kv.get(layout.transfer_price_label))
+    else:
+        table = _table_section(rows)
+        table_rows = table.get("rows") if isinstance(table, dict) else None
+        if not isinstance(table_rows, list) or not table_rows:
+            return {}
+        # Butler lists newest first; Montgomery lists oldest first.
+        row = table_rows[-1] if layout.transfer_style == "table_newest_last" else table_rows[0]
+        date = _string_or_none(row.get(layout.transfer_date_label))
+        price = _string_or_none(row.get(layout.transfer_price_label))
+    transfer: dict[str, Any] = {}
+    if date:
+        transfer["Transfer Date"] = date
+    if price:
+        transfer["Transfer Price"] = price
+    return transfer
+
+
+def _half_column_annual_taxes(
+    charged_rows: list[list[str]],
+    tax_year: str | None,
+) -> dict[str, Any]:
+    """Normalize a half-year *column* tax table into the canonical annual row.
+
+    Montgomery publishes the two half-year charges as columns rather than a
+    precomputed annual total, so the halves are summed to get the year's charge
+    and the payment columns are summed for what has been paid.
+    """
+    table = _table_section(charged_rows)
+    rows = table.get("rows") if isinstance(table, dict) else None
+    if not isinstance(rows, list) or not rows:
+        return {}
+    row = rows[0]
+    if not isinstance(row, dict):
+        return {}
+    charged = _sum_money(row.get("1st Half"), row.get("2nd Half"))
+    if charged is None:
+        return {}
+    entry: dict[str, Any] = {
+        "Tax Year": _string_or_none(row.get("Year")) or tax_year or "",
+        "Net Annual Tax": charged,
+    }
+    paid = _sum_money(row.get("1st Half Payments"), row.get("2nd Half Payments"))
+    if paid is not None:
+        entry["Total Paid"] = paid.lstrip("-")
+    return {"headers": list(entry), "rows": [entry]}
+
+
+def _sum_money(*values: Any) -> str | None:
+    """Add money-ish cells, keeping the comma/2dp shape the sites use."""
+    total = Decimal(0)
+    seen = False
+    for value in values:
+        text = _string_or_none(value)
+        if not text:
+            continue
+        cleaned = text.replace("$", "").replace(",", "").strip()
+        if cleaned.startswith("(") and cleaned.endswith(")"):
+            cleaned = f"-{cleaned[1:-1]}"
+        try:
+            total += Decimal(cleaned)
+        except InvalidOperation:
+            continue
+        seen = True
+    if not seen:
+        return None
+    return f"{total:,.2f}"
 
 
 def _first_section(
@@ -1156,22 +1449,6 @@ def _kv_value_table(
         ],
     }
 
-
-def _public_access_transfer(transfer_rows: list[list[str]]) -> dict[str, Any]:
-    """Most recent sale from a date-ordered transfers table."""
-    table = _table_section(transfer_rows)
-    rows = table.get("rows") if isinstance(table, dict) else None
-    if not isinstance(rows, list) or not rows:
-        return {}
-    first = rows[0]
-    transfer: dict[str, Any] = {}
-    date = _string_or_none(first.get("Date"))
-    price = _string_or_none(first.get("Sale Amount"))
-    if date:
-        transfer["Transfer Date"] = date
-    if price:
-        transfer["Transfer Price"] = price
-    return transfer
 
 
 def _half_year_annual_taxes(

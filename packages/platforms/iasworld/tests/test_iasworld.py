@@ -1006,6 +1006,177 @@ class ProfileMismatchWarningTests(unittest.TestCase):
         self.assertIn("matched none of the datalet sections", response.warnings[0])
 
 
+# Montgomery's datalet. Labelled rather than numbered: the owner table is a
+# single column under a "Name" header, multi-line values continue on rows whose
+# label cell is blank, and the sales table is oldest first. Values are synthetic.
+MONTGOMERY_DETAIL_HTML = """
+<table id="Owner">
+  <tr><td>Name</td></tr>
+  <tr><td>DOE JANE A AND JOHN Q TRS</td></tr>
+</table>
+<table id="Mailing">
+  <tr><td>Name</td><td>JANE A DOE AND</td></tr>
+  <tr><td></td><td>JOHN Q DOE TRS</td></tr>
+  <tr><td>Mailing Address</td><td>100 EXAMPLE DR</td></tr>
+  <tr><td>City, State, Zip</td><td>ANYTOWN, OH 45000</td></tr>
+</table>
+<table id="Legal">
+  <tr><td>Legal Description</td><td>5-5-24</td></tr>
+  <tr><td></td><td>1-9-13</td></tr>
+  <tr><td>Land Use Description</td><td>R - SINGLE FAMILY DWELLING</td></tr>
+  <tr><td>Acres</td><td>1.234</td></tr>
+  <tr><td>Deed</td><td></td></tr>
+  <tr><td>Tax District Name</td><td>EXAMPLE TWP-EXAMPLE CSD</td></tr>
+</table>
+<table id="Sales">
+  <tr><td>Date</td><td>Sale Price</td><td>Deed Reference</td><td>Seller</td><td>Buyer</td></tr>
+  <tr><td>04-OCT-05</td><td>$120,000</td><td>200500101830</td><td>ROE R</td><td>DOE JANE A</td></tr>
+  <tr><td>28-FEB-18</td><td>$250,000</td><td>201800011199</td><td>DOE JANE A</td><td>DOE JANE A AND JOHN Q TRS</td></tr>
+</table>
+<table id="Tax Summary">
+  <tr><td>Year</td><td>Prior Year</td><td>Prior Year Payments</td><td>1st Half</td><td>1st Half Payments</td><td>2nd Half</td><td>2nd Half Payments</td><td>Total Currently Due</td></tr>
+  <tr><td>2025</td><td>$0.00</td><td>$0.00</td><td>$1,000.00</td><td>-$1,000.00</td><td>$1,500.00</td><td>-$1,500.00</td><td>$0.00</td></tr>
+</table>
+<input type="hidden" id="hdPin" value="A01000000001" />
+<input type="hidden" id="hdTaxYear" value="2025" />
+<input type="hidden" id="hdJur" value="000" />
+"""
+
+
+# Lucas's datalet: a "Summary - " tabbed page. It carries no owner, mailing
+# address or legal description at all, and its value table is transposed.
+LUCAS_DETAIL_HTML = """
+<table id="Summary - General">
+  <tr><td>Tax District</td><td>EXAMPLE CITY - EXAMPLE CSD</td></tr>
+  <tr><td>Class</td><td>RESIDENTIAL</td></tr>
+  <tr><td>Land Use</td><td>520 : R - TWO FAMILY DWELLING, PLATTED LOT</td></tr>
+</table>
+<table id="Summary - Most Recent Sale">
+  <tr><td>Prior Owner</td><td>ROE RICHARD L</td></tr>
+  <tr><td>Sale Amount</td><td>$100</td></tr>
+  <tr><td>Deed</td><td>25103809</td></tr>
+  <tr><td>Sales Date</td><td>10-JUL-2025</td></tr>
+</table>
+<table id="Summary - Values">
+  <tr><td></td><td>35% Values</td><td>100% Values</td></tr>
+  <tr><td>Land</td><td>4,830</td><td>13,800</td></tr>
+  <tr><td>Building</td><td>19,110</td><td>54,600</td></tr>
+  <tr><td>Total</td><td>23,940</td><td>68,400</td></tr>
+</table>
+<input type="hidden" id="hdPin" value="0100437" />
+<input type="hidden" id="hdTaxYear" value="2026" />
+<input type="hidden" id="hdJur" value="048" />
+"""
+
+MONTGOMERY_KEYED = IasWorldSiteConfig(
+    source_id="us-oh-montgomery-auditor",
+    county="Montgomery County",
+    state="OH",
+    name="Montgomery County, Ohio Auditor Property Search",
+    base_url="https://www.mcrealestate.org/",
+    district_code="000",
+    numeric_parcel_ids=False,
+    detail_profile=DetailProfile.PUBLIC_ACCESS_KEYED,
+)
+
+LUCAS_SUMMARY = IasWorldSiteConfig(
+    source_id="us-oh-lucas-auditor",
+    county="Lucas County",
+    state="OH",
+    name="Lucas County, Ohio Auditor Property Search (AREIS)",
+    base_url="https://icare.co.lucas.oh.us/lucascare/",
+    district_code="048",
+    detail_profile=DetailProfile.SUMMARY_SECTIONS,
+)
+
+
+class KeyedLabelLayoutTests(unittest.TestCase):
+    """Montgomery: labelled rows, a single-column owner table, continuations."""
+
+    def setUp(self) -> None:
+        self.detail = IasWorldAuditorClient(MONTGOMERY_KEYED).parse_detail(
+            MONTGOMERY_DETAIL_HTML
+        )
+
+    def test_single_column_owner_table_is_read(self) -> None:
+        self.assertEqual(self.detail.owners, ["DOE JANE A AND JOHN Q TRS"])
+
+    def test_blank_labels_continue_the_line_above(self) -> None:
+        # The legal description runs across two rows, the second unlabelled.
+        self.assertEqual(self.detail.legal_description, ["5-5-24", "1-9-13"])
+        # A continuation must not leak from a label this layout does not want:
+        # "Name" continues onto a second row, but mailing takes only the address.
+        self.assertEqual(
+            self.detail.owner_mailing_address,
+            ["100 EXAMPLE DR", "ANYTOWN, OH 45000"],
+        )
+
+    def test_labelled_parcel_fields_normalize(self) -> None:
+        self.assertEqual(self.detail.legal_acres, "1.234")
+        self.assertEqual(self.detail.tax_status["Land Use"], "R - SINGLE FAMILY DWELLING")
+        self.assertEqual(self.detail.tax_status["Tax District"], "EXAMPLE TWP-EXAMPLE CSD")
+        self.assertEqual(self.detail.tax_status["Zip Code"], "45000")
+
+    def test_oldest_first_sales_table_takes_the_last_row(self) -> None:
+        self.assertEqual(self.detail.most_recent_transfer["Transfer Date"], "28-FEB-18")
+        self.assertEqual(self.detail.most_recent_transfer["Transfer Price"], "$250,000")
+
+    def test_half_year_columns_are_summed_into_the_annual_charge(self) -> None:
+        self.assertEqual(
+            self.detail.annual_taxes["rows"][0],
+            {"Tax Year": "2025", "Net Annual Tax": "2,500.00", "Total Paid": "2,500.00"},
+        )
+
+    def test_no_mismatch_warning(self) -> None:
+        self.assertEqual(self.detail.warnings, [])
+
+
+class SummarySectionsLayoutTests(unittest.TestCase):
+    """Lucas: a tab that genuinely carries no owner, mailing or legal."""
+
+    def setUp(self) -> None:
+        self.detail = IasWorldAuditorClient(LUCAS_SUMMARY).parse_detail(LUCAS_DETAIL_HTML)
+
+    def test_transposed_value_table_is_reshaped(self) -> None:
+        self.assertEqual(
+            self.detail.appraised_value["rows"][0],
+            {
+                "": "Market (100%)",
+                "Land": "13,800",
+                "Improvements": "54,600",
+                "Total": "68,400",
+            },
+        )
+        self.assertEqual(self.detail.taxable_value["rows"][0]["Total"], "23,940")
+
+    def test_keyed_sale_section_becomes_the_transfer(self) -> None:
+        self.assertEqual(self.detail.most_recent_transfer["Transfer Date"], "10-JUL-2025")
+        self.assertEqual(self.detail.most_recent_transfer["Transfer Price"], "$100")
+
+    def test_tax_status_normalizes(self) -> None:
+        self.assertEqual(self.detail.tax_status["Property Class"], "RESIDENTIAL")
+        self.assertEqual(self.detail.tax_status["Tax District"], "EXAMPLE CITY - EXAMPLE CSD")
+
+    def test_absent_fields_do_not_warn(self) -> None:
+        # The regression this guards: owner/mailing/legal are empty because the
+        # page has none, not because the profile is wrong, so no warning fires.
+        self.assertEqual(self.detail.owners, [])
+        self.assertEqual(self.detail.owner_mailing_address, [])
+        self.assertEqual(self.detail.legal_description, [])
+        self.assertEqual(self.detail.warnings, [])
+
+    def test_a_genuinely_wrong_profile_still_warns(self) -> None:
+        # Same page under a profile that does expect an owner table.
+        wrong = LUCAS_SUMMARY.model_copy(
+            update={"detail_profile": DetailProfile.PUBLIC_ACCESS}
+        )
+
+        detail = IasWorldAuditorClient(wrong).parse_detail(LUCAS_DETAIL_HTML)
+
+        self.assertEqual(len(detail.warnings), 1)
+        self.assertIn("matched none of the datalet sections", detail.warnings[0])
+
+
 class _StubbedDetailClient(IasWorldAuditorClient):
     """Drives the real search/detail flow with canned HTTP responses."""
 
