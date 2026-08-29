@@ -24,6 +24,7 @@ new `IasWorldSiteConfig` entry plus a fixture-backed contract test and a sample.
 | Montgomery | `us-oh-montgomery-auditor` | alphanumeric | enabled |
 | Lucas | `us-oh-lucas-auditor` | numeric | enabled |
 | Lake | `us-oh-lake-auditor` | alphanumeric | enabled |
+| Butler | `us-oh-butler-auditor` | alphanumeric | enabled |
 
 Lake's auditor identifies as iasWorld but serves a single unified `realprop`
 search for parcel/owner/address; two config knobs handle it (`mode_map` to the
@@ -36,8 +37,14 @@ serves no `DataletHeader` table, so the site address comes from the search hit
 rather than the detail page, and this datalet tab has no transfer/sales section,
 so `most_recent_transfer` stays empty.
 
+Butler serves the Public Access numbered labels under renamed tables (`Owner and
+Legal`, `Taxbill Mailing Address`) plus value, transfer and half-year tax tables,
+so it uses `detail_profile=PUBLIC_ACCESS_DETAILED`. Both Public Access variants are
+data entries in `PUBLIC_ACCESS_LAYOUTS` on the shared platform rather than separate
+parsers.
+
 Confirmed on iasWorld and queued for enablement (need a captured fixture):
-Stark, Butler, Summit. See
+Stark, Summit. See
 [`docs/OHIO_AUDITOR_EXPANSION.md`](../../../../../docs/OHIO_AUDITOR_EXPANSION.md).
 
 ## How it registers

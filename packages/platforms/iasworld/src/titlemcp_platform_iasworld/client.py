@@ -425,8 +425,12 @@ class IasWorldAuditorClient:
         tax_year = _hidden_input_value(html, "hdTaxYear") or _hidden_input_value(html, "hdXTaxYr")
         parcel_token = _parcel_token(jurisdiction, parcel_number, tax_year)
 
-        if self.config.detail_profile == DetailProfile.PUBLIC_ACCESS:
-            profile_fields = _detail_fields_public_access(raw_section_rows, tax_year=tax_year)
+        if self.config.detail_profile in PUBLIC_ACCESS_LAYOUTS:
+            profile_fields = _detail_fields_public_access(
+                raw_section_rows,
+                tax_year=tax_year,
+                layout=PUBLIC_ACCESS_LAYOUTS[self.config.detail_profile],
+            )
         elif self.config.detail_profile == DetailProfile.LAKE:
             profile_fields = _detail_fields_lake(raw_section_rows, tax_year=tax_year)
         else:
@@ -936,28 +940,86 @@ def _detail_fields_classic(raw_section_rows: dict[str, list[list[str]]]) -> dict
     }
 
 
+@dataclass(frozen=True)
+class PublicAccessLayout:
+    """Which datalet tables and labels one Public Access variant uses.
+
+    Counties on this template serve the same fields under different table
+    names, so a variant is an entry in ``PUBLIC_ACCESS_LAYOUTS`` rather than a
+    new profile function. Each ``*_sections`` tuple is tried in order and the
+    first table present on the page wins, so a variant only has to name what it
+    calls differently. Empty tuples mean the variant does not serve that table.
+    """
+
+    parcel_sections: tuple[str, ...] = ("Parcel",)
+    owner_sections: tuple[str, ...] = ("Owner",)
+    owner_prefix: str = "Owner"
+    mailing_sections: tuple[str, ...] = ("Tax Mailing Name and Address",)
+    mailing_prefix: str = "Address"
+    legal_sections: tuple[str, ...] = ("Legal",)
+    legal_prefix: str = "Legal Desc"
+    parcel_labels: tuple[tuple[str, str], ...] = (
+        ("Class", "Property Class"),
+        ("Land Use Code", "Land Use"),
+        ("Neighborhood", "Appraisal Neighborhood"),
+    )
+    charged_sections: tuple[str, ...] = ("Taxes Charged",)
+    charged_style: str = "total_charged"
+    value_sections: tuple[str, ...] = ()
+    appraised_labels: tuple[str, str, str] | None = None
+    taxable_labels: tuple[str, str, str] | None = None
+    transfer_sections: tuple[str, ...] = ()
+
+
+PUBLIC_ACCESS_LAYOUTS: dict[DetailProfile, PublicAccessLayout] = {
+    # Clermont: the original split-section Public Access datalet.
+    DetailProfile.PUBLIC_ACCESS: PublicAccessLayout(),
+    # Butler: same numbered labels, but owner and legal share one table, the
+    # mailing table is named for the tax bill, and it additionally serves value,
+    # transfer and half-year tax tables the plain variant has no equivalent for.
+    DetailProfile.PUBLIC_ACCESS_DETAILED: PublicAccessLayout(
+        owner_sections=("Owner and Legal", "Owner"),
+        legal_sections=("Owner and Legal", "Legal"),
+        legal_prefix="Legal",
+        mailing_sections=("Taxbill Mailing Address", "Tax Mailing Name and Address"),
+        parcel_labels=(
+            ("Class", "Property Class"),
+            ("Land Use Code", "Land Use"),
+            ("Neighborhood", "Appraisal Neighborhood"),
+            ("Taxing District", "Tax District"),
+            ("District Name", "School District"),
+        ),
+        charged_sections=("Current Year Real Estate Taxes",),
+        charged_style="half_year",
+        value_sections=("Current Value",),
+        appraised_labels=("Land (100%)", "Building (100%)", "Total Value (100%)"),
+        taxable_labels=("Land (35%)", "Building (35%)", "Assessed Total (35%)"),
+        transfer_sections=("Transfers",),
+    ),
+}
+
+
 def _detail_fields_public_access(
     raw_section_rows: dict[str, list[list[str]]],
     *,
     tax_year: str | None = None,
+    layout: PublicAccessLayout | None = None,
 ) -> dict[str, Any]:
     """Field extraction for the iasWorld "Public Access" split-section layout.
 
     Normalizes into the same shape as the classic profile (and the same
     ``tax_status`` keys) so the canonical mapper stays profile-agnostic.
     """
-    parcel = _kv_section(raw_section_rows.get("Parcel", []))
-    owner = _kv_section(raw_section_rows.get("Owner", []))
-    mailing = _kv_section(raw_section_rows.get("Tax Mailing Name and Address", []))
-    legal = _kv_section(raw_section_rows.get("Legal", []))
+    layout = layout or PUBLIC_ACCESS_LAYOUTS[DetailProfile.PUBLIC_ACCESS]
+    parcel = _kv_section(_first_section(raw_section_rows, layout.parcel_sections))
+    owner = _kv_section(_first_section(raw_section_rows, layout.owner_sections))
+    mailing = _kv_section(_first_section(raw_section_rows, layout.mailing_sections))
+    legal = _kv_section(_first_section(raw_section_rows, layout.legal_sections))
+    values = _kv_section(_first_section(raw_section_rows, layout.value_sections))
 
-    mailing_lines = _numbered_values(mailing, "Address")
+    mailing_lines = _numbered_values(mailing, layout.mailing_prefix)
     tax_status: dict[str, Any] = {}
-    for source_label, canonical_label in (
-        ("Class", "Property Class"),
-        ("Land Use Code", "Land Use"),
-        ("Neighborhood", "Appraisal Neighborhood"),
-    ):
+    for source_label, canonical_label in layout.parcel_labels:
         value = _first_value(parcel.get(source_label))
         if value:
             tax_status[canonical_label] = value
@@ -965,23 +1027,119 @@ def _detail_fields_public_access(
     if zip_code:
         tax_status["Zip Code"] = zip_code
 
+    if layout.charged_style == "half_year":
+        annual_taxes = _half_year_annual_taxes(
+            _first_section(raw_section_rows, layout.charged_sections), tax_year
+        )
+    else:
+        annual_taxes = _public_access_annual_taxes(
+            _first_section(raw_section_rows, layout.charged_sections), tax_year
+        )
+
     return {
         "permalink": None,
-        "owners": _numbered_values(owner, "Owner"),
+        "owners": _numbered_values(owner, layout.owner_prefix),
         "owner_mailing_address": mailing_lines,
         "site_property_address": _first_value(parcel.get("Address")),
-        "legal_description": _numbered_values(legal, "Legal Desc"),
+        "legal_description": _numbered_values(legal, layout.legal_prefix),
         "legal_acres": _first_value(parcel.get("Total Acres")),
-        "most_recent_transfer": {},
-        "tax_status": tax_status,
-        "appraised_value": {},
-        "taxable_value": {},
-        "annual_taxes": _public_access_annual_taxes(
-            raw_section_rows.get("Taxes Charged", []), tax_year
+        "most_recent_transfer": _public_access_transfer(
+            _first_section(raw_section_rows, layout.transfer_sections)
         ),
+        "tax_status": tax_status,
+        "appraised_value": _kv_value_table(values, layout.appraised_labels, "Market (100%)"),
+        "taxable_value": _kv_value_table(values, layout.taxable_labels, "Assessed (35%)"),
+        "annual_taxes": annual_taxes,
         "dwelling_data": {},
         "site_data": {},
     }
+
+
+def _first_section(
+    raw_section_rows: dict[str, list[list[str]]],
+    names: tuple[str, ...],
+) -> list[list[str]]:
+    """Rows of the first named table the page actually serves."""
+    for name in names:
+        rows = raw_section_rows.get(name)
+        if rows:
+            return rows
+    return []
+
+
+def _kv_value_table(
+    values: dict[str, Any],
+    labels: tuple[str, str, str] | None,
+    category: str,
+) -> dict[str, Any]:
+    """Reshape a key/value value table into the canonical Land/Improvements/Total row."""
+    if not labels:
+        return {}
+    land, improvements, total = (_first_value(values.get(label)) for label in labels)
+    if not any((land, improvements, total)):
+        return {}
+    return {
+        "headers": ["", "Land", "Improvements", "Total"],
+        "rows": [
+            {
+                "": category,
+                "Land": land or "",
+                "Improvements": improvements or "",
+                "Total": total or "",
+            }
+        ],
+    }
+
+
+def _public_access_transfer(transfer_rows: list[list[str]]) -> dict[str, Any]:
+    """Most recent sale from a date-ordered transfers table."""
+    table = _table_section(transfer_rows)
+    rows = table.get("rows") if isinstance(table, dict) else None
+    if not isinstance(rows, list) or not rows:
+        return {}
+    first = rows[0]
+    transfer: dict[str, Any] = {}
+    date = _string_or_none(first.get("Date"))
+    price = _string_or_none(first.get("Sale Amount"))
+    if date:
+        transfer["Transfer Date"] = date
+    if price:
+        transfer["Transfer Price"] = price
+    return transfer
+
+
+def _half_year_annual_taxes(
+    charged_rows: list[list[str]],
+    tax_year: str | None,
+) -> dict[str, Any]:
+    """Normalize a half-year tax table into the canonical annual-tax row.
+
+    The table is charge-type rows (``Real Estate``, ``Special Assessments``,
+    ``Tot Payments``) against half-year columns. Only the real estate charge and
+    the payment total map onto the canonical fields; the untouched table stays
+    available on the detail record.
+    """
+    table = _table_section(charged_rows)
+    rows = table.get("rows") if isinstance(table, dict) else None
+    if not isinstance(rows, list) or not rows:
+        return {}
+    by_type: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        label = _string_or_none(row.get("TAX TYPE"))
+        if label:
+            by_type[label.rstrip(":").strip().casefold()] = row
+    charged = by_type.get("real estate")
+    net_annual_tax = _string_or_none(charged.get("Total")) if charged else None
+    if not net_annual_tax:
+        return {}
+    entry: dict[str, Any] = {"Tax Year": tax_year or "", "Net Annual Tax": net_annual_tax}
+    payments = by_type.get("tot payments")
+    total_paid = _string_or_none(payments.get("Total")) if payments else None
+    if total_paid:
+        entry["Total Paid"] = total_paid.lstrip("-")
+    return {"headers": list(entry), "rows": [entry]}
 
 
 def _detail_fields_lake(

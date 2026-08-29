@@ -77,7 +77,7 @@ output).
 | Clermont | `clermontauditorrealestate.org/_web/` | `jur=000`, **alphanumeric** parcels — **enabled** |
 | Montgomery | `www.mcrealestate.org/` | `jur=000`, no `/_web/` prefix, **alphanumeric** parcels, CLASSIC detail (all verified live) — **enabled** |
 | Stark | `realestate.starkcountyohio.gov/` | `jur=000` |
-| Butler | `propertysearch.bcohio.gov/` | |
+| Butler | `propertysearch.bcohio.gov/` | `jur=000`, **alphanumeric** parcels, renamed Public Access tables so PUBLIC_ACCESS_DETAILED (all verified live) — **enabled** |
 | Lucas | `icare.co.lucas.oh.us/lucascare/` | branded "AREIS"; path prefix; `jur=048` (verified live), numeric parcels, CLASSIC detail — **enabled** |
 | Summit | `propertyaccess.summitoh.net/` | uses `mode=realprop` |
 | Lake | `auditor.lakecountyohio.gov/` | `jur=000`, **alphanumeric** parcels, unified `mode=realprop` search with renamed form fields (`inpNo`/`inpOwner1`), LAKE detail (all verified live) — **enabled** |
@@ -153,7 +153,27 @@ has now landed (`detail_profile=LAKE`). The `form_field_overrides`
 change is minimal and backward-compatible (no overrides = classic names; Franklin
 and Clermont are unaffected, with a focused platform test pinning both).
 
-Remaining: Stark, Butler, Summit — roughly in that order. Each county is one PR:
+**Butler is enabled** on the shared iasWorld stack (`propertysearch.bcohio.gov/`).
+Re-verified live once site maintenance lifted (an owner search returned result rows
+with a reachable datalet): `jur=000` and parcels are alphanumeric (e.g. `A0000001`)
+so `numeric_parcel_ids=False`. Its datalet uses the Public Access numbered labels
+(`Owner 1`, `Address 1`) but renames nearly every table: owner and legal share one
+`Owner and Legal`, mailing is `Taxbill Mailing Address`, and it adds `Current
+Value`, `Transfers` and a half-year `Current Year Real Estate Taxes` table. Plain
+`PUBLIC_ACCESS` matches only its `Parcel` table, so owner, mailing, legal, taxes
+and values all came back empty against the live site while the request still
+succeeded. Butler therefore uses `PUBLIC_ACCESS_DETAILED`.
+
+That variant is **not** a fourth hand-written profile. The two Public Access
+variants are now entries in `PUBLIC_ACCESS_LAYOUTS` (`client.py`), a table of
+section names and label prefixes read by one shared extractor, so the next county
+that renames tables is a data entry rather than new parsing code. Section lookups
+take a candidate list and use the first table the page serves, which is what keeps
+one layout description working across counties. If the layouts keep diverging past
+what that table can express, that registry is the place to grow a real per-county
+source of truth rather than adding profiles one at a time.
+
+Remaining: Stark, Summit — roughly in that order. Each county is one PR:
 
 1. Append an `IasWorldSiteConfig` to `OH_IASWORLD_SITES` in `sites.py`.
 2. Capture a real search + detail HTML **fixture** for that site.
