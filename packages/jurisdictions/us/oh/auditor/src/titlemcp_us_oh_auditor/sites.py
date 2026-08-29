@@ -127,8 +127,10 @@ LAKE = IasWorldSiteConfig(
 # code 000 was confirmed from a live Datalet.aspx URL. Its parcels are 14-character
 # alphanumeric tokens (e.g. "A0000001"), so numeric_parcel_ids=False like Clermont.
 # Re-verified live (an owner search returned result rows): the datalet detail uses
-# the Public Access split layout with numbered labels ("Owner 1", "Address 1"), so
-# detail_profile=PUBLIC_ACCESS like Clermont — not the CLASSIC default.
+# the Public Access numbered labels ("Owner 1", "Address 1") but renames the tables
+# Clermont calls "Owner"/"Legal"/"Tax Mailing Name and Address", and adds value,
+# transfer and half-year tax tables. That variant is PUBLIC_ACCESS_DETAILED; plain
+# PUBLIC_ACCESS matches only its "Parcel" table and leaves the rest empty.
 BUTLER = IasWorldSiteConfig(
     source_id="us-oh-butler-auditor",
     county="Butler County",
@@ -137,7 +139,7 @@ BUTLER = IasWorldSiteConfig(
     base_url="https://propertysearch.bcohio.gov/",
     district_code="000",
     numeric_parcel_ids=False,
-    detail_profile=DetailProfile.PUBLIC_ACCESS,
+    detail_profile=DetailProfile.PUBLIC_ACCESS_DETAILED,
     owner="Butler County Auditor",
     priority=230,
 )

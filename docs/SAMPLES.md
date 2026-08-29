@@ -141,7 +141,8 @@ python samples/butler_auditor_ollama/ollama_client.py \
 
 The prompt does not name `butler_county_auditor_search`; the sample verifies
 that the model chooses it. Butler runs the same shared iasWorld platform as
-Franklin (config entry only), so the tool returns
+Franklin, with a `PUBLIC_ACCESS_DETAILED` detail profile for its renamed datalet
+tables, so the tool returns
 `title_mcp.property_assessment_record` and preserves the raw auditor payload
 under `source_specific.iasworld_auditor`. Its parcels are alphanumeric
 (`A0000001`). It uses the same editable installs as the Franklin auditor sample

@@ -126,7 +126,7 @@ class OhioAuditorContractTests(unittest.TestCase):
         self.assertEqual(BUTLER.district_code, "000")
         self.assertEqual(BUTLER.base_url, "https://propertysearch.bcohio.gov/")
         self.assertFalse(BUTLER.numeric_parcel_ids)
-        self.assertEqual(BUTLER.detail_profile, DetailProfile.PUBLIC_ACCESS)
+        self.assertEqual(BUTLER.detail_profile, DetailProfile.PUBLIC_ACCESS_DETAILED)
         self.assertEqual(BUTLER.tool_name, "butler_county_auditor_search")
 
     def test_adapter_supports_ohio_tax_certificate(self) -> None:

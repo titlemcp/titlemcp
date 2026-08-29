@@ -27,6 +27,13 @@ class DetailProfile(StrEnum):
     - ``PUBLIC_ACCESS`` (Clermont): split ``Parcel`` / ``Owner`` / ``Tax Mailing
       Name and Address`` / ``Legal`` / ``Taxes Charged`` sections with numbered
       labels (``Owner 1``, ``Address 1``, ``Legal Desc 1``).
+    - ``PUBLIC_ACCESS_DETAILED`` (Butler): the same numbered labels, but owner
+      and legal share one ``Owner and Legal`` table, mailing is ``Taxbill
+      Mailing Address``, and the page also serves ``Current Value``,
+      ``Transfers`` and half-year ``Current Year Real Estate Taxes`` tables.
+      Both Public Access variants are table-driven: see
+      ``PUBLIC_ACCESS_LAYOUTS`` in ``client.py``, where a county that renames
+      sections is a data entry rather than a new profile.
     - ``LAKE`` (Lake): singular labels (``Owner Name``, ``Legal Description``)
       under ``Owner Name and Mailing Address`` / ``Legal Description
       Information``, prefixed value tables (``Appraised (Market - 100%) Value``,
@@ -36,6 +43,7 @@ class DetailProfile(StrEnum):
 
     CLASSIC = "classic"
     PUBLIC_ACCESS = "public_access"
+    PUBLIC_ACCESS_DETAILED = "public_access_detailed"
     LAKE = "lake"
 
 

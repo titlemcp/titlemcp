@@ -36,6 +36,17 @@ CLERMONT = IasWorldSiteConfig(
     detail_profile=DetailProfile.PUBLIC_ACCESS,
 )
 
+BUTLER = IasWorldSiteConfig(
+    source_id="us-oh-butler-auditor",
+    county="Butler County",
+    state="OH",
+    name="Butler County, Ohio Auditor Property Search",
+    base_url="https://propertysearch.bcohio.gov/",
+    district_code="000",
+    numeric_parcel_ids=False,
+    detail_profile=DetailProfile.PUBLIC_ACCESS_DETAILED,
+)
+
 
 class IasWorldClientTests(unittest.TestCase):
     def test_search_result_parser_extracts_rows(self) -> None:
@@ -520,6 +531,66 @@ class IasWorldAlphanumericParcelTests(unittest.TestCase):
         self.assertEqual(detail.tax_status["Property Class"], "RESIDENTIAL")
         self.assertEqual(detail.tax_status["Land Use"], "510-R - SINGLE FAMILY DWELLING, PLATTED LOT")
 
+    def test_public_access_detailed_parses_renamed_sections(self) -> None:
+        detail = IasWorldAuditorClient(BUTLER).parse_detail(BUTLER_DETAIL_HTML)
+
+        self.assertEqual(detail.parcel_number, "A0100001000001")
+        self.assertEqual(detail.jurisdiction, "000")
+        # Owner and legal share one table; mailing is named for the tax bill.
+        self.assertEqual(detail.owners, ["DOE JANE A"])
+        self.assertEqual(detail.legal_description, ["EXAMPLE CITY SUBDIVISION LOT 1"])
+        self.assertEqual(
+            detail.owner_mailing_address,
+            ["100 EXAMPLE DR", "ANYTOWN OH 45000 0000"],
+        )
+        self.assertEqual(detail.site_property_address, "100 EXAMPLE DR")
+        self.assertEqual(detail.legal_acres, "1.0000")
+        # Normalized into the same keys the other profiles use.
+        self.assertEqual(detail.tax_status["Property Class"], "RESIDENTIAL")
+        self.assertEqual(detail.tax_status["Tax District"], "A01")
+        self.assertEqual(detail.tax_status["Zip Code"], "45000")
+        # Tables the plain Public Access variant has no equivalent for.
+        self.assertEqual(
+            detail.appraised_value["rows"][0],
+            {
+                "": "Market (100%)",
+                "Land": "$40,000",
+                "Improvements": "$200,000",
+                "Total": "$240,000",
+            },
+        )
+        self.assertEqual(detail.taxable_value["rows"][0]["Total"], "$84,000")
+        self.assertEqual(detail.most_recent_transfer["Transfer Date"], "05-SEP-2017")
+        self.assertEqual(detail.most_recent_transfer["Transfer Price"], "$250,000")
+        self.assertEqual(
+            detail.annual_taxes["rows"][0],
+            {"Tax Year": "2026", "Net Annual Tax": "3,000.00", "Total Paid": "3,013.00"},
+        )
+
+    def test_plain_public_access_would_miss_butler_sections(self) -> None:
+        # The regression this variant exists for: Butler renames every table but
+        # "Parcel", so the plain profile silently returns empty owner/legal/
+        # mailing/tax fields rather than failing.
+        plain = IasWorldSiteConfig(
+            source_id="us-oh-butler-auditor",
+            county="Butler County",
+            state="OH",
+            name="Butler County, Ohio Auditor Property Search",
+            base_url="https://propertysearch.bcohio.gov/",
+            district_code="000",
+            numeric_parcel_ids=False,
+            detail_profile=DetailProfile.PUBLIC_ACCESS,
+        )
+
+        detail = IasWorldAuditorClient(plain).parse_detail(BUTLER_DETAIL_HTML)
+
+        self.assertEqual(detail.owners, [])
+        self.assertEqual(detail.legal_description, [])
+        self.assertEqual(detail.owner_mailing_address, [])
+        self.assertEqual(detail.annual_taxes, {})
+        # The "Parcel" table matches either way, which is why this looked partly right.
+        self.assertEqual(detail.legal_acres, "1.0000")
+
     def test_clermont_detail_maps_to_canonical_record(self) -> None:
         connector = build_auditor_source_connector(CLERMONT, client=_ClermontFakeClient())
 
@@ -601,6 +672,60 @@ CLERMONT_DETAIL_HTML = """
 </table>
 <input type="hidden" id="hdPin" value="100200C003D" />
 <input type="hidden" id="hdTaxYear" value="2025" />
+<input type="hidden" id="hdJur" value="000" />
+"""
+
+
+# Butler's datalet. Table and label names mirror a live page; the values are
+# placeholders, like every other fixture here. Same numbered labels as Clermont,
+# but owner and legal share a table, mailing is named for the tax bill, and the
+# page adds value, transfer and half-year tax tables.
+BUTLER_DETAIL_HTML = """
+<table id="Parcel">
+  <tr><td>Parcel Id</td><td>A0100001000001</td></tr>
+  <tr><td>Address</td><td>100 EXAMPLE DR</td></tr>
+  <tr><td>Class</td><td>RESIDENTIAL</td></tr>
+  <tr><td>Land Use Code**</td><td>510 R - SINGLE FAMILY DWELLING, PLATTED LOT</td></tr>
+  <tr><td>Neighborhood</td><td>R0000001</td></tr>
+  <tr><td>Total Acres</td><td>1.0000</td></tr>
+  <tr><td>Taxing District</td><td>A01</td></tr>
+  <tr><td>District Name</td><td>EXAMPLE TWP-EXAMPLE CSD</td></tr>
+</table>
+<table id="Owner and Legal">
+  <tr><td>Owner 1</td><td>DOE JANE A</td></tr>
+  <tr><td>Owner 2</td><td></td></tr>
+  <tr><td>Legal 1</td><td>EXAMPLE CITY SUBDIVISION LOT 1</td></tr>
+  <tr><td>Legal 2</td><td></td></tr>
+</table>
+<table id="Taxbill Mailing Address">
+  <tr><td>Mailing Name 1</td><td>JANE A DOE</td></tr>
+  <tr><td>Address 1</td><td>100 EXAMPLE DR</td></tr>
+  <tr><td>Address 2</td><td></td></tr>
+  <tr><td>Address 3</td><td>ANYTOWN OH 45000 0000</td></tr>
+</table>
+<table id="Current Value">
+  <tr><td>Land (100%)</td><td>$40,000</td></tr>
+  <tr><td>Building (100%)</td><td>$200,000</td></tr>
+  <tr><td>Total Value (100%)</td><td>$240,000</td></tr>
+  <tr><td>CAUV</td><td>$0</td></tr>
+  <tr><td>Assessed Tax Year</td><td>2025</td></tr>
+  <tr><td>Land (35%)</td><td>$14,000</td></tr>
+  <tr><td>Building (35%)</td><td>$70,000</td></tr>
+  <tr><td>Assessed Total (35%)</td><td>$84,000</td></tr>
+</table>
+<table id="Transfers">
+  <tr><td>Date</td><td>Sale Amount</td></tr>
+  <tr><td>05-SEP-2017</td><td>$250,000</td></tr>
+  <tr><td>01-APR-1997</td><td>$120,000</td></tr>
+</table>
+<table id="Current Year Real Estate Taxes">
+  <tr><td>TAX TYPE</td><td>Prior Year</td><td>First Half Tax</td><td>Second Half Tax</td><td>Total</td></tr>
+  <tr><td>Real Estate</td><td>0.00</td><td>1,500.00</td><td>1,500.00</td><td>3,000.00</td></tr>
+  <tr><td>Special Assessments</td><td>0.00</td><td>6.50</td><td>6.50</td><td>13.00</td></tr>
+  <tr><td>Tot Payments</td><td>0.00</td><td>-1,506.50</td><td>-1,506.50</td><td>-3,013.00</td></tr>
+</table>
+<input type="hidden" id="hdPin" value="A0100001000001" />
+<input type="hidden" id="hdTaxYear" value="2026" />
 <input type="hidden" id="hdJur" value="000" />
 """
 

@@ -37,6 +37,12 @@ serves no `DataletHeader` table, so the site address comes from the search hit
 rather than the detail page, and this datalet tab has no transfer/sales section,
 so `most_recent_transfer` stays empty.
 
+Butler serves the Public Access numbered labels under renamed tables (`Owner and
+Legal`, `Taxbill Mailing Address`) plus value, transfer and half-year tax tables,
+so it uses `detail_profile=PUBLIC_ACCESS_DETAILED`. Both Public Access variants are
+data entries in `PUBLIC_ACCESS_LAYOUTS` on the shared platform rather than separate
+parsers.
+
 Confirmed on iasWorld and queued for enablement (need a captured fixture):
 Stark, Summit. See
 [`docs/OHIO_AUDITOR_EXPANSION.md`](../../../../../docs/OHIO_AUDITOR_EXPANSION.md).
