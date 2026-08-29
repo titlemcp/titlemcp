@@ -14,6 +14,7 @@ from titlemcp_platform_iasworld import (
     IasWorldAuditorSearchResponse,
     IasWorldSiteConfig,
     build_auditor_source_connector,
+    is_datalet_shaped,
 )
 
 FRANKLIN = IasWorldSiteConfig(
@@ -871,6 +872,152 @@ class LakeDetailProfileTests(unittest.TestCase):
 
         self.assertTrue(classic.owners)
         self.assertEqual(public_access.site_property_address, "100 EXAMPLE DR")
+
+
+# A county site under maintenance, behind a bot block, or erroring serves these
+# with HTTP 200, so nothing raises and they parse into a hollow detail.
+MAINTENANCE_HTML = """
+<html><body><h1>Site Under Maintenance</h1>
+<p>The property search is temporarily unavailable. Please try again later.</p>
+</body></html>
+"""
+
+BOT_BLOCK_HTML = """
+<html><body><h1>Access Denied</h1>
+<p>Your request has been blocked.</p></body></html>
+"""
+
+
+class UnreadableDetailTests(unittest.TestCase):
+    """A 200 that is not a datalet must not read as a parcel with empty fields."""
+
+    def test_maintenance_page_is_not_datalet_shaped(self) -> None:
+        for label, html in (
+            ("maintenance", MAINTENANCE_HTML),
+            ("bot block", BOT_BLOCK_HTML),
+        ):
+            with self.subTest(page=label):
+                detail = IasWorldAuditorClient(CLERMONT).parse_detail(html)
+
+                # It parses without raising, which is the whole problem.
+                self.assertEqual(detail.raw_section_rows, {})
+                self.assertIsNone(detail.parcel_number)
+                self.assertFalse(is_datalet_shaped(detail))
+
+    def test_real_datalet_is_datalet_shaped(self) -> None:
+        detail = IasWorldAuditorClient(CLERMONT).parse_detail(CLERMONT_DETAIL_HTML)
+
+        self.assertTrue(is_datalet_shaped(detail))
+        self.assertEqual(detail.warnings, [])
+
+    def test_unreadable_detail_is_dropped_and_warned(self) -> None:
+        client = _StubbedDetailClient(CLERMONT, detail_html=MAINTENANCE_HTML)
+
+        response = client.search(
+            IasWorldAuditorSearchQuery(
+                mode=AuditorSearchMode.PARCEL_ID,
+                parcel_id="100200C003D",
+                include_details=True,
+            )
+        )
+
+        # The hit still stands; only the unreadable detail is withheld.
+        self.assertEqual(len(response.results), 1)
+        self.assertEqual(response.details, [])
+        self.assertEqual(len(response.warnings), 1)
+        self.assertIn("no readable datalet", response.warnings[0])
+        self.assertIn("maintenance or bot protection", response.warnings[0])
+
+    def test_readable_detail_is_kept_without_warnings(self) -> None:
+        client = _StubbedDetailClient(CLERMONT, detail_html=CLERMONT_DETAIL_HTML)
+
+        response = client.search(
+            IasWorldAuditorSearchQuery(
+                mode=AuditorSearchMode.PARCEL_ID,
+                parcel_id="100200C003D",
+                include_details=True,
+            )
+        )
+
+        self.assertEqual(len(response.details), 1)
+        self.assertEqual(response.warnings, [])
+
+
+class ProfileMismatchWarningTests(unittest.TestCase):
+    """A renamed-tables county parses cleanly but populates nothing."""
+
+    def test_wrong_profile_warns_instead_of_reporting_empty_fields(self) -> None:
+        # Butler's datalet under the plain profile: every section is present,
+        # none of them match, so the record would otherwise look simply blank.
+        plain = IasWorldSiteConfig(
+            source_id="us-oh-butler-auditor",
+            county="Butler County",
+            state="OH",
+            name="Butler County, Ohio Auditor Property Search",
+            base_url="https://propertysearch.bcohio.gov/",
+            district_code="000",
+            numeric_parcel_ids=False,
+            detail_profile=DetailProfile.PUBLIC_ACCESS,
+        )
+
+        detail = IasWorldAuditorClient(plain).parse_detail(
+            BUTLER_DETAIL_HTML, source_url="https://example.test/butler"
+        )
+
+        self.assertEqual(detail.owners, [])
+        self.assertEqual(len(detail.warnings), 1)
+        warning = detail.warnings[0]
+        self.assertIn("detail_profile=public_access matched none", warning)
+        self.assertIn("https://example.test/butler", warning)
+        # The warning names what the page actually served, so the fix is obvious.
+        self.assertIn("Owner and Legal", warning)
+        self.assertIn("Taxbill Mailing Address", warning)
+
+    def test_correct_profile_does_not_warn(self) -> None:
+        detail = IasWorldAuditorClient(BUTLER).parse_detail(BUTLER_DETAIL_HTML)
+
+        self.assertEqual(detail.owners, ["DOE JANE A"])
+        self.assertEqual(detail.warnings, [])
+
+    def test_mismatch_warning_reaches_the_search_response(self) -> None:
+        plain = IasWorldSiteConfig(
+            source_id="us-oh-butler-auditor",
+            county="Butler County",
+            state="OH",
+            name="Butler County, Ohio Auditor Property Search",
+            base_url="https://propertysearch.bcohio.gov/",
+            district_code="000",
+            numeric_parcel_ids=False,
+            detail_profile=DetailProfile.PUBLIC_ACCESS,
+        )
+        client = _StubbedDetailClient(plain, detail_html=BUTLER_DETAIL_HTML)
+
+        response = client.search(
+            IasWorldAuditorSearchQuery(
+                mode=AuditorSearchMode.PARCEL_ID,
+                parcel_id="A0100001000001",
+                include_details=True,
+            )
+        )
+
+        # The record is still returned, but no longer silently blank.
+        self.assertEqual(len(response.details), 1)
+        self.assertEqual(len(response.warnings), 1)
+        self.assertIn("matched none of the datalet sections", response.warnings[0])
+
+
+class _StubbedDetailClient(IasWorldAuditorClient):
+    """Drives the real search/detail flow with canned HTTP responses."""
+
+    def __init__(self, config: IasWorldSiteConfig, *, detail_html: str) -> None:
+        super().__init__(config)
+        self._detail_html = detail_html
+
+    def _submit_search(self, query, fields, sort_by):  # type: ignore[no-untyped-def]
+        return CLERMONT_SEARCH_HTML, "https://example.test/search", None
+
+    def _get(self, url: str):  # type: ignore[no-untyped-def]
+        return self._detail_html, url
 
 
 if __name__ == "__main__":

@@ -311,6 +311,7 @@ class IasWorldAuditorClient:
                     )
                 ]
                 details = [detail] if query.include_details else []
+                warnings.extend(detail.warnings)
                 return IasWorldAuditorSearchResponse(
                     query=query,
                     search_url=search_url,
@@ -330,6 +331,17 @@ class IasWorldAuditorClient:
                         continue
                     detail_html, final_url = self._get(detail_url)
                     detail = self.parse_detail(detail_html, source_url=final_url)
+                    if not is_datalet_shaped(detail):
+                        # Served 200 but is not a datalet: maintenance notice,
+                        # bot block or error page. Reporting its empty fields as
+                        # the parcel's would be worse than reporting nothing.
+                        warnings.append(
+                            f"{self.config.name} returned no readable datalet at "
+                            f"{final_url} (site maintenance or bot protection?); "
+                            f"detail omitted for parcel {hit.parcel_number}."
+                        )
+                        continue
+                    warnings.extend(detail.warnings)
                     details.append(detail)
                     hit.detail_url = final_url
                 except IasWorldAuditorClientError as exc:
@@ -447,6 +459,13 @@ class IasWorldAuditorClient:
             site_address=header_data.get("address"),
             sections=sections,
             raw_section_rows=raw_section_rows,
+            warnings=_profile_mismatch_warnings(
+                raw_section_rows,
+                profile_fields,
+                profile=self.config.detail_profile,
+                owner_display=header_data.get("owner"),
+                source_url=source_url,
+            ),
             source_url=source_url,
             **profile_fields,
         )
@@ -938,6 +957,53 @@ def _detail_fields_classic(raw_section_rows: dict[str, list[list[str]]]) -> dict
         "dwelling_data": _table_section(raw_section_rows.get("Dwelling Data", [])),
         "site_data": _table_section(raw_section_rows.get("Site Data", [])),
     }
+
+
+def is_datalet_shaped(detail: IasWorldAuditorParcelDetail) -> bool:
+    """Whether a parsed page looks like a datalet at all.
+
+    A maintenance notice, a bot-block interstitial or an error page is served
+    with HTTP 200 and parses without raising, yielding a detail with no data
+    sections and no parcel number. That is indistinguishable from a real datalet
+    unless it is checked for, so callers use this to drop the hollow record and
+    say the page was unreadable instead of reporting empty fields as fact.
+    """
+    return bool(detail.raw_section_rows or detail.parcel_number)
+
+
+def _profile_mismatch_warnings(
+    raw_section_rows: dict[str, list[list[str]]],
+    profile_fields: dict[str, Any],
+    *,
+    profile: DetailProfile,
+    owner_display: str | None,
+    source_url: str | None,
+) -> list[str]:
+    """Warn when a datalet parsed but the profile recognized none of its tables.
+
+    A county that renames its datalet tables still parses cleanly: the sections
+    are all there, the profile just matches none of them and every field it
+    populates comes back empty. Nothing raises, so without this the caller sees
+    a well-formed record with a blank owner and reads it as fact. Identity
+    fields are the tell, since a datalet always names an owner somewhere.
+    """
+    if not raw_section_rows:
+        return []
+    if any(
+        profile_fields.get(field)
+        for field in ("owners", "owner_mailing_address", "legal_description")
+    ):
+        return []
+    # The header table carries the owner independently of the profile, so its
+    # presence means the page really is a populated parcel and only the
+    # profile's section names missed.
+    hint = " (the page has an owner in its header)" if owner_display else ""
+    where = f" at {source_url}" if source_url else ""
+    return [
+        f"detail_profile={profile.value} matched none of the datalet sections"
+        f"{where}{hint}; owner, mailing address and legal description are empty. "
+        f"Sections served: {', '.join(sorted(raw_section_rows))}."
+    ]
 
 
 @dataclass(frozen=True)

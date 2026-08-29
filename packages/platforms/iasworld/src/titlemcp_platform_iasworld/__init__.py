@@ -6,6 +6,7 @@ from titlemcp_platform_iasworld.canonical import (
 from titlemcp_platform_iasworld.client import (
     IasWorldAuditorClient,
     IasWorldAuditorClientError,
+    is_datalet_shaped,
 )
 from titlemcp_platform_iasworld.config import (
     AuditorSearchMode,
@@ -37,5 +38,6 @@ __all__ = [
     "IasWorldSiteConfig",
     "build_auditor_source_connector",
     "canonical_property_assessments_from_iasworld_response",
+    "is_datalet_shaped",
     "resolve_auditor_search_mode",
 ]
