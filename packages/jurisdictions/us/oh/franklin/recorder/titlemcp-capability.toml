@@ -17,10 +17,15 @@ human_review_required = true
 [readiness]
 docs = true
 unit_tests = true
-fixtures = false
+# A trimmed real response from the county, keeping the three properties that
+# make parcel scoping necessary.
+fixtures = true
+# The default suite runs against the fixture. A live smoke test exists and is
+# deliberately not wired into it.
 integration_tests = false
 no_live_credentials = true
 pypi_metadata = true
+# status stays draft until a title professional has reviewed the lien logic.
 reviewer_approved = false
 
 [release]
