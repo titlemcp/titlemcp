@@ -19,7 +19,7 @@ from titlemcp_us_oh_franklin_recorder.client import RecorderDocument, _to_result
 FIXTURE = pathlib.Path(__file__).parent / "fixtures" / "name_search.json"
 
 SUBJECT_PARCEL = "030-000526-00"
-OWNER = "ZWINK ROBERT V"
+OWNER = "GRANTHAM ELEANOR V"
 
 
 def load() -> list[RecorderDocument]:
@@ -66,7 +66,7 @@ class AcquisitionTests(unittest.TestCase):
         self.assertIsNotNone(built.acquisition)
         assert built.acquisition is not None
         self.assertEqual(built.acquisition.instrument_number, "202104120064304")
-        self.assertTrue(any("ZWINK" in name for name in built.acquisition.grantees))
+        self.assertTrue(any("GRANTHAM" in name for name in built.acquisition.grantees))
 
     def test_a_deed_where_the_owner_is_the_grantor_is_not_an_acquisition(self) -> None:
         """The same party sold a different property a fortnight after buying.

@@ -10,14 +10,14 @@
     "year": 2010,
     "docId": 120685975,
     "grantee": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
      "",
-     "KIGHT KELLY A"
+     "ELLSWORTH GRETA A"
     ],
     "rsId": "8366556",
     "grantor": [
-     "KILLIAN LARITA",
-     "KILLIAN LARITA J",
+     "FAIRWEATHER HAROLD",
+     "FAIRWEATHER ALICE J",
      ""
     ],
     "bookVolumePage": "--/--/--",
@@ -70,13 +70,13 @@
     "parties": [
      {
       "partyTypeCode": "D",
-      "name": "KILLIAN LARITA",
+      "name": "FAIRWEATHER HAROLD",
       "nameCompletion": {
-       "output": "KILLIAN LARITA",
+       "output": "FAIRWEATHER HAROLD",
        "input": [
-        "KILLIAN LARITA",
-        "KILLIAN",
-        "LARITA"
+        "FAIRWEATHER HAROLD",
+        "FAIRWEATHER",
+        "FAIRWEATHER"
        ]
       },
       "type": "grantor",
@@ -84,13 +84,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "KILLIAN LARITA J",
+      "name": "FAIRWEATHER ALICE J",
       "nameCompletion": {
-       "output": "KILLIAN LARITA J",
+       "output": "FAIRWEATHER ALICE J",
        "input": [
-        "KILLIAN LARITA J",
-        "KILLIAN",
-        "LARITA",
+        "FAIRWEATHER ALICE J",
+        "FAIRWEATHER",
+        "FAIRWEATHER",
         "J"
        ]
       },
@@ -99,13 +99,13 @@
      },
      {
       "partyTypeCode": "I",
-      "name": "KIGHT KELLY A",
+      "name": "ELLSWORTH GRETA A",
       "nameCompletion": {
-       "output": "KIGHT KELLY A",
+       "output": "ELLSWORTH GRETA A",
        "input": [
-        "KIGHT KELLY A",
-        "KIGHT",
-        "KELLY",
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
         "A"
        ]
       },
@@ -114,13 +114,13 @@
      },
      {
       "partyTypeCode": "I",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -140,12 +140,6 @@
     "consideration": "$310.00",
     "contentModifiedAt": "2022-08-03T05:16:01.000Z",
     "township": [],
-    "ocrText": "TRANSFERRED __ IIH MIMNIQ00 0000101 ONS. RO. 2ojogag7oo4i6s9\u00a7 \u2014\u2014|Mondatne <4 AE APR -7 20 ene BID AO EATON CLARENCE E. MINGO i FRANKLIN COUNTY, OH et ERANKLIN COU NITY AUDTIOR <{,_FRANKLIN COUNTY Au ",
-    "highlights": {
-     "grantee": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -161,8 +155,6 @@
     "recordedTime": "10:12 AM",
     "id": 120685975,
     "documentNumber": "201004070041695",
-    "downloadLink": "/files/documents/120685975",
-    "thumbnail": "/files/documents/120685975/images/115155126_1_r-300.png?exp=1788205234&sig=892750b92b36b1c55c09226171fb947c6a1c289baf6ad5b825695e3839e4d6bf",
     "imageId": 115155126
    },
    "120685977": {
@@ -179,9 +171,9 @@
     ],
     "rsId": "8366557",
     "grantor": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
      "",
-     "KIGHT KELLY A"
+     "ELLSWORTH GRETA A"
     ],
     "bookVolumePage": "--/--/--",
     "legalDescription": [
@@ -281,13 +273,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -296,13 +288,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "KIGHT KELLY A",
+      "name": "ELLSWORTH GRETA A",
       "nameCompletion": {
-       "output": "KIGHT KELLY A",
+       "output": "ELLSWORTH GRETA A",
        "input": [
-        "KIGHT KELLY A",
-        "KIGHT",
-        "KELLY",
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
         "A"
        ]
       },
@@ -322,12 +314,6 @@
     "consideration": "$248,100.00",
     "contentModifiedAt": "2022-09-18T05:25:00.032Z",
     "township": [],
-    "ocrText": "AA : 64.00 7201 04/07/2010 10 13AM BXTALON Cop y order Return To: THE HOME SAVINGS & LOAN COMPANY OF YOUNGSTOWN, OHIO 275 WEST FEDERAL STREET YOUNGSTOWN, OH 44503-1203 D so 7710 [Space Above This Lin",
-    "highlights": {
-     "grantor": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -343,14 +329,12 @@
     "recordedTime": "10:13 AM",
     "id": 120685977,
     "documentNumber": "201004070041696",
-    "downloadLink": "/files/documents/120685977",
     "marginalReferences": [
      {
       "text": "201208240124371",
       "link": "doc/121588411"
      }
     ],
-    "thumbnail": "/files/documents/120685977/images/115155349_1_r-300.png?exp=1788205234&sig=4306bf9a432302fcaec8b153e4e4ae5ff90abba4ac173f3601b9375555e7fd27",
     "imageId": 115155349
    },
    "121572446": {
@@ -367,10 +351,10 @@
     ],
     "rsId": "8774185",
     "grantor": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> KELLY KIGHT",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA ELLSWORTH",
      "",
-     "KIGHT KELLY A"
+     "ELLSWORTH GRETA A"
     ],
     "bookVolumePage": "--/--/--",
     "legalDescription": [
@@ -470,13 +454,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "KIGHT KELLY A",
+      "name": "ELLSWORTH GRETA A",
       "nameCompletion": {
-       "output": "KIGHT KELLY A",
+       "output": "ELLSWORTH GRETA A",
        "input": [
-        "KIGHT KELLY A",
-        "KIGHT",
-        "KELLY",
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
         "A"
        ]
       },
@@ -485,14 +469,14 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK KELLY KIGHT",
+      "name": "GRANTHAM DESMOND",
       "nameCompletion": {
-       "output": "ZWINK KELLY KIGHT",
+       "output": "GRANTHAM DESMOND",
        "input": [
-        "ZWINK KELLY KIGHT",
-        "ZWINK",
-        "KELLY",
-        "KIGHT"
+        "GRANTHAM DESMOND",
+        "GRANTHAM",
+        "GRANTHAM",
+        "GRANTHAM"
        ]
       },
       "type": "grantor",
@@ -500,13 +484,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -526,13 +510,6 @@
     "consideration": "$246,300.00",
     "contentModifiedAt": "2022-09-15T08:56:32.198Z",
     "township": [],
-    "ocrText": "201207270107996 Pgs: 20 $172.00 720120054469 @7/27/2012 1:54PM BXCROWN Daphne Hawk Franklin County Recorder Return To: THE HOME SAVINGS & LOAN COMPANY OF YOUNGSTOWN, OHIO 275 WEST FEDERAL STREET YOUN",
-    "highlights": {
-     "grantor": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> KELLY KIGHT"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -548,14 +525,12 @@
     "recordedTime": "1:54 PM",
     "id": 121572446,
     "documentNumber": "201207270107996",
-    "downloadLink": "/files/documents/121572446",
     "marginalReferences": [
      {
       "text": "202106080099874",
       "link": "doc/123257605"
      }
     ],
-    "thumbnail": "/files/documents/121572446/images/115559106_1_r-300.png?exp=1788205234&sig=aa73dc24c2cba774b457b65b6ea64537d3ae1c39d19c844e10ac0fce88b5b37a",
     "imageId": 115559106
    },
    "122396070": {
@@ -570,10 +545,10 @@
     ],
     "rsId": "9857711",
     "grantor": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> KELLY A",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA A",
      "",
-     "KIGHT KELLY A"
+     "ELLSWORTH GRETA A"
     ],
     "bookVolumePage": "--/--/--",
     "legalDescription": [
@@ -652,13 +627,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -667,13 +642,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK KELLY A",
+      "name": "GRANTHAM GRETA A",
       "nameCompletion": {
-       "output": "ZWINK KELLY A",
+       "output": "GRANTHAM GRETA A",
        "input": [
-        "ZWINK KELLY A",
-        "ZWINK",
-        "KELLY",
+        "GRANTHAM GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
         "A"
        ]
       },
@@ -682,13 +657,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "KIGHT KELLY A",
+      "name": "ELLSWORTH GRETA A",
       "nameCompletion": {
-       "output": "KIGHT KELLY A",
+       "output": "ELLSWORTH GRETA A",
        "input": [
-        "KIGHT KELLY A",
-        "KIGHT",
-        "KELLY",
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
         "A"
        ]
       },
@@ -708,13 +683,6 @@
     "consideration": "$88,000.00",
     "contentModifiedAt": "2022-09-15T08:53:27.826Z",
     "township": [],
-    "ocrText": "ce Instrument Number: 201611230162041 Recorded Date: 11/23/2016 3:18:04 PM Terry J. Brown Franklin County Recorder 373 South High Street, 18* Floor Columbus, OH 43215 (614) 525-3930 http://Recorder.F",
-    "highlights": {
-     "grantor": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> KELLY A"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -731,14 +699,12 @@
     "recordedTime": "3:18 PM",
     "id": 122396070,
     "documentNumber": "201611230162041",
-    "downloadLink": "/files/documents/122396070",
     "marginalReferences": [
      {
       "text": "202105050080440",
       "link": "doc/123240192"
      }
     ],
-    "thumbnail": "/files/documents/122396070/images/116362005_1_r-300.png?exp=1788205234&sig=688f8a2a4dfe2880a5e2e8a1e004ad285b07f8ff9a017c51890c21d9857f7a9b",
     "imageId": 116362005
    },
    "123224090": {
@@ -748,14 +714,14 @@
     "year": 2021,
     "docId": 123224090,
     "grantee": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> KELLY K",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA K",
      ""
     ],
     "rsId": "10991759",
     "grantor": [
-     "FORTIN FREDERICK J",
-     "FORTIN AMELIA",
+     "CALLOWAY ELEANOR J",
+     "CALLOWAY DESMOND",
      ""
     ],
     "bookVolumePage": "--/--/--",
@@ -809,13 +775,13 @@
     "parties": [
      {
       "partyTypeCode": "I",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -824,13 +790,13 @@
      },
      {
       "partyTypeCode": "I",
-      "name": "ZWINK KELLY K",
+      "name": "GRANTHAM CLARA K",
       "nameCompletion": {
-       "output": "ZWINK KELLY K",
+       "output": "GRANTHAM CLARA K",
        "input": [
-        "ZWINK KELLY K",
-        "ZWINK",
-        "KELLY",
+        "GRANTHAM CLARA K",
+        "GRANTHAM",
+        "GRANTHAM",
         "K"
        ]
       },
@@ -839,13 +805,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "FORTIN FREDERICK J",
+      "name": "CALLOWAY ELEANOR J",
       "nameCompletion": {
-       "output": "FORTIN FREDERICK J",
+       "output": "CALLOWAY ELEANOR J",
        "input": [
-        "FORTIN FREDERICK J",
-        "FORTIN",
-        "FREDERICK",
+        "CALLOWAY ELEANOR J",
+        "CALLOWAY",
+        "CALLOWAY",
         "J"
        ]
       },
@@ -854,13 +820,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "FORTIN AMELIA",
+      "name": "CALLOWAY DESMOND",
       "nameCompletion": {
-       "output": "FORTIN AMELIA",
+       "output": "CALLOWAY DESMOND",
        "input": [
-        "FORTIN AMELIA",
-        "FORTIN",
-        "AMELIA"
+        "CALLOWAY DESMOND",
+        "CALLOWAY",
+        "CALLOWAY"
        ]
       },
       "type": "grantor",
@@ -878,13 +844,6 @@
     "docTypeCode": "DE",
     "contentModifiedAt": "2022-09-15T04:55:44.618Z",
     "township": [],
-    "ocrText": "DO NOT DETACH Instrument Number: 202104120064304 Daniet J. O\u2019Connor Jr. Franklin County Recorder 373 South High Street, 18th Floor Columbus, OH 43215 (614) 525-3930 http://Recorder.FranklinCountyOhio",
-    "highlights": {
-     "grantee": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> KELLY K"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -900,8 +859,6 @@
     "recordedTime": "9:45 AM",
     "id": 123224090,
     "documentNumber": "202104120064304",
-    "downloadLink": "/files/documents/123224090",
-    "thumbnail": "/files/documents/123224090/images/114964949_1_r-300.png?exp=1788205234&sig=33c6f4b64288dc2ea999b2c3dcaa61f7372d4817fd84ddf872ca5d57118ae6e9",
     "imageId": 114964949
    },
    "123224095": {
@@ -918,8 +875,8 @@
     ],
     "rsId": "10991761",
     "grantor": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> KELLY K",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA K",
      ""
     ],
     "bookVolumePage": "--/--/--",
@@ -1017,13 +974,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -1032,13 +989,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK KELLY K",
+      "name": "GRANTHAM CLARA K",
       "nameCompletion": {
-       "output": "ZWINK KELLY K",
+       "output": "GRANTHAM CLARA K",
        "input": [
-        "ZWINK KELLY K",
-        "ZWINK",
-        "KELLY",
+        "GRANTHAM CLARA K",
+        "GRANTHAM",
+        "GRANTHAM",
         "K"
        ]
       },
@@ -1061,13 +1018,6 @@
     ],
     "contentModifiedAt": "2022-09-15T04:55:44.618Z",
     "township": [],
-    "ocrText": "DO NOT DETACH Instrument Number: 202104120064305 Recorded Date: 04/12/2021 9:45:33 AM Daniel J. O\u2019Connor Jr. Franklin County Recorder 373 South High Street, 18th Floor Columbus, OH 43215 (614) 525-39",
-    "highlights": {
-     "grantor": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> KELLY K"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -1083,8 +1033,6 @@
     "recordedTime": "9:45 AM",
     "id": 123224095,
     "documentNumber": "202104120064305",
-    "downloadLink": "/files/documents/123224095",
-    "thumbnail": "/files/documents/123224095/images/114965048_1_r-300.png?exp=1788205234&sig=d865dc01d99d675b7aa2b0cd62876011a357d5486020d171ab0694bed05d45a7",
     "imageId": 114965048
    },
    "123234208": {
@@ -1094,16 +1042,16 @@
     "year": 2021,
     "docId": 123234208,
     "grantee": [
-     "FITZGERALD RYAN S",
-     "FITZGERALD KATHERINE M",
+     "BRINDLE CLARA S",
+     "BRINDLE BENJAMIN M",
      ""
     ],
     "rsId": "11008099",
     "grantor": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> KELLY K",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA K",
      "",
-     "KIGHT KELLY A"
+     "ELLSWORTH GRETA A"
     ],
     "bookVolumePage": "--/--/--",
     "legalDescription": [
@@ -1165,13 +1113,13 @@
     "parties": [
      {
       "partyTypeCode": "I",
-      "name": "FITZGERALD RYAN S",
+      "name": "BRINDLE CLARA S",
       "nameCompletion": {
-       "output": "FITZGERALD RYAN S",
+       "output": "BRINDLE CLARA S",
        "input": [
-        "FITZGERALD RYAN S",
-        "FITZGERALD",
-        "RYAN",
+        "BRINDLE CLARA S",
+        "BRINDLE",
+        "BRINDLE",
         "S"
        ]
       },
@@ -1180,13 +1128,13 @@
      },
      {
       "partyTypeCode": "I",
-      "name": "FITZGERALD KATHERINE M",
+      "name": "BRINDLE BENJAMIN M",
       "nameCompletion": {
-       "output": "FITZGERALD KATHERINE M",
+       "output": "BRINDLE BENJAMIN M",
        "input": [
-        "FITZGERALD KATHERINE M",
-        "FITZGERALD",
-        "KATHERINE",
+        "BRINDLE BENJAMIN M",
+        "BRINDLE",
+        "BRINDLE",
         "M"
        ]
       },
@@ -1195,13 +1143,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -1210,13 +1158,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK KELLY K",
+      "name": "GRANTHAM CLARA K",
       "nameCompletion": {
-       "output": "ZWINK KELLY K",
+       "output": "GRANTHAM CLARA K",
        "input": [
-        "ZWINK KELLY K",
-        "ZWINK",
-        "KELLY",
+        "GRANTHAM CLARA K",
+        "GRANTHAM",
+        "GRANTHAM",
         "K"
        ]
       },
@@ -1225,13 +1173,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "KIGHT KELLY A",
+      "name": "ELLSWORTH GRETA A",
       "nameCompletion": {
-       "output": "KIGHT KELLY A",
+       "output": "ELLSWORTH GRETA A",
        "input": [
-        "KIGHT KELLY A",
-        "KIGHT",
-        "KELLY",
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
         "A"
        ]
       },
@@ -1250,13 +1198,6 @@
     "docTypeCode": "DE",
     "contentModifiedAt": "2022-09-15T05:02:12.811Z",
     "township": [],
-    "ocrText": "DO NOT DETACH Instrument Number: 202104270074438 Recorded Date: 04/27/2021 11:46:51 AM gs Daniel J. O\u2019Connor Jr. Franklin County Recorder 373 South High Street, 18th Floor Columbus, OH 43215 (614) 52",
-    "highlights": {
-     "grantor": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> KELLY K"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -1273,8 +1214,6 @@
     "recordedTime": "11:46 AM",
     "id": 123234208,
     "documentNumber": "202104270074438",
-    "downloadLink": "/files/documents/123234208",
-    "thumbnail": "/files/documents/123234208/images/114975058_1_r-300.png?exp=1788205234&sig=e1c46fe2968545f9305109317359bfbe6bc25473aeb5c61ebe946e750b32db95",
     "imageId": 114975058
    },
    "126938362": {
@@ -1284,14 +1223,14 @@
     "year": 2003,
     "docId": 126938362,
     "grantee": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> ANTJE",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
      ""
     ],
     "rsId": "6659562",
     "grantor": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> ANTJE",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
      ""
     ],
     "bookVolumePage": "--/--/--",
@@ -1343,13 +1282,13 @@
     "parties": [
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ANTJE",
+      "name": "GRANTHAM BENJAMIN",
       "nameCompletion": {
-       "output": "ZWINK ANTJE",
+       "output": "GRANTHAM BENJAMIN",
        "input": [
-        "ZWINK ANTJE",
-        "ZWINK",
-        "ANTJE"
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
        ]
       },
       "type": "grantor",
@@ -1357,13 +1296,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -1372,13 +1311,13 @@
      },
      {
       "partyTypeCode": "I",
-      "name": "ZWINK ANTJE",
+      "name": "GRANTHAM BENJAMIN",
       "nameCompletion": {
-       "output": "ZWINK ANTJE",
+       "output": "GRANTHAM BENJAMIN",
        "input": [
-        "ZWINK ANTJE",
-        "ZWINK",
-        "ANTJE"
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
        ]
       },
       "type": "grantee",
@@ -1386,13 +1325,13 @@
      },
      {
       "partyTypeCode": "I",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -1411,17 +1350,6 @@
     "docTypeCode": "DE",
     "contentModifiedAt": "2022-08-08T13:02:56.000Z",
     "township": [],
-    "ocrText": "40 198930 TITLE FIRST BOX SURVIVORSHIP DEED Pages: \u201cne \u2018$18.00 roses Franklin County Recorder BXTITLE FI KNOW ALL MEN BY THESE PRESENTS; That , Robert V. Zwink, Married, of Franklin County, State of ",
-    "highlights": {
-     "grantee": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> ANTJE"
-     ],
-     "grantor": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> ANTJE"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -1437,8 +1365,6 @@
     "recordedTime": "3:23 PM",
     "id": 126938362,
     "documentNumber": "200305070135751",
-    "downloadLink": "/files/documents/126938362",
-    "thumbnail": "/files/documents/126938362/images/118200207_1_r-300.png?exp=1788205234&sig=edd57a73523aeaad43c5421815c38a40032912b150600cb994d9ff553840969d",
     "imageId": 118200207
    },
    "127125971": {
@@ -1453,8 +1379,8 @@
     ],
     "rsId": "6847135",
     "grantor": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> ANTJE",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
      ""
     ],
     "bookVolumePage": "--/--/--",
@@ -1505,13 +1431,13 @@
     "parties": [
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -1520,13 +1446,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ANTJE",
+      "name": "GRANTHAM BENJAMIN",
       "nameCompletion": {
-       "output": "ZWINK ANTJE",
+       "output": "GRANTHAM BENJAMIN",
        "input": [
-        "ZWINK ANTJE",
-        "ZWINK",
-        "ANTJE"
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
        ]
       },
       "type": "grantor",
@@ -1559,13 +1485,6 @@
     "consideration": "$15,000.00",
     "contentModifiedAt": "2022-08-08T13:46:30.000Z",
     "township": [],
-    "ocrText": "< z ; * Jammu, - - a Robert G. Montgomery 120030123237 RETURN TO: SMI/ Wesley Hess Franklin County Recorder MEPSTEWART P.O. Box 540817 ROBERT V. ZWING AND Houston, TX 77254-0817 865_2301 OH, FRANKLIN",
-    "highlights": {
-     "grantor": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> ANTJE"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -1581,14 +1500,12 @@
     "recordedTime": "11:34 AM",
     "id": 127125971,
     "documentNumber": "200310100326764",
-    "downloadLink": "/files/documents/127125971",
     "marginalReferences": [
      {
       "text": "200511080236236",
       "link": "doc/127727531"
      }
     ],
-    "thumbnail": "/files/documents/127125971/images/118387659_1_r-300.png?exp=1788205234&sig=e1359fff89930b854900d94a010cda8f9fdc911d95f07271f6d5d2ca4a5c6963",
     "imageId": 118387659
    },
    "127727969": {
@@ -1603,8 +1520,8 @@
     ],
     "rsId": "7449227",
     "grantor": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> ANTJE",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
      ""
     ],
     "bookVolumePage": "--/--/--",
@@ -1655,13 +1572,13 @@
     "parties": [
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ANTJE",
+      "name": "GRANTHAM BENJAMIN",
       "nameCompletion": {
-       "output": "ZWINK ANTJE",
+       "output": "GRANTHAM BENJAMIN",
        "input": [
-        "ZWINK ANTJE",
-        "ZWINK",
-        "ANTJE"
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
        ]
       },
       "type": "grantor",
@@ -1669,13 +1586,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -1710,13 +1627,6 @@
     "consideration": "$50,000.00",
     "contentModifiedAt": "2022-09-19T09:03:37.363Z",
     "township": [],
-    "ocrText": "RETURN TO: SMI/ Wesley Hess P.O. Box 540817 ROBERT V ZWINK & . 2005 i] 080236708 Houston, TX 77254-0817 nn ) 2301 13/08/2008 1:12PM HEDSTEUART OH, FRANKL Robert G. Montgomery Franklin County Recorder",
-    "highlights": {
-     "grantor": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> ANTJE"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -1732,14 +1642,12 @@
     "recordedTime": "1:12 PM",
     "id": 127727969,
     "documentNumber": "200511080236708",
-    "downloadLink": "/files/documents/127727969",
     "marginalReferences": [
      {
       "text": "200601240014577",
       "link": "doc/127779885"
      }
     ],
-    "thumbnail": "/files/documents/127727969/images/118988602_1_r-300.png?exp=1788205234&sig=790f51c735589d618e526f647ccf197cf077be467ec2caf866b2c81bf5197a7c",
     "imageId": 118988602
    },
    "128512103": {
@@ -1749,14 +1657,14 @@
     "year": 2009,
     "docId": 128512103,
     "grantee": [
-     "ESSIG MELANIE J",
-     "HOUGH HEATHER L",
+     "ABERNATHY ALICE J",
+     "DUNMORE FELIX L",
      ""
     ],
     "rsId": "8233541",
     "grantor": [
-     "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-     "<em>ZWINK</em> ANTJE",
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
      ""
     ],
     "bookVolumePage": "--/--/--",
@@ -1808,13 +1716,13 @@
     "parties": [
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ANTJE",
+      "name": "GRANTHAM BENJAMIN",
       "nameCompletion": {
-       "output": "ZWINK ANTJE",
+       "output": "GRANTHAM BENJAMIN",
        "input": [
-        "ZWINK ANTJE",
-        "ZWINK",
-        "ANTJE"
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
        ]
       },
       "type": "grantor",
@@ -1822,13 +1730,13 @@
      },
      {
       "partyTypeCode": "D",
-      "name": "ZWINK ROBERT V",
+      "name": "GRANTHAM ELEANOR V",
       "nameCompletion": {
-       "output": "ZWINK ROBERT V",
+       "output": "GRANTHAM ELEANOR V",
        "input": [
-        "ZWINK ROBERT V",
-        "ZWINK",
-        "ROBERT",
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
         "V"
        ]
       },
@@ -1837,13 +1745,13 @@
      },
      {
       "partyTypeCode": "I",
-      "name": "ESSIG MELANIE J",
+      "name": "ABERNATHY ALICE J",
       "nameCompletion": {
-       "output": "ESSIG MELANIE J",
+       "output": "ABERNATHY ALICE J",
        "input": [
-        "ESSIG MELANIE J",
-        "ESSIG",
-        "MELANIE",
+        "ABERNATHY ALICE J",
+        "ABERNATHY",
+        "ABERNATHY",
         "J"
        ]
       },
@@ -1852,13 +1760,13 @@
      },
      {
       "partyTypeCode": "I",
-      "name": "HOUGH HEATHER L",
+      "name": "DUNMORE FELIX L",
       "nameCompletion": {
-       "output": "HOUGH HEATHER L",
+       "output": "DUNMORE FELIX L",
        "input": [
-        "HOUGH HEATHER L",
-        "HOUGH",
-        "HEATHER",
+        "DUNMORE FELIX L",
+        "DUNMORE",
+        "DUNMORE",
         "L"
        ]
       },
@@ -1878,13 +1786,6 @@
     "consideration": "$152.00",
     "contentModifiedAt": "2022-08-08T19:09:48.000Z",
     "township": [],
-    "ocrText": "- e g = 2 a G INTUTE A 200906290093840 Pgs: 7 $28 00 720090035900 06/29/2009 2:47PM BXSTEWART TIT Robert G. Montgomery Franklin County Recorder SURVIVORSHIP DEED WARRANTY Robert V. Zwink and Antje Zw",
-    "highlights": {
-     "grantor": [
-      "<em>ZWINK</em> <em>ROBERT</em> <em>V</em>",
-      "<em>ZWINK</em> ANTJE"
-     ]
-    },
     "remaining": {
      "grantor": 0,
      "grantee": 0,
@@ -1900,8 +1801,6 @@
     "recordedTime": "2:47 PM",
     "id": 128512103,
     "documentNumber": "200906290093840",
-    "downloadLink": "/files/documents/128512103",
-    "thumbnail": "/files/documents/128512103/images/119771746_1_r-300.png?exp=1788205234&sig=485b10d3ae211bce0474718ca5351bae8d0c149af88e8ed2d6b9bcb77c9fbfe2",
     "imageId": 119771746
    }
   }

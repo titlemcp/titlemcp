@@ -54,9 +54,9 @@ class QueryNormalizationTests(unittest.IsolatedAsyncioTestCase):
         client = FakeRecorderClient(from_fixture())
         source = FranklinRecorderSourceConnector(client=client)
 
-        await source.query(ask(party_name="Zwink Robert V", parcel_id="030-000526-00"))
+        await source.query(ask(party_name="Grantham Eleanor V", parcel_id="030-000526-00"))
 
-        self.assertEqual(client.queries[0].search_value, "ZWINK ROBERT V")
+        self.assertEqual(client.queries[0].search_value, "GRANTHAM ELEANOR V")
 
     async def test_an_address_is_not_a_search_term(self) -> None:
         """The county indexes by party and legal description, not by street.
@@ -77,7 +77,7 @@ class ResultTests(unittest.IsolatedAsyncioTestCase):
     async def test_a_parcel_scopes_the_answer_to_a_chain(self) -> None:
         source = FranklinRecorderSourceConnector(client=FakeRecorderClient(from_fixture()))
 
-        result = await source.query(ask(party_name="ZWINK ROBERT V", parcel_id="030-000526-00"))
+        result = await source.query(ask(party_name="GRANTHAM ELEANOR V", parcel_id="030-000526-00"))
 
         self.assertIs(result.status, SourceResultStatus.SUCCEEDED)
         self.assertEqual(len(result.records), 1)
@@ -89,7 +89,7 @@ class ResultTests(unittest.IsolatedAsyncioTestCase):
     async def test_without_a_parcel_the_breadth_is_reported_not_hidden(self) -> None:
         source = FranklinRecorderSourceConnector(client=FakeRecorderClient(from_fixture()))
 
-        result = await source.query(ask(party_name="ZWINK ROBERT V"))
+        result = await source.query(ask(party_name="GRANTHAM ELEANOR V"))
 
         self.assertIs(result.status, SourceResultStatus.SUCCEEDED)
         self.assertGreater(len(result.records), 1)
@@ -98,7 +98,7 @@ class ResultTests(unittest.IsolatedAsyncioTestCase):
     async def test_an_open_lien_always_asks_for_review(self) -> None:
         source = FranklinRecorderSourceConnector(client=FakeRecorderClient(from_fixture()))
 
-        result = await source.query(ask(party_name="ZWINK ROBERT V", parcel_id="030-000526-00"))
+        result = await source.query(ask(party_name="GRANTHAM ELEANOR V", parcel_id="030-000526-00"))
 
         self.assertTrue(result.requires_human_review)
 
@@ -116,7 +116,7 @@ class FailureTests(unittest.IsolatedAsyncioTestCase):
         client = FakeRecorderClient(error=RecorderProtocolError("REJECTED: bad query"))
         source = FranklinRecorderSourceConnector(client=client)
 
-        result = await source.query(ask(party_name="ZWINK ROBERT V", parcel_id="030-000526-00"))
+        result = await source.query(ask(party_name="GRANTHAM ELEANOR V", parcel_id="030-000526-00"))
 
         self.assertIs(result.status, SourceResultStatus.FAILED)
         self.assertTrue(result.warnings)
@@ -126,7 +126,7 @@ class FailureTests(unittest.IsolatedAsyncioTestCase):
             client=FakeRecorderClient(error=TimeoutError("no answer"))
         )
 
-        result = await source.query(ask(party_name="ZWINK ROBERT V", parcel_id="030-000526-00"))
+        result = await source.query(ask(party_name="GRANTHAM ELEANOR V", parcel_id="030-000526-00"))
 
         self.assertIs(result.status, SourceResultStatus.FAILED)
 
