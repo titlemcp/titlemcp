@@ -46,6 +46,22 @@ Jurisdiction packages (e.g. `titlemcp-us-oh-auditor`) supply a table of these
 configs and register one connector + MCP tool per county. This package is
 state-agnostic — any iasWorld county, in any state, is just another config.
 
+## When a detail page cannot be trusted
+
+Two failures look identical to a healthy parse, because both come back as HTTP
+200 and neither raises. The connector reports each as a warning on the result so
+a caller is never handed empty fields as if they were the parcel's own.
+
+| Situation | What the page is | What the connector does |
+| --- | --- | --- |
+| Site maintenance, bot block, error interstitial | Not a datalet: no data sections, no parcel number | Drops the detail and warns that no readable datalet was returned. The search hit is still reported. |
+| Wrong `detail_profile` for the county | A real datalet whose tables the profile does not recognize | Keeps the record and warns which profile matched nothing, listing the sections the page actually served. |
+
+`is_datalet_shaped(detail)` is the first check, and profile mismatches surface as
+`detail.warnings`, merged into the search response. The mismatch check keys off
+owner, mailing address and legal description all being empty on a page that does
+have sections, since a datalet always names an owner somewhere.
+
 ## Tests
 
 ```bash

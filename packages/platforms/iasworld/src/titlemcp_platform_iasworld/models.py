@@ -72,6 +72,10 @@ class IasWorldAuditorParcelDetail(BaseModel):
     site_data: dict[str, Any] = Field(default_factory=dict)
     sections: dict[str, Any] = Field(default_factory=dict)
     raw_section_rows: dict[str, list[list[str]]] = Field(default_factory=dict)
+    # Non-fatal notes about the parse itself, e.g. a datalet whose tables none of
+    # the profile's expected sections matched. Merged into the search response so
+    # a caller sees them without inspecting the raw sections.
+    warnings: list[str] = Field(default_factory=list)
     source_url: str | None = None
     retrieved_at: str = Field(
         default_factory=lambda: datetime.now(UTC).isoformat(timespec="seconds")
