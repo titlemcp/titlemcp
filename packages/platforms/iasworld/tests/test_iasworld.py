@@ -561,11 +561,25 @@ class IasWorldAlphanumericParcelTests(unittest.TestCase):
             },
         )
         self.assertEqual(detail.taxable_value["rows"][0]["Total"], "$84,000")
-        self.assertEqual(detail.most_recent_transfer["Transfer Date"], "05-SEP-2017")
-        self.assertEqual(detail.most_recent_transfer["Transfer Price"], "$250,000")
+        self.assertEqual(detail.most_recent_transfer["Transfer Date"], "01-JUN-2019")
+        self.assertEqual(detail.most_recent_transfer["Transfer Price"], "$300,000")
         self.assertEqual(
             detail.annual_taxes["rows"][0],
             {"Tax Year": "2026", "Net Annual Tax": "3,000.00", "Total Paid": "3,013.00"},
+        )
+
+    def test_dwelling_section_maps_to_canonical_columns(self) -> None:
+        detail = IasWorldAuditorClient(BUTLER).parse_detail(BUTLER_DETAIL_HTML)
+
+        self.assertEqual(
+            detail.dwelling_data["rows"][0],
+            {
+                "Yr Built": "1960",
+                "Tot Fin Area": "2,000",
+                "Bedrooms": "4",
+                "Full Baths": "2",
+                "Half Baths": "1",
+            },
         )
 
     def test_plain_public_access_would_miss_butler_sections(self) -> None:
@@ -714,10 +728,18 @@ BUTLER_DETAIL_HTML = """
   <tr><td>Building (35%)</td><td>$70,000</td></tr>
   <tr><td>Assessed Total (35%)</td><td>$84,000</td></tr>
 </table>
+<table id="Dwelling">
+  <tr><td>Year Built</td><td>1960</td></tr>
+  <tr><td>Stories</td><td>1</td></tr>
+  <tr><td>Bedrooms</td><td>4</td></tr>
+  <tr><td>Full Baths</td><td>2</td></tr>
+  <tr><td>Half Baths</td><td>1</td></tr>
+  <tr><td>Total Living Area (Sq. Ft.)</td><td>2,000</td></tr>
+</table>
 <table id="Transfers">
   <tr><td>Date</td><td>Sale Amount</td></tr>
-  <tr><td>05-SEP-2017</td><td>$250,000</td></tr>
-  <tr><td>01-APR-1997</td><td>$120,000</td></tr>
+  <tr><td>01-JUN-2019</td><td>$300,000</td></tr>
+  <tr><td>01-MAR-1999</td><td>$150,000</td></tr>
 </table>
 <table id="Current Year Real Estate Taxes">
   <tr><td>TAX TYPE</td><td>Prior Year</td><td>First Half Tax</td><td>Second Half Tax</td><td>Total</td></tr>
@@ -1021,8 +1043,8 @@ MONTGOMERY_DETAIL_HTML = """
   <tr><td>City, State, Zip</td><td>ANYTOWN, OH 45000</td></tr>
 </table>
 <table id="Legal">
-  <tr><td>Legal Description</td><td>5-5-24</td></tr>
-  <tr><td></td><td>1-9-13</td></tr>
+  <tr><td>Legal Description</td><td>LOT 1</td></tr>
+  <tr><td></td><td>BLOCK 2</td></tr>
   <tr><td>Land Use Description</td><td>R - SINGLE FAMILY DWELLING</td></tr>
   <tr><td>Acres</td><td>1.234</td></tr>
   <tr><td>Deed</td><td></td></tr>
@@ -1030,8 +1052,16 @@ MONTGOMERY_DETAIL_HTML = """
 </table>
 <table id="Sales">
   <tr><td>Date</td><td>Sale Price</td><td>Deed Reference</td><td>Seller</td><td>Buyer</td></tr>
-  <tr><td>04-OCT-05</td><td>$120,000</td><td>200500101830</td><td>ROE R</td><td>DOE JANE A</td></tr>
-  <tr><td>28-FEB-18</td><td>$250,000</td><td>201800011199</td><td>DOE JANE A</td><td>DOE JANE A AND JOHN Q TRS</td></tr>
+  <tr><td>01-FEB-06</td><td>$150,000</td><td>200000000001</td><td>ROE R</td><td>DOE JANE A</td></tr>
+  <tr><td>01-JUL-19</td><td>$300,000</td><td>200000000002</td><td>DOE JANE A</td><td>DOE JANE A AND JOHN Q TRS</td></tr>
+</table>
+<table id="Building">
+  <tr><td>Building Style</td><td>CAPE COD</td></tr>
+  <tr><td>Number of Stories</td><td>1.5</td></tr>
+  <tr><td>Year Built</td><td>2000</td></tr>
+  <tr><td>Total Rms/Bedrms/Baths/Half Baths</td><td>8/3/2/1</td></tr>
+  <tr><td>Square Feet of Living Area</td><td>2,500</td></tr>
+  <tr><td>Total Square Footage</td><td>2,500</td></tr>
 </table>
 <table id="Tax Summary">
   <tr><td>Year</td><td>Prior Year</td><td>Prior Year Payments</td><td>1st Half</td><td>1st Half Payments</td><td>2nd Half</td><td>2nd Half Payments</td><td>Total Currently Due</td></tr>
@@ -1053,15 +1083,15 @@ LUCAS_DETAIL_HTML = """
 </table>
 <table id="Summary - Most Recent Sale">
   <tr><td>Prior Owner</td><td>ROE RICHARD L</td></tr>
-  <tr><td>Sale Amount</td><td>$100</td></tr>
-  <tr><td>Deed</td><td>25103809</td></tr>
-  <tr><td>Sales Date</td><td>10-JUL-2025</td></tr>
+  <tr><td>Sale Amount</td><td>$500</td></tr>
+  <tr><td>Deed</td><td>20000001</td></tr>
+  <tr><td>Sales Date</td><td>01-JUN-2025</td></tr>
 </table>
 <table id="Summary - Values">
   <tr><td></td><td>35% Values</td><td>100% Values</td></tr>
-  <tr><td>Land</td><td>4,830</td><td>13,800</td></tr>
-  <tr><td>Building</td><td>19,110</td><td>54,600</td></tr>
-  <tr><td>Total</td><td>23,940</td><td>68,400</td></tr>
+  <tr><td>Land</td><td>5,000</td><td>15,000</td></tr>
+  <tr><td>Building</td><td>20,000</td><td>60,000</td></tr>
+  <tr><td>Total</td><td>25,000</td><td>75,000</td></tr>
 </table>
 <input type="hidden" id="hdPin" value="0100437" />
 <input type="hidden" id="hdTaxYear" value="2026" />
@@ -1103,7 +1133,7 @@ class KeyedLabelLayoutTests(unittest.TestCase):
 
     def test_blank_labels_continue_the_line_above(self) -> None:
         # The legal description runs across two rows, the second unlabelled.
-        self.assertEqual(self.detail.legal_description, ["5-5-24", "1-9-13"])
+        self.assertEqual(self.detail.legal_description, ["LOT 1", "BLOCK 2"])
         # A continuation must not leak from a label this layout does not want:
         # "Name" continues onto a second row, but mailing takes only the address.
         self.assertEqual(
@@ -1118,13 +1148,27 @@ class KeyedLabelLayoutTests(unittest.TestCase):
         self.assertEqual(self.detail.tax_status["Zip Code"], "45000")
 
     def test_oldest_first_sales_table_takes_the_last_row(self) -> None:
-        self.assertEqual(self.detail.most_recent_transfer["Transfer Date"], "28-FEB-18")
-        self.assertEqual(self.detail.most_recent_transfer["Transfer Price"], "$250,000")
+        self.assertEqual(self.detail.most_recent_transfer["Transfer Date"], "01-JUL-19")
+        self.assertEqual(self.detail.most_recent_transfer["Transfer Price"], "$300,000")
 
     def test_half_year_columns_are_summed_into_the_annual_charge(self) -> None:
         self.assertEqual(
             self.detail.annual_taxes["rows"][0],
             {"Tax Year": "2025", "Net Annual Tax": "2,500.00", "Total Paid": "2,500.00"},
+        )
+
+    def test_packed_room_counts_are_split(self) -> None:
+        # Montgomery packs the counts into one cell: "8/3/2/1".
+        self.assertEqual(
+            self.detail.dwelling_data["rows"][0],
+            {
+                "Yr Built": "2000",
+                "Tot Fin Area": "2,500",
+                "Rooms": "8",
+                "Bedrooms": "3",
+                "Full Baths": "2",
+                "Half Baths": "1",
+            },
         )
 
     def test_no_mismatch_warning(self) -> None:
@@ -1142,16 +1186,16 @@ class SummarySectionsLayoutTests(unittest.TestCase):
             self.detail.appraised_value["rows"][0],
             {
                 "": "Market (100%)",
-                "Land": "13,800",
-                "Improvements": "54,600",
-                "Total": "68,400",
+                "Land": "15,000",
+                "Improvements": "60,000",
+                "Total": "75,000",
             },
         )
-        self.assertEqual(self.detail.taxable_value["rows"][0]["Total"], "23,940")
+        self.assertEqual(self.detail.taxable_value["rows"][0]["Total"], "25,000")
 
     def test_keyed_sale_section_becomes_the_transfer(self) -> None:
-        self.assertEqual(self.detail.most_recent_transfer["Transfer Date"], "10-JUL-2025")
-        self.assertEqual(self.detail.most_recent_transfer["Transfer Price"], "$100")
+        self.assertEqual(self.detail.most_recent_transfer["Transfer Date"], "01-JUN-2025")
+        self.assertEqual(self.detail.most_recent_transfer["Transfer Price"], "$500")
 
     def test_tax_status_normalizes(self) -> None:
         self.assertEqual(self.detail.tax_status["Property Class"], "RESIDENTIAL")

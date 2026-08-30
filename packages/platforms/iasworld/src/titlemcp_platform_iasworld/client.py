@@ -1096,6 +1096,13 @@ class PublicAccessLayout:
     transfer_style: str = "table_newest_first"
     transfer_date_label: str = "Date"
     transfer_price_label: str = "Sale Amount"
+    dwelling_sections: tuple[str, ...] = ()
+    # Source label -> the canonical column the classic "Dwelling Data" table uses,
+    # so the canonical mapper stays profile-agnostic.
+    dwelling_labels: tuple[tuple[str, str], ...] = ()
+    # One label whose value packs several counts in order, e.g. Montgomery's
+    # "Total Rms/Bedrms/Baths/Half Baths" -> "9/4/2/1".
+    dwelling_combined: tuple[str, tuple[str, ...]] | None = None
 
 
 PUBLIC_ACCESS_LAYOUTS: dict[DetailProfile, PublicAccessLayout] = {
@@ -1125,6 +1132,14 @@ PUBLIC_ACCESS_LAYOUTS: dict[DetailProfile, PublicAccessLayout] = {
         appraised_labels=("Land (100%)", "Building (100%)", "Total Value (100%)"),
         taxable_labels=("Land (35%)", "Building (35%)", "Assessed Total (35%)"),
         transfer_sections=("Transfers",),
+        dwelling_sections=("Dwelling",),
+        dwelling_labels=(
+            ("Year Built", "Yr Built"),
+            ("Total Living Area (Sq. Ft.)", "Tot Fin Area"),
+            ("Bedrooms", "Bedrooms"),
+            ("Full Baths", "Full Baths"),
+            ("Half Baths", "Half Baths"),
+        ),
     ),
     # Montgomery: split sections again, but labelled rather than numbered. Its
     # owner table is a single column under a "Name" header, and multi-line
@@ -1148,6 +1163,15 @@ PUBLIC_ACCESS_LAYOUTS: dict[DetailProfile, PublicAccessLayout] = {
         transfer_sections=("Sales",),
         transfer_style="table_newest_last",
         transfer_price_label="Sale Price",
+        dwelling_sections=("Building",),
+        dwelling_labels=(
+            ("Year Built", "Yr Built"),
+            ("Total Square Footage", "Tot Fin Area"),
+        ),
+        dwelling_combined=(
+            "Total Rms/Bedrms/Baths/Half Baths",
+            ("Rooms", "Bedrooms", "Full Baths", "Half Baths"),
+        ),
     ),
     # Lucas: a "Summary - " tabbed datalet. This tab carries no owner, mailing
     # address or legal description at all, so those sources stay undeclared and
@@ -1238,9 +1262,33 @@ def _detail_fields_public_access(
         "appraised_value": appraised,
         "taxable_value": taxable,
         "annual_taxes": annual_taxes,
-        "dwelling_data": {},
+        "dwelling_data": _layout_dwelling(
+            _first_section(raw_section_rows, layout.dwelling_sections), layout
+        ),
         "site_data": {},
     }
+
+
+def _layout_dwelling(rows: list[list[str]], layout: PublicAccessLayout) -> dict[str, Any]:
+    """Normalize a key/value dwelling section into the classic one-row table."""
+    if not rows:
+        return {}
+    kv = _kv_section(rows)
+    row: dict[str, Any] = {}
+    for source_label, canonical_label in layout.dwelling_labels:
+        value = _first_value(kv.get(source_label))
+        if value:
+            row[canonical_label] = value
+    if layout.dwelling_combined:
+        source_label, canonical_labels = layout.dwelling_combined
+        packed = _first_value(kv.get(source_label)) or ""
+        parts = [part.strip() for part in packed.split("/")]
+        for canonical_label, part in zip(canonical_labels, parts, strict=False):
+            if part:
+                row.setdefault(canonical_label, part)
+    if not row:
+        return {}
+    return {"headers": list(row), "rows": [row]}
 
 
 def _field_values(
