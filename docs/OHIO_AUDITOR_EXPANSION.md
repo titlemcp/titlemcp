@@ -75,10 +75,10 @@ output).
 | --- | --- | --- |
 | Franklin | `property.franklincountyauditor.com/_web/` | `jur=025`, numeric parcels — **enabled** |
 | Clermont | `clermontauditorrealestate.org/_web/` | `jur=000`, **alphanumeric** parcels — **enabled** |
-| Montgomery | `www.mcrealestate.org/` | `jur=000`, no `/_web/` prefix, **alphanumeric** parcels, CLASSIC detail (all verified live) — **enabled** |
+| Montgomery | `www.mcrealestate.org/` | `jur=000`, no `/_web/` prefix, **alphanumeric** parcels, labelled split sections so PUBLIC_ACCESS_KEYED (verified live) — **enabled** |
 | Stark | `realestate.starkcountyohio.gov/` | `jur=000` |
 | Butler | `propertysearch.bcohio.gov/` | `jur=000`, **alphanumeric** parcels, renamed Public Access tables so PUBLIC_ACCESS_DETAILED (all verified live) — **enabled** |
-| Lucas | `icare.co.lucas.oh.us/lucascare/` | branded "AREIS"; path prefix; `jur=048` (verified live), numeric parcels, CLASSIC detail — **enabled** |
+| Lucas | `icare.co.lucas.oh.us/lucascare/` | branded "AREIS"; path prefix; `jur=048` (verified live), numeric parcels, `Summary - ` tabbed datalet so SUMMARY_SECTIONS — **enabled** |
 | Summit | `propertyaccess.summitoh.net/` | uses `mode=realprop` |
 | Lake | `auditor.lakecountyohio.gov/` | `jur=000`, **alphanumeric** parcels, unified `mode=realprop` search with renamed form fields (`inpNo`/`inpOwner1`), LAKE detail (all verified live) — **enabled** |
 
@@ -173,7 +173,28 @@ one layout description working across counties. If the layouts keep diverging pa
 what that table can express, that registry is the place to grow a real per-county
 source of truth rather than adding profiles one at a time.
 
-Remaining: Stark, Summit — roughly in that order. Each county is one PR:
+**Montgomery and Lucas were corrected** after the unreadable-detail guard
+flagged them. Both were enabled on the `CLASSIC` default and both silently
+returned an empty owner, mailing address and legal description on every lookup:
+Montgomery because it labels its split sections instead of numbering them, Lucas
+because its datalet is a `Summary - ` tabbed page. Montgomery's profile was never
+confirmed live when it landed, which this doc already flagged; Lucas's was
+recorded as live-verified `CLASSIC`, and that was wrong.
+
+Both are now entries in `PUBLIC_ACCESS_LAYOUTS` rather than new parsing code. A
+layout describes where each field lives and how it is labelled (`NUMBERED`,
+`KEYED` or `COLUMN`), and a field with no declared section means the datalet does
+not carry it, which is how Lucas avoids being reported as a broken profile for an
+owner its page never had. Four of the five profiles are now data in that table;
+only `CLASSIC` and `LAKE` still have hand-written extractors, and folding those in
+is the obvious next consolidation.
+
+Remaining: Stark, Summit — roughly in that order. Neither is a config-only entry:
+Stark's search page 302-redirects and its search POST returns HTTP 500, which
+looks like a disclaimer page that has to be accepted for a session cookie, and
+Summit serves an incomplete TLS chain that Python rejects while `openssl`
+accepts, on top of the `realprop` form-field verification already noted below.
+Each county is one PR:
 
 1. Append an `IasWorldSiteConfig` to `OH_IASWORLD_SITES` in `sites.py`.
 2. Capture a real search + detail HTML **fixture** for that site.

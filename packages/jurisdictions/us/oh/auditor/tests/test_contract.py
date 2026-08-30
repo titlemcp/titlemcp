@@ -75,6 +75,8 @@ class OhioAuditorContractTests(unittest.TestCase):
         self.assertEqual(MONTGOMERY.base_url, "https://www.mcrealestate.org/")
         self.assertFalse(MONTGOMERY.numeric_parcel_ids)
         self.assertTrue(MONTGOMERY.preserve_parcel_whitespace)
+        # Labelled, not numbered, sections; CLASSIC silently returned nothing.
+        self.assertEqual(MONTGOMERY.detail_profile, DetailProfile.PUBLIC_ACCESS_KEYED)
         self.assertEqual(MONTGOMERY.tool_name, "montgomery_county_auditor_search")
 
     def test_sites_table_includes_lucas_with_path_prefix_base_url(self) -> None:
@@ -86,6 +88,8 @@ class OhioAuditorContractTests(unittest.TestCase):
         self.assertEqual(LUCAS.district_code, "048")
         self.assertEqual(LUCAS.base_url, "https://icare.co.lucas.oh.us/lucascare/")
         self.assertTrue(LUCAS.numeric_parcel_ids)
+        # A "Summary - " tabbed datalet, not the CLASSIC combined-Owner layout.
+        self.assertEqual(LUCAS.detail_profile, DetailProfile.SUMMARY_SECTIONS)
         self.assertEqual(LUCAS.tool_name, "lucas_county_auditor_search")
         self.assertEqual(
             LUCAS.search_url(AuditorSearchMode.PARCEL_ID),

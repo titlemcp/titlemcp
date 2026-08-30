@@ -43,10 +43,14 @@ CLERMONT = IasWorldSiteConfig(
 # (https://www.mcrealestate.org/) — the parent of search/ and Datalets/ with no
 # "/_web/" prefix. Two knobs were confirmed against the live site: jur=000 (seen
 # in the datalet URLs), and the primary Parcel ID is alphanumeric (example
-# "A01 00000 0001") so numeric_parcel_ids=False, like Clermont. Re-verified live:
-# the datalet detail is the combined-Owner CLASSIC layout (no numbered "Owner 1"/
-# "Address 1" Public Access sections), so detail_profile=CLASSIC (the default) is
-# correct. All knobs now confirmed against live result/datalet pages.
+# "A01 00000 0001") so numeric_parcel_ids=False, like Clermont. Its datalet was
+# never inspected live when this landed (maintenance / bot protection) and the
+# CLASSIC default turned out to be wrong: Montgomery splits Owner/Mailing/Legal
+# like Public Access but labels them ("Name", "Mailing Address") instead of
+# numbering them, puts the owner in a single-column table, continues multi-line
+# values on blank-label rows, and lists Sales oldest first. That is
+# PUBLIC_ACCESS_KEYED. Under CLASSIC it returned an empty owner, mailing address
+# and legal description on every lookup.
 MONTGOMERY = IasWorldSiteConfig(
     source_id="us-oh-montgomery-auditor",
     county="Montgomery County",
@@ -59,6 +63,7 @@ MONTGOMERY = IasWorldSiteConfig(
     # ("A01 00000 0001") the form expects verbatim. The owner/address column
     # swap is handled automatically by header detection.
     preserve_parcel_whitespace=True,
+    detail_profile=DetailProfile.PUBLIC_ACCESS_KEYED,
     owner="Montgomery County Auditor",
     priority=230,
 )
@@ -69,9 +74,13 @@ MONTGOMERY = IasWorldSiteConfig(
 # All knobs re-verified live (an owner search returned result rows): the parcel
 # token is jur 048 (e.g. "048:0100000:2026"), so district_code="048" — NOT the
 # 000 regional default. Parcels are numeric ("0100000"), so the default
-# numeric_parcel_ids=True is kept; the datalet detail uses the combined-Owner
-# CLASSIC layout (labels "Owner"/"Prior Owner", not the numbered Public Access
-# sections), so detail_profile stays CLASSIC. See docs/OHIO_AUDITOR_EXPANSION.md.
+# numeric_parcel_ids=True is kept. Its datalet is a "Summary - " tabbed page
+# (Summary - General / Most Recent Sale / Values, plus Tax Credits), not the
+# combined-Owner CLASSIC layout it was first read as, so detail_profile is
+# SUMMARY_SECTIONS. This tab carries no owner, mailing address or legal
+# description at all: the owner comes from the search hit, as it does for Lake.
+# Its value table is transposed, with the valuation basis in the columns.
+# See docs/OHIO_AUDITOR_EXPANSION.md.
 LUCAS = IasWorldSiteConfig(
     source_id="us-oh-lucas-auditor",
     county="Lucas County",
@@ -79,6 +88,7 @@ LUCAS = IasWorldSiteConfig(
     name="Lucas County, Ohio Auditor Property Search (AREIS)",
     base_url="https://icare.co.lucas.oh.us/lucascare/",
     district_code="048",
+    detail_profile=DetailProfile.SUMMARY_SECTIONS,
     owner="Lucas County Auditor",
     priority=230,
 )

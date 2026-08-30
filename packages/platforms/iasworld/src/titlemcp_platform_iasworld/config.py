@@ -34,6 +34,15 @@ class DetailProfile(StrEnum):
       Both Public Access variants are table-driven: see
       ``PUBLIC_ACCESS_LAYOUTS`` in ``client.py``, where a county that renames
       sections is a data entry rather than a new profile.
+    - ``PUBLIC_ACCESS_KEYED`` (Montgomery): the same split sections, labelled
+      rather than numbered (``Name``, ``Mailing Address``, ``Legal
+      Description``). The owner table is a single column under a ``Name``
+      header, multi-line values continue on rows whose label cell is blank, and
+      ``Sales`` is oldest first.
+    - ``SUMMARY_SECTIONS`` (Lucas): a ``Summary - `` tabbed datalet. This tab
+      carries no owner, mailing address or legal description at all, so those
+      come from the search hit, and its value table is transposed with the
+      valuation basis in the columns.
     - ``LAKE`` (Lake): singular labels (``Owner Name``, ``Legal Description``)
       under ``Owner Name and Mailing Address`` / ``Legal Description
       Information``, prefixed value tables (``Appraised (Market - 100%) Value``,
@@ -44,6 +53,8 @@ class DetailProfile(StrEnum):
     CLASSIC = "classic"
     PUBLIC_ACCESS = "public_access"
     PUBLIC_ACCESS_DETAILED = "public_access_detailed"
+    PUBLIC_ACCESS_KEYED = "public_access_keyed"
+    SUMMARY_SECTIONS = "summary_sections"
     LAKE = "lake"
 
 
