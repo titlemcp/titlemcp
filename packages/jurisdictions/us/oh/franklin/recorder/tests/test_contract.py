@@ -32,7 +32,7 @@ class FranklinRecorderContractTests(unittest.TestCase):
         self.assertIn(WorkflowKind.PUBLIC_RECORDS_SEARCH, adapter.workflow_kinds)
 
     def test_source_supports_franklin_county_recorder(self) -> None:
-        source = FranklinRecorderSourceConnector(websocket_url="wss://example.invalid")
+        source = FranklinRecorderSourceConnector("https://example.invalid")
 
         self.assertTrue(
             source.supports(
@@ -40,6 +40,16 @@ class FranklinRecorderContractTests(unittest.TestCase):
                 SourceKind.COUNTY_RECORDER,
             )
         )
+
+    def test_the_source_needs_no_credential(self) -> None:
+        """The county issues a session to anyone who asks for the page.
+
+        There is nothing to configure and nothing to store, which is why this
+        connector has no credential path.
+        """
+        source = FranklinRecorderSourceConnector("https://example.invalid")
+
+        self.assertFalse(source.descriptor.requires_auth)
 
 
 if __name__ == "__main__":

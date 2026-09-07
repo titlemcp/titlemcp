@@ -1,0 +1,1873 @@
+{
+ "workspaceID": "search",
+ "data": {
+  "byOrder": [],
+  "byHash": {
+   "120685975": {
+    "attachments": [],
+    "instrumentNumber": "201004070041695",
+    "docNumber": "201004070041695",
+    "year": 2010,
+    "docId": 120685975,
+    "grantee": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "",
+     "ELLSWORTH GRETA A"
+    ],
+    "rsId": "8366556",
+    "grantor": [
+     "FAIRWEATHER HAROLD",
+     "FAIRWEATHER ALICE J",
+     ""
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  189-190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001 Plt  PB 4 PG 412 PT 189",
+     ""
+    ],
+    "legals": [
+     {
+      "subdivHighLot": "189-190",
+      "legalType": "Subdivision",
+      "subdivLowLot": "189-190",
+      "subdivBlock": "PB 4 PG 412",
+      "subdivLotRange": {
+       "gte": 189,
+       "lte": 189
+      },
+      "subdivPIN": "030-000001",
+      "description": "Lt/Un  189-190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001 Plt  PB 4 PG 412 PT 189",
+      "subdivRemarks": "PT 189",
+      "subdivName": "WAGENHALS ET AL AMENDED SUBD"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "createdAt": "2022-08-03T05:16:01.274Z",
+    "docNumberRange": 201004070041695,
+    "block": [],
+    "docVersion": 1,
+    "updatedAt": "2022-08-03T05:16:01.274Z",
+    "images": [
+     {
+      "color": false,
+      "totalPages": 3,
+      "id": 115155126,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "pageCount": 3,
+    "block2": [],
+    "docType": "DEED",
+    "block3": [],
+    "recordedDate": "4/7/2010",
+    "metadataVersion": 2,
+    "docGroup": "DEEDS",
+    "parties": [
+     {
+      "partyTypeCode": "D",
+      "name": "FAIRWEATHER HAROLD",
+      "nameCompletion": {
+       "output": "FAIRWEATHER HAROLD",
+       "input": [
+        "FAIRWEATHER HAROLD",
+        "FAIRWEATHER",
+        "FAIRWEATHER"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "FAIRWEATHER ALICE J",
+      "nameCompletion": {
+       "output": "FAIRWEATHER ALICE J",
+       "input": [
+        "FAIRWEATHER ALICE J",
+        "FAIRWEATHER",
+        "FAIRWEATHER",
+        "J"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "ELLSWORTH GRETA A",
+      "nameCompletion": {
+       "output": "ELLSWORTH GRETA A",
+       "input": [
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
+        "A"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "DE",
+    "consideration": "$310.00",
+    "contentModifiedAt": "2022-08-03T05:16:01.000Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantor": 0,
+      "grantee": 0
+     },
+     "legals": {
+      "subdivision": 0
+     }
+    },
+    "recordedTime": "10:12 AM",
+    "id": 120685975,
+    "documentNumber": "201004070041695",
+    "imageId": 115155126
+   },
+   "120685977": {
+    "attachments": [],
+    "instrumentNumber": "201004070041696",
+    "docNumber": "201004070041696",
+    "year": 2010,
+    "docId": 120685977,
+    "grantee": [
+     "MERS",
+     "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+     "HOME SAVINGS & LOAN CO OF YOUNGSTOWN OHIO",
+     ""
+    ],
+    "rsId": "8366557",
+    "grantor": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "",
+     "ELLSWORTH GRETA A"
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  189-190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001 Plt  PB 4 PG 412 PT 189",
+     ""
+    ],
+    "legals": [
+     {
+      "subdivHighLot": "189-190",
+      "legalType": "Subdivision",
+      "subdivLowLot": "189-190",
+      "subdivBlock": "PB 4 PG 412",
+      "subdivLotRange": {
+       "gte": 189,
+       "lte": 189
+      },
+      "subdivPIN": "030-000001",
+      "description": "Lt/Un  189-190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001 Plt  PB 4 PG 412 PT 189",
+      "subdivRemarks": "PT 189",
+      "subdivName": "WAGENHALS ET AL AMENDED SUBD"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "docNumberRange": 201004070041696,
+    "block": [],
+    "marginalReferencesCount": 1,
+    "docVersion": 3,
+    "pageCount": 19,
+    "images": [
+     {
+      "color": false,
+      "totalPages": 19,
+      "id": 115155349,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "block2": [],
+    "docType": "MORTGAGE",
+    "block3": [],
+    "recordedDate": "4/7/2010",
+    "metadataVersion": 2,
+    "docGroup": "MORTGAGES",
+    "parties": [
+     {
+      "partyTypeCode": "I",
+      "name": "MERS",
+      "nameCompletion": {
+       "output": "MERS",
+       "input": [
+        "MERS"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+      "nameCompletion": {
+       "output": "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+       "input": [
+        "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+        "MORTGAGE",
+        "ELECTRONIC",
+        "REGISTRATION",
+        "SYSTEMS",
+        "INC"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "HOME SAVINGS & LOAN CO OF YOUNGSTOWN OHIO",
+      "nameCompletion": {
+       "output": "HOME SAVINGS & LOAN CO OF YOUNGSTOWN OHIO",
+       "input": [
+        "HOME SAVINGS & LOAN CO OF YOUNGSTOWN OHIO",
+        "HOME",
+        "SAVINGS",
+        "&",
+        "LOAN",
+        "CO",
+        "OF",
+        "YOUNGSTOWN",
+        "OHIO"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "ELLSWORTH GRETA A",
+      "nameCompletion": {
+       "output": "ELLSWORTH GRETA A",
+       "input": [
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
+        "A"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "MO",
+    "consideration": "$248,100.00",
+    "contentModifiedAt": "2022-09-18T05:25:00.032Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantee": 0,
+      "grantor": 0
+     },
+     "legals": {
+      "subdivision": 0
+     }
+    },
+    "recordedTime": "10:13 AM",
+    "id": 120685977,
+    "documentNumber": "201004070041696",
+    "marginalReferences": [
+     {
+      "text": "201208240124371",
+      "link": "doc/121588411"
+     }
+    ],
+    "imageId": 115155349
+   },
+   "121572446": {
+    "attachments": [],
+    "instrumentNumber": "201207270107996",
+    "docNumber": "201207270107996",
+    "year": 2012,
+    "docId": 121572446,
+    "grantee": [
+     "HOME SAVINGS & LOAN CO OF YOUNGSTOWN OHIO",
+     "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+     "MERS",
+     ""
+    ],
+    "rsId": "8774185",
+    "grantor": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA ELLSWORTH",
+     "",
+     "ELLSWORTH GRETA A"
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  189-190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001 Plt  PB 4 PG 412 PT 189",
+     ""
+    ],
+    "legals": [
+     {
+      "subdivHighLot": "189-190",
+      "legalType": "Subdivision",
+      "subdivLowLot": "189-190",
+      "subdivBlock": "PB 4 PG 412",
+      "subdivLotRange": {
+       "gte": 189,
+       "lte": 189
+      },
+      "subdivPIN": "030-000001",
+      "description": "Lt/Un  189-190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001 Plt  PB 4 PG 412 PT 189",
+      "subdivRemarks": "PT 189",
+      "subdivName": "WAGENHALS ET AL AMENDED SUBD"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "docNumberRange": 201207270107996,
+    "block": [],
+    "marginalReferencesCount": 1,
+    "docVersion": 4,
+    "pageCount": 20,
+    "images": [
+     {
+      "color": false,
+      "totalPages": 20,
+      "id": 115559106,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "block2": [],
+    "docType": "MORTGAGE",
+    "block3": [],
+    "recordedDate": "7/27/2012",
+    "metadataVersion": 2,
+    "docGroup": "MORTGAGES",
+    "parties": [
+     {
+      "partyTypeCode": "I",
+      "name": "HOME SAVINGS & LOAN CO OF YOUNGSTOWN OHIO",
+      "nameCompletion": {
+       "output": "HOME SAVINGS & LOAN CO OF YOUNGSTOWN OHIO",
+       "input": [
+        "HOME SAVINGS & LOAN CO OF YOUNGSTOWN OHIO",
+        "HOME",
+        "SAVINGS",
+        "&",
+        "LOAN",
+        "CO",
+        "OF",
+        "YOUNGSTOWN",
+        "OHIO"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+      "nameCompletion": {
+       "output": "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+       "input": [
+        "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+        "MORTGAGE",
+        "ELECTRONIC",
+        "REGISTRATION",
+        "SYSTEMS",
+        "INC"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "MERS",
+      "nameCompletion": {
+       "output": "MERS",
+       "input": [
+        "MERS"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "ELLSWORTH GRETA A",
+      "nameCompletion": {
+       "output": "ELLSWORTH GRETA A",
+       "input": [
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
+        "A"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM DESMOND",
+      "nameCompletion": {
+       "output": "GRANTHAM DESMOND",
+       "input": [
+        "GRANTHAM DESMOND",
+        "GRANTHAM",
+        "GRANTHAM",
+        "GRANTHAM"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "MO",
+    "consideration": "$246,300.00",
+    "contentModifiedAt": "2022-09-15T08:56:32.198Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantee": 0,
+      "grantor": 0
+     },
+     "legals": {
+      "subdivision": 0
+     }
+    },
+    "recordedTime": "1:54 PM",
+    "id": 121572446,
+    "documentNumber": "201207270107996",
+    "marginalReferences": [
+     {
+      "text": "202106080099874",
+      "link": "doc/123257605"
+     }
+    ],
+    "imageId": 115559106
+   },
+   "122396070": {
+    "attachments": [],
+    "instrumentNumber": "201611230162041",
+    "docNumber": "201611230162041",
+    "year": 2016,
+    "docId": 122396070,
+    "grantee": [
+     "HUNTINGTON NATIONAL BANK",
+     ""
+    ],
+    "rsId": "9857711",
+    "grantor": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA A",
+     "",
+     "ELLSWORTH GRETA A"
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  189~190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001-00 Plt  PB 4 PG 412 PT 189",
+     null,
+     ""
+    ],
+    "returnAddress": {
+     "addressName": "HUNTINGTON NATIONAL BANK",
+     "state": "OH"
+    },
+    "legals": [
+     {
+      "subdivHighLot": "190",
+      "legalType": "Subdivision",
+      "subdivLowLot": "189",
+      "subdivBlock": "PB 4 PG 412",
+      "subdivLotRange": {
+       "gte": 189,
+       "lte": 190
+      },
+      "subdivPIN": "030-000001-00",
+      "description": "Lt/Un  189~190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001-00 Plt  PB 4 PG 412 PT 189",
+      "subdivRemarks": "PT 189",
+      "subdivName": "WAGENHALS ET AL AMENDED SUBD"
+     },
+     {
+      "freeformDescription": "THE FOLLOWING DESCRIBED LAND SITUATED IN THE CITY OF GRANDVIEW HEIGHTS, COUNTY OF FRANKLIN AND THE STATE OF OHIO, TO- WIT BEING LOT NUMBER ONE HUNDRED NINETY (190) AND THE SOUTH HALF OF LOT NUMBER ONE HUNDRED EIGHTY-NINE (189), OF WAGENHALS ETAL AMENDED S",
+      "legalType": "Freeform"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     },
+     {
+      "legalType": "freeform",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "docNumberRange": 201611230162041,
+    "block": [],
+    "marginalReferencesCount": 1,
+    "docVersion": 5,
+    "pageCount": 5,
+    "images": [
+     {
+      "color": false,
+      "totalPages": 5,
+      "id": 116362005,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "block2": [],
+    "docType": "MORTGAGE",
+    "block3": [],
+    "recordedDate": "11/23/2016",
+    "metadataVersion": 2,
+    "docGroup": "MORTGAGES",
+    "parties": [
+     {
+      "partyTypeCode": "I",
+      "name": "HUNTINGTON NATIONAL BANK",
+      "nameCompletion": {
+       "output": "HUNTINGTON NATIONAL BANK",
+       "input": [
+        "HUNTINGTON NATIONAL BANK",
+        "HUNTINGTON",
+        "NATIONAL",
+        "BANK"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM GRETA A",
+      "nameCompletion": {
+       "output": "GRANTHAM GRETA A",
+       "input": [
+        "GRANTHAM GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
+        "A"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "ELLSWORTH GRETA A",
+      "nameCompletion": {
+       "output": "ELLSWORTH GRETA A",
+       "input": [
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
+        "A"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "MO",
+    "consideration": "$88,000.00",
+    "contentModifiedAt": "2022-09-15T08:53:27.826Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantee": 0,
+      "grantor": 0
+     },
+     "legals": {
+      "subdivision": 0,
+      "freeform": 0
+     }
+    },
+    "recordedTime": "3:18 PM",
+    "id": 122396070,
+    "documentNumber": "201611230162041",
+    "marginalReferences": [
+     {
+      "text": "202105050080440",
+      "link": "doc/123240192"
+     }
+    ],
+    "imageId": 116362005
+   },
+   "123224090": {
+    "attachments": [],
+    "instrumentNumber": "202104120064304",
+    "docNumber": "202104120064304",
+    "year": 2021,
+    "docId": 123224090,
+    "grantee": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA K",
+     ""
+    ],
+    "rsId": "10991759",
+    "grantor": [
+     "CALLOWAY ELEANOR J",
+     "CALLOWAY DESMOND",
+     ""
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  193~194 FRANK S WAGENHALS ET AL AMENDED SUBD Pcl# 030-000526 Plt  PB 4 PG 412-413 PT 194",
+     ""
+    ],
+    "returnAddress": {
+     "addressName": "VOELKER & VOELKER"
+    },
+    "legals": [
+     {
+      "subdivHighLot": "194",
+      "legalType": "Subdivision",
+      "subdivLowLot": "193",
+      "subdivBlock": "PB 4 PG 412-413",
+      "subdivLotRange": {
+       "gte": 193,
+       "lte": 194
+      },
+      "subdivPIN": "030-000526",
+      "description": "Lt/Un  193~194 FRANK S WAGENHALS ET AL AMENDED SUBD Pcl# 030-000526 Plt  PB 4 PG 412-413 PT 194",
+      "subdivRemarks": "PT 194",
+      "subdivName": "FRANK S WAGENHALS ET AL AMENDED SUBD"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "docNumberRange": 202104120064304,
+    "block": [],
+    "docVersion": 2,
+    "pageCount": 2,
+    "images": [
+     {
+      "color": false,
+      "totalPages": 2,
+      "id": 114964949,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "block2": [],
+    "docType": "DEED",
+    "block3": [],
+    "recordedDate": "4/12/2021",
+    "metadataVersion": 2,
+    "docGroup": "DEEDS",
+    "parties": [
+     {
+      "partyTypeCode": "I",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "GRANTHAM CLARA K",
+      "nameCompletion": {
+       "output": "GRANTHAM CLARA K",
+       "input": [
+        "GRANTHAM CLARA K",
+        "GRANTHAM",
+        "GRANTHAM",
+        "K"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "CALLOWAY ELEANOR J",
+      "nameCompletion": {
+       "output": "CALLOWAY ELEANOR J",
+       "input": [
+        "CALLOWAY ELEANOR J",
+        "CALLOWAY",
+        "CALLOWAY",
+        "J"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "CALLOWAY DESMOND",
+      "nameCompletion": {
+       "output": "CALLOWAY DESMOND",
+       "input": [
+        "CALLOWAY DESMOND",
+        "CALLOWAY",
+        "CALLOWAY"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "DE",
+    "contentModifiedAt": "2022-09-15T04:55:44.618Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantee": 0,
+      "grantor": 0
+     },
+     "legals": {
+      "subdivision": 0
+     }
+    },
+    "recordedTime": "9:45 AM",
+    "id": 123224090,
+    "documentNumber": "202104120064304",
+    "imageId": 114964949
+   },
+   "123224095": {
+    "attachments": [],
+    "instrumentNumber": "202104120064305",
+    "docNumber": "202104120064305",
+    "year": 2021,
+    "docId": 123224095,
+    "grantee": [
+     "BETTER MORTGAGE CORP",
+     "MERS",
+     "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+     ""
+    ],
+    "rsId": "10991761",
+    "grantor": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA K",
+     ""
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  193~194 FRANK S WAGENHALS ET AL AMENDED SUBD Pcl# 030-000526 Plt  PB 4 PG 412-413 PT 194",
+     ""
+    ],
+    "returnAddress": {
+     "addressName": "VOELKER & VOELKER"
+    },
+    "legals": [
+     {
+      "subdivHighLot": "194",
+      "legalType": "Subdivision",
+      "subdivLowLot": "193",
+      "subdivBlock": "PB 4 PG 412-413",
+      "subdivLotRange": {
+       "gte": 193,
+       "lte": 194
+      },
+      "subdivPIN": "030-000526",
+      "description": "Lt/Un  193~194 FRANK S WAGENHALS ET AL AMENDED SUBD Pcl# 030-000526 Plt  PB 4 PG 412-413 PT 194",
+      "subdivRemarks": "PT 194",
+      "subdivName": "FRANK S WAGENHALS ET AL AMENDED SUBD"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "docNumberRange": 202104120064305,
+    "block": [],
+    "docVersion": 2,
+    "pageCount": 20,
+    "images": [
+     {
+      "color": false,
+      "totalPages": 20,
+      "id": 114965048,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "block2": [],
+    "docType": "MORTGAGE",
+    "block3": [],
+    "recordedDate": "4/12/2021",
+    "metadataVersion": 2,
+    "docGroup": "MORTGAGES",
+    "parties": [
+     {
+      "partyTypeCode": "I",
+      "name": "BETTER MORTGAGE CORP",
+      "nameCompletion": {
+       "output": "BETTER MORTGAGE CORP",
+       "input": [
+        "BETTER MORTGAGE CORP",
+        "BETTER",
+        "MORTGAGE",
+        "CORP"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "MERS",
+      "nameCompletion": {
+       "output": "MERS",
+       "input": [
+        "MERS"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+      "nameCompletion": {
+       "output": "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+       "input": [
+        "MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC",
+        "MORTGAGE",
+        "ELECTRONIC",
+        "REGISTRATION",
+        "SYSTEMS",
+        "INC"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM CLARA K",
+      "nameCompletion": {
+       "output": "GRANTHAM CLARA K",
+       "input": [
+        "GRANTHAM CLARA K",
+        "GRANTHAM",
+        "GRANTHAM",
+        "K"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "MO",
+    "consideration": "$548,250.00",
+    "remarks": [
+     "CORRECTED GRANTOR 5/10/2021"
+    ],
+    "contentModifiedAt": "2022-09-15T04:55:44.618Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantee": 0,
+      "grantor": 0
+     },
+     "legals": {
+      "subdivision": 0
+     }
+    },
+    "recordedTime": "9:45 AM",
+    "id": 123224095,
+    "documentNumber": "202104120064305",
+    "imageId": 114965048
+   },
+   "123234208": {
+    "attachments": [],
+    "instrumentNumber": "202104270074438",
+    "docNumber": "202104270074438",
+    "year": 2021,
+    "docId": 123234208,
+    "grantee": [
+     "BRINDLE CLARA S",
+     "BRINDLE BENJAMIN M",
+     ""
+    ],
+    "rsId": "11008099",
+    "grantor": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> CLARA K",
+     "",
+     "ELLSWORTH GRETA A"
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  189~190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001 Plt  PB 4 PG 412 PT 189",
+     null,
+     ""
+    ],
+    "returnAddress": {
+     "addressName": "VOELKER & VOELKER"
+    },
+    "legals": [
+     {
+      "subdivHighLot": "190",
+      "legalType": "Subdivision",
+      "subdivLowLot": "189",
+      "subdivBlock": "PB 4 PG 412",
+      "subdivLotRange": {
+       "gte": 189,
+       "lte": 190
+      },
+      "subdivPIN": "030-000001",
+      "description": "Lt/Un  189~190 WAGENHALS ET AL AMENDED SUBD Pcl# 030-000001 Plt  PB 4 PG 412 PT 189",
+      "subdivRemarks": "PT 189",
+      "subdivName": "WAGENHALS ET AL AMENDED SUBD"
+     },
+     {
+      "freeformDescription": "SITUATED IN THE COUNTY OF FRANKLIN, STATE OF OHIO AND IN THE CITY OF GRANDVIEW HEIGHTS BEING LOT NUMBER ONE HUNDRED NINETY (190) AND THE SOUTH HALF OF LOT NUMBER ONE HUNDRED EIGHTY-NINE (189), OF WAGENHALS ET AL AMENDED SUBDIVISION, AS THE SAME IS NUMBERE",
+      "legalType": "Freeform"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     },
+     {
+      "legalType": "freeform",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "docNumberRange": 202104270074438,
+    "block": [],
+    "docVersion": 2,
+    "pageCount": 2,
+    "images": [
+     {
+      "color": false,
+      "totalPages": 2,
+      "id": 114975058,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "block2": [],
+    "docType": "DEED",
+    "block3": [],
+    "recordedDate": "4/27/2021",
+    "metadataVersion": 2,
+    "docGroup": "DEEDS",
+    "parties": [
+     {
+      "partyTypeCode": "I",
+      "name": "BRINDLE CLARA S",
+      "nameCompletion": {
+       "output": "BRINDLE CLARA S",
+       "input": [
+        "BRINDLE CLARA S",
+        "BRINDLE",
+        "BRINDLE",
+        "S"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "BRINDLE BENJAMIN M",
+      "nameCompletion": {
+       "output": "BRINDLE BENJAMIN M",
+       "input": [
+        "BRINDLE BENJAMIN M",
+        "BRINDLE",
+        "BRINDLE",
+        "M"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM CLARA K",
+      "nameCompletion": {
+       "output": "GRANTHAM CLARA K",
+       "input": [
+        "GRANTHAM CLARA K",
+        "GRANTHAM",
+        "GRANTHAM",
+        "K"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "ELLSWORTH GRETA A",
+      "nameCompletion": {
+       "output": "ELLSWORTH GRETA A",
+       "input": [
+        "ELLSWORTH GRETA A",
+        "GRANTHAM",
+        "GRANTHAM",
+        "A"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "DE",
+    "contentModifiedAt": "2022-09-15T05:02:12.811Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantee": 0,
+      "grantor": 0
+     },
+     "legals": {
+      "subdivision": 0,
+      "freeform": 0
+     }
+    },
+    "recordedTime": "11:46 AM",
+    "id": 123234208,
+    "documentNumber": "202104270074438",
+    "imageId": 114975058
+   },
+   "126938362": {
+    "attachments": [],
+    "instrumentNumber": "200305070135751",
+    "docNumber": "200305070135751",
+    "year": 2003,
+    "docId": 126938362,
+    "grantee": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
+     ""
+    ],
+    "rsId": "6659562",
+    "grantor": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
+     ""
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  18 CHARLES SCHWENKER JR SUBD Pcl# 010-003353 Plt  PB 7 PG 156",
+     ""
+    ],
+    "legals": [
+     {
+      "subdivHighLot": "18",
+      "legalType": "Subdivision",
+      "subdivLowLot": "18",
+      "subdivBlock": "PB 7 PG 156",
+      "subdivLotRange": {
+       "gte": 18,
+       "lte": 18
+      },
+      "subdivPIN": "010-003353",
+      "description": "Lt/Un  18 CHARLES SCHWENKER JR SUBD Pcl# 010-003353 Plt  PB 7 PG 156",
+      "subdivName": "CHARLES SCHWENKER JR SUBD"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "createdAt": "2022-08-08T13:02:56.896Z",
+    "docNumberRange": 200305070135751,
+    "block": [],
+    "docVersion": 1,
+    "updatedAt": "2022-08-08T13:02:56.896Z",
+    "images": [
+     {
+      "color": false,
+      "totalPages": 1,
+      "id": 118200207,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "pageCount": 1,
+    "block2": [],
+    "docType": "DEED",
+    "block3": [],
+    "recordedDate": "5/7/2003",
+    "metadataVersion": 2,
+    "docGroup": "DEEDS",
+    "parties": [
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM BENJAMIN",
+      "nameCompletion": {
+       "output": "GRANTHAM BENJAMIN",
+       "input": [
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "GRANTHAM BENJAMIN",
+      "nameCompletion": {
+       "output": "GRANTHAM BENJAMIN",
+       "input": [
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "DE",
+    "contentModifiedAt": "2022-08-08T13:02:56.000Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantor": 0,
+      "grantee": 0
+     },
+     "legals": {
+      "subdivision": 0
+     }
+    },
+    "recordedTime": "3:23 PM",
+    "id": 126938362,
+    "documentNumber": "200305070135751",
+    "imageId": 118200207
+   },
+   "127125971": {
+    "attachments": [],
+    "instrumentNumber": "200310100326764",
+    "docNumber": "200310100326764",
+    "year": 2003,
+    "docId": 127125971,
+    "grantee": [
+     "DEEPGREEN BANK",
+     ""
+    ],
+    "rsId": "6847135",
+    "grantor": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
+     ""
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  18 CHARLES SCHWENKER JR SUBD Pcl# 010-003353 Plt  PB 7 PG 156",
+     ""
+    ],
+    "legals": [
+     {
+      "subdivHighLot": "18",
+      "legalType": "Subdivision",
+      "subdivLowLot": "18",
+      "subdivBlock": "PB 7 PG 156",
+      "subdivLotRange": {
+       "gte": 18,
+       "lte": 18
+      },
+      "subdivPIN": "010-003353",
+      "description": "Lt/Un  18 CHARLES SCHWENKER JR SUBD Pcl# 010-003353 Plt  PB 7 PG 156",
+      "subdivName": "CHARLES SCHWENKER JR SUBD"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "docNumberRange": 200310100326764,
+    "block": [],
+    "marginalReferencesCount": 2,
+    "docVersion": 2,
+    "pageCount": 5,
+    "images": [
+     {
+      "color": false,
+      "totalPages": 5,
+      "id": 118387659,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "block2": [],
+    "docType": "MORTGAGE",
+    "block3": [],
+    "recordedDate": "10/10/2003",
+    "metadataVersion": 2,
+    "docGroup": "MORTGAGES",
+    "parties": [
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM BENJAMIN",
+      "nameCompletion": {
+       "output": "GRANTHAM BENJAMIN",
+       "input": [
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "DEEPGREEN BANK",
+      "nameCompletion": {
+       "output": "DEEPGREEN BANK",
+       "input": [
+        "DEEPGREEN BANK",
+        "DEEPGREEN",
+        "BANK"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "MO",
+    "consideration": "$15,000.00",
+    "contentModifiedAt": "2022-08-08T13:46:30.000Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantor": 0,
+      "grantee": 0
+     },
+     "legals": {
+      "subdivision": 0
+     }
+    },
+    "recordedTime": "11:34 AM",
+    "id": 127125971,
+    "documentNumber": "200310100326764",
+    "marginalReferences": [
+     {
+      "text": "200511080236236",
+      "link": "doc/127727531"
+     }
+    ],
+    "imageId": 118387659
+   },
+   "127727969": {
+    "attachments": [],
+    "instrumentNumber": "200511080236708",
+    "docNumber": "200511080236708",
+    "year": 2005,
+    "docId": 127727969,
+    "grantee": [
+     "DEEPGREEN FINANCIAL INC",
+     ""
+    ],
+    "rsId": "7449227",
+    "grantor": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
+     ""
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  18 CHARLES SCHWENKER JR SUBD Pcl# 010-003353 Plt  PB 7 PG 156",
+     ""
+    ],
+    "legals": [
+     {
+      "subdivHighLot": "18",
+      "legalType": "Subdivision",
+      "subdivLowLot": "18",
+      "subdivBlock": "PB 7 PG 156",
+      "subdivLotRange": {
+       "gte": 18,
+       "lte": 18
+      },
+      "subdivPIN": "010-003353",
+      "description": "Lt/Un  18 CHARLES SCHWENKER JR SUBD Pcl# 010-003353 Plt  PB 7 PG 156",
+      "subdivName": "CHARLES SCHWENKER JR SUBD"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "docNumberRange": 200511080236708,
+    "block": [],
+    "marginalReferencesCount": 1,
+    "docVersion": 3,
+    "pageCount": 6,
+    "images": [
+     {
+      "color": false,
+      "totalPages": 6,
+      "id": 118988602,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "block2": [],
+    "docType": "MORTGAGE",
+    "block3": [],
+    "recordedDate": "11/8/2005",
+    "metadataVersion": 2,
+    "docGroup": "MORTGAGES",
+    "parties": [
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM BENJAMIN",
+      "nameCompletion": {
+       "output": "GRANTHAM BENJAMIN",
+       "input": [
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "DEEPGREEN FINANCIAL INC",
+      "nameCompletion": {
+       "output": "DEEPGREEN FINANCIAL INC",
+       "input": [
+        "DEEPGREEN FINANCIAL INC",
+        "DEEPGREEN",
+        "FINANCIAL",
+        "INC"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "MO",
+    "consideration": "$50,000.00",
+    "contentModifiedAt": "2022-09-19T09:03:37.363Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantor": 0,
+      "grantee": 0
+     },
+     "legals": {
+      "subdivision": 0
+     }
+    },
+    "recordedTime": "1:12 PM",
+    "id": 127727969,
+    "documentNumber": "200511080236708",
+    "marginalReferences": [
+     {
+      "text": "200601240014577",
+      "link": "doc/127779885"
+     }
+    ],
+    "imageId": 118988602
+   },
+   "128512103": {
+    "attachments": [],
+    "instrumentNumber": "200906290093840",
+    "docNumber": "200906290093840",
+    "year": 2009,
+    "docId": 128512103,
+    "grantee": [
+     "ABERNATHY ALICE J",
+     "DUNMORE FELIX L",
+     ""
+    ],
+    "rsId": "8233541",
+    "grantor": [
+     "<em>GRANTHAM</em> <em>ELEANOR</em> <em>V</em>",
+     "<em>GRANTHAM</em> MARGOT",
+     ""
+    ],
+    "bookVolumePage": "--/--/--",
+    "legalDescription": [
+     "Lt/Un  18 CHARLES SCHWENKER JR SUBD Pcl# 010-003353 Plt  PB 7 PG 156",
+     ""
+    ],
+    "legals": [
+     {
+      "subdivHighLot": "18",
+      "legalType": "Subdivision",
+      "subdivLowLot": "18",
+      "subdivBlock": "PB 7 PG 156",
+      "subdivLotRange": {
+       "gte": 18,
+       "lte": 18
+      },
+      "subdivPIN": "010-003353",
+      "description": "Lt/Un  18 CHARLES SCHWENKER JR SUBD Pcl# 010-003353 Plt  PB 7 PG 156",
+      "subdivName": "CHARLES SCHWENKER JR SUBD"
+     },
+     {
+      "legalType": "subdivision",
+      "overflowMsg": ""
+     }
+    ],
+    "lot": [],
+    "createdAt": "2022-08-08T19:09:48.258Z",
+    "docNumberRange": 200906290093840,
+    "block": [],
+    "docVersion": 1,
+    "updatedAt": "2022-08-08T19:09:48.258Z",
+    "images": [
+     {
+      "color": false,
+      "totalPages": 1,
+      "id": 119771746,
+      "previewType": "png",
+      "type": "stamped"
+     }
+    ],
+    "pageCount": 1,
+    "block2": [],
+    "docType": "DEED",
+    "block3": [],
+    "recordedDate": "6/29/2009",
+    "metadataVersion": 2,
+    "docGroup": "DEEDS",
+    "parties": [
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM BENJAMIN",
+      "nameCompletion": {
+       "output": "GRANTHAM BENJAMIN",
+       "input": [
+        "GRANTHAM BENJAMIN",
+        "GRANTHAM",
+        "GRANTHAM"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "D",
+      "name": "GRANTHAM ELEANOR V",
+      "nameCompletion": {
+       "output": "GRANTHAM ELEANOR V",
+       "input": [
+        "GRANTHAM ELEANOR V",
+        "GRANTHAM",
+        "GRANTHAM",
+        "V"
+       ]
+      },
+      "type": "grantor",
+      "isDirect": true
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "ABERNATHY ALICE J",
+      "nameCompletion": {
+       "output": "ABERNATHY ALICE J",
+       "input": [
+        "ABERNATHY ALICE J",
+        "ABERNATHY",
+        "ABERNATHY",
+        "J"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "partyTypeCode": "I",
+      "name": "DUNMORE FELIX L",
+      "nameCompletion": {
+       "output": "DUNMORE FELIX L",
+       "input": [
+        "DUNMORE FELIX L",
+        "DUNMORE",
+        "DUNMORE",
+        "L"
+       ]
+      },
+      "type": "grantee",
+      "isDirect": false
+     },
+     {
+      "type": "grantor",
+      "overflowMsg": ""
+     },
+     {
+      "type": "grantee",
+      "overflowMsg": ""
+     }
+    ],
+    "docTypeCode": "DE",
+    "consideration": "$152.00",
+    "contentModifiedAt": "2022-08-08T19:09:48.000Z",
+    "township": [],
+    "remaining": {
+     "grantor": 0,
+     "grantee": 0,
+     "legalDescription": 0,
+     "parties": {
+      "grantor": 0,
+      "grantee": 0
+     },
+     "legals": {
+      "subdivision": 0
+     }
+    },
+    "recordedTime": "2:47 PM",
+    "id": 128512103,
+    "documentNumber": "200906290093840",
+    "imageId": 119771746
+   }
+  }
+ },
+ "meta": {
+  "numRecords": 11,
+  "statistics": {
+   "recorded-years": [
+    {
+     "label": "1999",
+     "hits": 2
+    },
+    {
+     "label": "2003",
+     "hits": 4
+    },
+    {
+     "label": "2005",
+     "hits": 2
+    },
+    {
+     "label": "2006",
+     "hits": 1
+    },
+    {
+     "label": "2008",
+     "hits": 1
+    },
+    {
+     "label": "2009",
+     "hits": 2
+    },
+    {
+     "label": "2010",
+     "hits": 2
+    },
+    {
+     "label": "2012",
+     "hits": 1
+    },
+    {
+     "label": "2016",
+     "hits": 1
+    },
+    {
+     "label": "2021",
+     "hits": 5
+    }
+   ],
+   "docTypes": [
+    {
+     "label": "ASMO",
+     "hits": 1
+    },
+    {
+     "label": "DE",
+     "hits": 6
+    },
+    {
+     "label": "MO",
+     "hits": 8
+    },
+    {
+     "label": "REMO",
+     "hits": 6
+    }
+   ]
+  }
+ }
+}
