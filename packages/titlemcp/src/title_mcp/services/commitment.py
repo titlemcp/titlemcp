@@ -67,6 +67,12 @@ def format_money(value: Decimal | None) -> str:
 _SPOUSES = re.compile(r",?\s*\b(?:h/w|w/h)\b\.?", re.IGNORECASE)
 _PLUS = re.compile(r"\s*\+\s*")
 _BARE_CO = re.compile(r"\bCo$")
+# A document's defined-term label after a party: ("Grantee"), ("Owner").
+_ROLE_LABEL = re.compile(
+    r"\s*\(\s*[\"“]?(?:grantors?|grantees?|owners?|city|county|mortgagors?|mortgagees?|"
+    r"lenders?|borrowers?|sellers?|buyers?|purchasers?|district|company)[\"”]?\s*\)",
+    re.IGNORECASE,
+)
 
 
 def expand_party(value: str) -> str:
@@ -76,7 +82,8 @@ def expand_party(value: str) -> str:
     Only notation is expanded; names are never completed or guessed.
     """
 
-    text = _PLUS.sub(" and ", value.strip())
+    text = _ROLE_LABEL.sub("", value.strip())
+    text = _PLUS.sub(" and ", text)
     text = _SPOUSES.sub(", husband and wife", text)
     return _BARE_CO.sub("Co.", text)
 

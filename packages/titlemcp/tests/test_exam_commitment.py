@@ -403,6 +403,10 @@ class CommitmentRenderTests(unittest.TestCase):
             expand_party("Alex Q + Jamie Example h/w"), "Alex Q and Jamie Example, husband and wife"
         )
         self.assertEqual(expand_party("Example Power Co"), "Example Power Co.")
+        self.assertEqual(
+            expand_party('Example City, a municipal corporation ("Grantee")'),
+            "Example City, a municipal corporation",
+        )
         self.assertEqual(expand_party("Example Land Company"), "Example Land Company")
 
     def test_tax_wording_omits_a_missing_taxpayer(self) -> None:
