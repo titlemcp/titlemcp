@@ -477,6 +477,22 @@ class CommitmentRenderTests(unittest.TestCase):
         self.assertIn("in the amount of $[AMOUNT]", text)
         self.assertNotIn("dated ,", text)
 
+    def test_recordings_are_cited_in_whatever_form_the_sheet_gives(self) -> None:
+        phrases = CommitmentRenderService._recording_phrases
+        cs = self.clause_set
+        self.assertEqual(
+            phrases(RecordingReference(book="0461", page="212"), cs)["recorded"],
+            "recorded in Official Record 0461, Page 212",
+        )
+        self.assertEqual(
+            phrases(RecordingReference(book="200000000000123"), cs)["recorded"],
+            "recorded as Instrument No. 200000000000123",
+        )
+        self.assertEqual(
+            phrases(RecordingReference(book="Plat Slide 9999"), cs)["cited"], "Plat Slide 9999"
+        )
+        self.assertEqual(phrases(RecordingReference(), cs)["cited"], "[RECORDING]")
+
     def test_refuses_to_render_when_reconciliation_is_red(self) -> None:
         package = sample_package()
         package.cover.declared_mortgage_count = 4

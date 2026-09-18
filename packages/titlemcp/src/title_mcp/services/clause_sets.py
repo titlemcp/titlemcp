@@ -145,42 +145,40 @@ _NEW_MORTGAGE_REQUIREMENT = _b1(
 _MORTGAGE_PAYOFF = _b1(
     "b1.mortgage_payoff",
     "Mortgage from {borrowers}, to {lender}, in the amount of ${amount}{dated_clause}, "
-    "as recorded in {book_label} {book}, Page {page}.",
+    "as {recorded}.",
 )
 
 _EASEMENT_EXCEPTION = _b2(
     "b2.easement",
     "Easement and Right of Way granted to {second_party}, from {first_party}{dated_clause}, "
-    "recorded in {book_label} {book}, Page {page}.",
+    "{recorded}.",
 )
 
 _EXCEPTION_BY_KIND = {
     "restriction": _b2(
         "b2.restriction",
-        "Covenants, conditions, restrictions, and reservations as set forth in "
-        "{book_label} {book}, Page {page}.",
+        "Covenants, conditions, restrictions, and reservations as set forth in {cited}.",
     ),
     "plat": _b2(
         "b2.plat",
         "Terms, conditions, easements, setback lines, and all other matters shown on the "
-        "{instrument_name}, recorded in {book_label} {book}, Page {page}.",
+        "{instrument_name}, {recorded}.",
     ),
     "lease": _b2(
         "b2.lease",
         "Terms and conditions of the lease from {first_party} to {second_party}"
-        "{dated_clause}, recorded in {book_label} {book}, Page {page}.",
+        "{dated_clause}, {recorded}.",
     ),
     "agreement": _b2(
         "b2.agreement",
         "Terms and conditions of the agreement between {first_party} and {second_party}"
-        "{dated_clause}, recorded in {book_label} {book}, Page {page}.",
+        "{dated_clause}, {recorded}.",
     ),
 }
 
 _GRANTEE_EASEMENT_EXCEPTION = _b2(
     "b2.easement_to_grantee",
-    "Easement granted to {second_party}{dated_clause}, recorded in {book_label} {book}, "
-    "Page {page}.",
+    "Easement granted to {second_party}{dated_clause}, {recorded}.",
 )
 
 _UNRECORDED_EXCEPTION = _b2(
@@ -190,8 +188,7 @@ _UNRECORDED_EXCEPTION = _b2(
 
 _INSTRUMENT_EXCEPTION = _b2(
     "b2.recorded_instrument",
-    "Terms, conditions, and all other matters set forth in the {instrument_name} recorded "
-    "in {book_label} {book}, Page {page}.",
+    "Terms, conditions, and all other matters set forth in the {instrument_name}, {recorded}.",
 )
 
 _JUDGMENT_RELEASE = _b1(

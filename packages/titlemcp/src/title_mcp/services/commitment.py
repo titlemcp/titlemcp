@@ -362,8 +362,8 @@ class CommitmentRenderService:
             )
         return items
 
-    @staticmethod
-    def _mortgage_context(entry: MortgageEntry, clause_set: ClauseSet) -> dict[str, str]:
+    @classmethod
+    def _mortgage_context(cls, entry: MortgageEntry, clause_set: ClauseSet) -> dict[str, str]:
         return {
             "borrowers": expand_party(_blank(entry.borrowers, "BORROWER")),
             "lender": expand_party(_blank(entry.lender, "LENDER")),
@@ -375,6 +375,7 @@ class CommitmentRenderService:
             "book_label": clause_set.book_label,
             "book": entry.recording.book or "",
             "page": entry.recording.page or "",
+            **cls._recording_phrases(entry.recording, clause_set),
         }
 
     # Most specific first: a plat that also grants easements reads as a plat, and
@@ -425,6 +426,33 @@ class CommitmentRenderService:
                 return clause_set.instrument_exception
         return template
 
+    @classmethod
+    def _recording_phrases(
+        cls, reference: RecordingReference | None, clause_set: ClauseSet
+    ) -> dict[str, str]:
+        """How a clause cites a recording, whatever form the sheet gives it in.
+
+        ``cited`` names it ("Official Record 926, Page 87", "Instrument No. 2011...",
+        "Plat Slide 2071"); ``recorded`` is the phrase for "recorded in/as ...".
+        """
+
+        ref = reference or RecordingReference()
+        book, page = (ref.book or "").strip(), (ref.page or "").strip()
+        number = (ref.instrument_number or "").strip()
+        if not number and book and not page and re.fullmatch(r"\d{7,}", book):
+            number = book  # a county that records by instrument number
+        if number:
+            cited = f"Instrument No. {number}"
+            return {"cited": cited, "recorded": f"recorded as {cited}"}
+        if book and page:
+            cited = f"{cls._book_label(ref, clause_set)} {book}, Page {page}"
+        elif book:
+            named = re.search(r"[A-Za-z]", book) is not None
+            cited = book if named else f"{cls._book_label(ref, clause_set)} {book}"
+        else:
+            cited = "[RECORDING]"
+        return {"cited": cited, "recorded": f"recorded in {cited}"}
+
     @staticmethod
     def _book_label(reference: RecordingReference | None, clause_set: ClauseSet) -> str:
         series = (reference.document_type if reference else None) or ""
@@ -443,17 +471,16 @@ class CommitmentRenderService:
             "book_label": cls._book_label(entry.recording, clause_set),
             "book": entry.recording.book or "",
             "page": entry.recording.page or "",
+            **cls._recording_phrases(entry.recording, clause_set),
         }
 
     @classmethod
     def _judgment_context(cls, entry: JudgmentEntry, clause_set: ClauseSet) -> dict[str, str]:
         recording = entry.recording
         recorded = ""
-        if recording is not None and (recording.book or recording.page):
-            recorded = (
-                f", recorded in {cls._book_label(recording, clause_set)} "
-                f"{recording.book or ''}, Page {recording.page or ''}"
-            )
+        cited = recording and (recording.book or recording.page or recording.instrument_number)
+        if recording is not None and cited:
+            recorded = ", " + cls._recording_phrases(recording, clause_set)["recorded"]
         return {
             "creditor": expand_party(_blank(entry.creditor, "CREDITOR")),
             "debtor": expand_party(_blank(entry.debtor, "DEBTOR")),
