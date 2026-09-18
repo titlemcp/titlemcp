@@ -386,6 +386,7 @@ class CommitmentRenderTests(unittest.TestCase):
     def test_illegible_parties_fall_back_to_neutral_wording(self) -> None:
         package = sample_package()
         package.exceptions[0].first_party = "UNREADABLE"
+        package.exceptions[0].second_party = "UNREADABLE"
         package.exceptions[0].executed_date = None
 
         draft = self._green(package)
@@ -416,6 +417,50 @@ class CommitmentRenderTests(unittest.TestCase):
         for text in taxes:
             self.assertNotIn("listed in the name of", text)
             self.assertIn("Taxes for the 1st half of 2025, in the amount of $", text)
+
+    def test_instrument_names_drop_only_the_forms_numbering(self) -> None:
+        from title_mcp.services.commitment import instrument_name
+
+        self.assertEqual(instrument_name("Easement #3"), "Easement")
+        self.assertEqual(instrument_name("Other Adverse 2 - Example Memo"), "Example Memo")
+        self.assertEqual(instrument_name("Example Ordinance #444"), "Example Ordinance #444")
+        self.assertEqual(instrument_name("Lot 12 - Example Addition"), "Lot 12 - Example Addition")
+        self.assertEqual(instrument_name(None), "instrument")
+
+    def test_unrecorded_and_grantee_only_exceptions_read_cleanly(self) -> None:
+        package = sample_package(
+            exceptions=[
+                ExceptionEntry(
+                    instrument_kinds=[ExceptionInstrumentKind.EASEMENT],
+                    recording=RecordingReference(book="0461", page="212"),
+                    first_party="UNREADABLE",
+                    second_party="Example Gas Company",
+                    instrument_name="Easement #2",
+                    provenance=_prov(ExamSheetKind.EXCEPTIONS, 16),
+                ),
+                ExceptionEntry(
+                    instrument_kinds=[ExceptionInstrumentKind.AGREEMENT],
+                    recording=RecordingReference(),
+                    first_party="UNREADABLE",
+                    second_party="UNREADABLE",
+                    instrument_name="Example Owners Association Declaration",
+                    provenance=_prov(ExamSheetKind.EXCEPTIONS, 16),
+                ),
+            ]
+        )
+        package.index = None
+        draft = self._green(package)
+        texts = {c.clause_id: c.text for c in draft.schedule_b2}
+
+        self.assertEqual(
+            texts["b2.easement_to_grantee"],
+            "Easement granted to Example Gas Company, recorded in Official Record 0461, Page 212.",
+        )
+        self.assertEqual(
+            texts["b2.unrecorded_instrument"],
+            "Terms, conditions, and all other matters set forth in the unrecorded Example "
+            "Owners Association Declaration.",
+        )
 
     def test_refuses_to_render_when_reconciliation_is_red(self) -> None:
         package = sample_package()

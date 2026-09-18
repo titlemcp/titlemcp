@@ -9,7 +9,7 @@ from decimal import Decimal, InvalidOperation
 from enum import StrEnum
 from typing import Any, Protocol, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from title_mcp.domain.exam import (
     ExamPackage,
@@ -752,10 +752,16 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
                 schema=ExtractedSheetRows,
             )
             page_number = pages[0].page_number
-            mortgages.extend(self._build_mortgage(r, page_number) for r in rows.mortgages)
-            exceptions.extend(self._build_exception(r, page_number) for r in rows.exceptions)
-            judgments.extend(self._build_judgment(r, page_number) for r in rows.judgments)
-            tax_parcels.extend(self._build_tax(r, page_number) for r in rows.tax_parcels)
+            for target, builder, found in (
+                (mortgages, self._build_mortgage, rows.mortgages),
+                (exceptions, self._build_exception, rows.exceptions),
+                (judgments, self._build_judgment, rows.judgments),
+                (tax_parcels, self._build_tax, rows.tax_parcels),
+            ):
+                for raw_row in found:
+                    built = self._build_row(builder, raw_row, page_number, warnings)
+                    if built is not None:
+                        target.append(built)
 
         index: IndexSummarySheet | None = None
         index_pages = grouped.get(ExamSheetKind.INDEX_SUMMARY)
@@ -795,6 +801,27 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
         )
 
     # -- canonical mapping --------------------------------------------------
+
+    @staticmethod
+    def _build_row(
+        builder: Any, raw: ExtractedRow, page: int, warnings: list[str]
+    ) -> Any | None:
+        """Build one row, or report it. One unreadable row must not sink the file.
+
+        A skipped mortgage, judgment, or exception leaves the declared count on the
+        cover sheet unmatched, so reconciliation blocks on it; nothing is lost quietly.
+        """
+
+        try:
+            return builder(raw, page)
+        except ValidationError as exc:
+            where = raw.src_page if raw.src_page and raw.src_page >= 1 else page
+            fields = ", ".join(".".join(str(p) for p in e["loc"]) for e in exc.errors())
+            warnings.append(
+                f"A {builder.__name__.removeprefix('_build_')} row on p.{where} could not be "
+                f"read ({fields}); it was left out and must be entered by hand."
+            )
+            return None
 
     @staticmethod
     def _provenance(sheet: ExamSheetKind, page: int, row: ExtractedRow) -> FieldProvenance:
@@ -913,9 +940,12 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
             # A form whose assessment boxes are printed amounts ("$16", "$18")
             # gets the ticked one reported as the label.
             amount, label = parse_money(label), None
+        year = raw.tax_year
+        if year is not None and 0 <= year < 100:
+            year += 2000  # a sheet's "25" is tax year 2025
         return TaxParcelEntry(
             parcel_id=raw.parcel_id or "UNREADABLE",
-            tax_year=raw.tax_year or date.today().year,
+            tax_year=year or date.today().year,
             taxpayer_name=raw.taxpayer_name,
             first_half_amount=parse_money(raw.first_half_amount),
             first_half_paid=parse_bool(raw.first_half_paid),

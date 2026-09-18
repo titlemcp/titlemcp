@@ -481,6 +481,24 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(parcel.special_assessment_amount, Decimal("18"))
         self.assertIsNone(parcel.special_assessment_label)
 
+    async def test_two_digit_tax_year_is_expanded(self) -> None:
+        rows = TAX_ROWS.model_copy(deep=True)
+        rows.tax_parcels[0].tax_year = 25
+        result = await self._service(overrides={"tax": rows}).extract_package(self._request())
+
+        assert result.package is not None
+        self.assertEqual(result.package.tax_parcels[0].tax_year, 2025)
+
+    async def test_an_unbuildable_row_is_reported_not_fatal(self) -> None:
+        rows = TAX_ROWS.model_copy(deep=True)
+        rows.tax_parcels[0].tax_year = 1776
+        result = await self._service(overrides={"tax": rows}).extract_package(self._request())
+
+        self.assertEqual(result.status, SourceResultStatus.SUCCEEDED)
+        assert result.package is not None
+        self.assertEqual(len(result.package.tax_parcels), len(TAX_ROWS.tax_parcels) - 1)
+        self.assertTrue(any("tax row" in w and "tax_year" in w for w in result.warnings))
+
     async def test_a_ticked_entry_reported_struck_stays_live(self) -> None:
         E = IndexColumn.EASEMENTS_RIGHTS_OF_WAY
         index = INDEX.model_copy(

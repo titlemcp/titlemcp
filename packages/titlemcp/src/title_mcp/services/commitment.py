@@ -81,6 +81,35 @@ def expand_party(value: str) -> str:
     return _BARE_CO.sub("Co.", text)
 
 
+# A bare category label numbered by the form: "Easement #3", "Restrictions 2".
+_FORM_ROW = re.compile(
+    r"^(?P<label>(?:easements?|restrictions?|exceptions?|agreements?|leases?|plats?|"
+    r"rights?[- ]of[- ]ways?|items?))\s*#?\s*\d+$",
+    re.IGNORECASE,
+)
+# A numbered row label in front of the real name: "Other Adverse 1 - Memo of Trust".
+_NUMBERED_LABEL = re.compile(
+    r"^(?:other(?:\s+adverse)?|adverse|exception|item)\s*#?\s*\d+\s*[-–:]\s+(?=\S)",
+    re.IGNORECASE,
+)
+
+
+def instrument_name(value: str | None) -> str:
+    """An instrument's name as a clause can use it.
+
+    Sheets number their rows ("Easement #3", "Other Adverse 1 - Memo of Trust"); that
+    numbering is the form's, not the instrument's, so it is dropped. Numbers that
+    belong to the instrument ("Ordinance #444") are kept.
+    """
+
+    text = (value or "").strip()
+    row = _FORM_ROW.match(text)
+    if row:
+        return row["label"]
+    text = _NUMBERED_LABEL.sub("", text).strip()
+    return text or "instrument"
+
+
 def _is_party(value: str | None) -> bool:
     """False for the placeholders a blank or illegible party line produces."""
 
@@ -351,6 +380,10 @@ class CommitmentRenderService:
 
     @classmethod
     def _exception_template(cls, entry: ExceptionEntry, clause_set: ClauseSet) -> ClauseTemplate:
+        ref = entry.recording
+        recorded = bool(ref.book or ref.page or ref.instrument_number)
+        if not recorded and clause_set.unrecorded_exception is not None:
+            return clause_set.unrecorded_exception
         kinds = set(entry.instrument_kinds)
         chosen_kind = next((k for k in cls._KIND_PRECEDENCE if k in kinds), None)
         template = (
@@ -358,8 +391,19 @@ class CommitmentRenderService:
         ) or clause_set.easement_exception
         # Wording that names the parties is only usable when the sheet gives them.
         needs_parties = chosen_kind is None or chosen_kind in cls._PARTY_KINDS
-        if needs_parties and clause_set.instrument_exception is not None:
-            if not (_is_party(entry.first_party) and _is_party(entry.second_party)):
+        if needs_parties and not (_is_party(entry.first_party) and _is_party(entry.second_party)):
+            easement = chosen_kind in (
+                None,
+                ExceptionInstrumentKind.EASEMENT,
+                ExceptionInstrumentKind.RIGHT_OF_WAY,
+            )
+            if (
+                easement
+                and _is_party(entry.second_party)
+                and clause_set.grantee_easement_exception is not None
+            ):
+                return clause_set.grantee_easement_exception
+            if clause_set.instrument_exception is not None:
                 return clause_set.instrument_exception
         return template
 
@@ -377,7 +421,7 @@ class CommitmentRenderService:
             "second_party": expand_party(entry.second_party),
             "executed_date": dated,
             "dated_clause": f", dated {dated}" if dated else "",
-            "instrument_name": entry.instrument_name or "instrument",
+            "instrument_name": instrument_name(entry.instrument_name),
             "book_label": cls._book_label(entry.recording, clause_set),
             "book": entry.recording.book or "",
             "page": entry.recording.page or "",

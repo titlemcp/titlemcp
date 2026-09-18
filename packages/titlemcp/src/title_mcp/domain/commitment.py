@@ -61,6 +61,10 @@ class ClauseSet(BaseModel):
     """
     instrument_exception: ClauseTemplate | None = None
     """Neutral wording for a recorded instrument whose parties are not legible."""
+    grantee_easement_exception: ClauseTemplate | None = None
+    """Easement wording when only the grantee is legible."""
+    unrecorded_exception: ClauseTemplate | None = None
+    """Wording for an instrument the sheet lists without a recording reference."""
     judgment_requirement: ClauseTemplate | None = None
     """Requirement to release each judgment on the abstractor's judgment sheet."""
     judgment_header: str | None = None

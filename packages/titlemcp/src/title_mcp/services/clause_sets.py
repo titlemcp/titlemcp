@@ -177,6 +177,17 @@ _EXCEPTION_BY_KIND = {
     ),
 }
 
+_GRANTEE_EASEMENT_EXCEPTION = _b2(
+    "b2.easement_to_grantee",
+    "Easement granted to {second_party}{dated_clause}, recorded in {book_label} {book}, "
+    "Page {page}.",
+)
+
+_UNRECORDED_EXCEPTION = _b2(
+    "b2.unrecorded_instrument",
+    "Terms, conditions, and all other matters set forth in the unrecorded {instrument_name}.",
+)
+
 _INSTRUMENT_EXCEPTION = _b2(
     "b2.recorded_instrument",
     "Terms, conditions, and all other matters set forth in the {instrument_name} recorded "
@@ -227,6 +238,8 @@ def ohio_default_clause_set() -> ClauseSet:
         easement_exception=_EASEMENT_EXCEPTION,
         exception_by_kind=dict(_EXCEPTION_BY_KIND),
         instrument_exception=_INSTRUMENT_EXCEPTION,
+        grantee_easement_exception=_GRANTEE_EASEMENT_EXCEPTION,
+        unrecorded_exception=_UNRECORDED_EXCEPTION,
         judgment_requirement=_JUDGMENT_RELEASE,
         judgment_header="Release of the following judgment liens:",
         deed_requirement=_DEED_REQUIREMENT,
