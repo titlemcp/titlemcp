@@ -132,6 +132,24 @@ def _money_or_blank(value: Decimal | None) -> str:
     return format_money(value) if value is not None else "[AMOUNT]"
 
 
+def _mortgage_items(schedule_b2: list[CommitmentClause]) -> list[int]:
+    return [
+        c.number
+        for c in schedule_b2
+        if c.source_sheet == ExamSheetKind.MORTGAGES and c.clause_id.endswith(":b2")
+    ]
+
+
+def _item_range(numbers: list[int]) -> str:
+    """Item numbers as a commitment cites them: [10, 11] -> "10-11", [10, 12] -> "10 and 12"."""
+
+    if len(numbers) > 1 and numbers == list(range(numbers[0], numbers[-1] + 1)):
+        return f"{numbers[0]}-{numbers[-1]}"
+    if len(numbers) == 1:
+        return str(numbers[0])
+    return ", ".join(map(str, numbers[:-1])) + f" and {numbers[-1]}"
+
+
 def _is_party(value: str | None) -> bool:
     """False for the placeholders a blank or illegible party line produces."""
 
@@ -197,12 +215,13 @@ class CommitmentRenderService:
                 blocking_discrepancies=blocking,
             )
 
+        schedule_b2 = self._render_b2(package, clause_set)
         draft = CommitmentDraft(
             file_number=package.file_number,
             clause_set_id=clause_set.clause_set_id,
             schedule_a=ScheduleA.from_order(order) if order is not None else None,
-            schedule_b1=self._render_b1(package, clause_set, order),
-            schedule_b2=self._render_b2(package, clause_set),
+            schedule_b1=self._render_b1(package, clause_set, order, _mortgage_items(schedule_b2)),
+            schedule_b2=schedule_b2,
             source_specific={
                 "advisory_discrepancies": [
                     d.model_dump(mode="json") for d in reconciliation.advisory
@@ -220,6 +239,7 @@ class CommitmentRenderService:
         package: ExamPackage,
         clause_set: ClauseSet,
         order: CommitmentOrder | None = None,
+        mortgage_items: list[int] | None = None,
     ) -> list[CommitmentClause]:
         clauses: list[CommitmentClause] = []
         supplied = set(clause_set.form_supplied_clause_ids)
@@ -239,7 +259,24 @@ class CommitmentRenderService:
                 )
             )
 
-        for position, entry in enumerate(package.mortgages):
+        release = clause_set.mortgage_release_requirement
+        if clause_set.mortgages_as_exceptions and release is not None and mortgage_items:
+            number += 1
+            clauses.append(
+                CommitmentClause(
+                    number=number,
+                    clause_id=release.clause_id,
+                    section=CommitmentSection.SCHEDULE_B_I,
+                    text=release.template.format(items=_item_range(mortgage_items)),
+                    origin=ClauseOrigin.ABSTRACTOR_SHEET,
+                    source_sheet=ExamSheetKind.MORTGAGES,
+                    src_page=package.mortgages[0].provenance.src_page,
+                )
+            )
+
+        for position, entry in enumerate(
+            [] if clause_set.mortgages_as_exceptions else package.mortgages
+        ):
             number += 1
             clauses.append(
                 CommitmentClause(
@@ -294,6 +331,22 @@ class CommitmentRenderService:
                     form_supplied=template.clause_id in supplied,
                 )
             )
+
+        if clause_set.mortgages_as_exceptions:
+            template = clause_set.mortgage_exception or clause_set.mortgage_payoff
+            for entry in package.mortgages:
+                number += 1
+                clauses.append(
+                    CommitmentClause(
+                        number=number,
+                        clause_id=f"{template.clause_id}:b2",
+                        section=CommitmentSection.SCHEDULE_B_II,
+                        text=template.template.format(**self._mortgage_context(entry, clause_set)),
+                        origin=ClauseOrigin.ABSTRACTOR_SHEET,
+                        source_sheet=ExamSheetKind.MORTGAGES,
+                        src_page=entry.provenance.src_page,
+                    )
+                )
 
         for entry in package.tax_parcels:
             number += 1

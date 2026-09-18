@@ -730,6 +730,46 @@ class CommitmentRenderTests(unittest.TestCase):
         )
         self.assertEqual(phrases(RecordingReference(), cs)["cited"], "[RECORDING]")
 
+    def test_mortgages_can_be_exceptions_released_in_b1(self) -> None:
+        from title_mcp.domain.commitment import ClauseTemplate, CommitmentSection
+
+        package = sample_package()
+        second = package.mortgages[0].model_copy(
+            update={"recording": RecordingReference(book="0312", page="1")}
+        )
+        package.mortgages.append(second)
+        package.cover.declared_mortgage_count = 2
+        package.index = None
+        self.clause_set = self.clause_set.model_copy(
+            update={
+                "mortgages_as_exceptions": True,
+                "mortgage_exception": ClauseTemplate(
+                    clause_id="b2.mortgage",
+                    section=CommitmentSection.SCHEDULE_B_II,
+                    template="Mortgage from {borrowers} to {lender}, {recorded}.",
+                ),
+                "mortgage_release_requirement": ClauseTemplate(
+                    clause_id="b1.release",
+                    section=CommitmentSection.SCHEDULE_B_I,
+                    template="Release of Item(s) {items} of Schedule B - Section II.",
+                ),
+            }
+        )
+
+        draft = self._green(package)
+
+        items = [c.number for c in draft.schedule_b2 if c.clause_id == "b2.mortgage:b2"]
+        self.assertEqual(len(items), 2)
+        self.assertEqual(items[1], items[0] + 1)
+        (release,) = [c for c in draft.schedule_b1 if c.clause_id == "b1.release"]
+        self.assertEqual(
+            release.text, f"Release of Item(s) {items[0]}-{items[1]} of Schedule B - Section II."
+        )
+        self.assertFalse(
+            [c for c in draft.schedule_b1 if c.clause_id == "b1.mortgage_payoff"],
+            "no separate payoff requirements",
+        )
+
     def test_refuses_to_render_when_reconciliation_is_red(self) -> None:
         package = sample_package()
         package.cover.declared_mortgage_count = 4

@@ -65,6 +65,13 @@ class ClauseSet(BaseModel):
     """Easement wording when only the grantee is legible."""
     unrecorded_exception: ClauseTemplate | None = None
     """Wording for an instrument the sheet lists without a recording reference."""
+    mortgages_as_exceptions: bool = False
+    """List mortgages as Schedule B-II exceptions and require their release in B-I,
+    instead of a B-I payoff requirement for each."""
+    mortgage_exception: ClauseTemplate | None = None
+    """B-II wording for a mortgage when ``mortgages_as_exceptions``."""
+    mortgage_release_requirement: ClauseTemplate | None = None
+    """B-I requirement releasing those exceptions; takes ``{items}``, e.g. "10-11"."""
     judgment_requirement: ClauseTemplate | None = None
     """Requirement to release each judgment on the abstractor's judgment sheet."""
     judgment_header: str | None = None
