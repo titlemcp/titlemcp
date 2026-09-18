@@ -99,6 +99,17 @@ def stored_value(entry: Any, field: str) -> str | None:
     return str(getattr(value, "value", value))
 
 
+def _yes_no_key(value: str) -> str:
+    """A yes/no field's answer: "Y 3450" and "yes" are both yes."""
+
+    text = value.strip().lower()
+    if re.match(r"^(?:y|yes|x|true|checked)\b", text):
+        return "yes"
+    if re.match(r"^(?:n|no|false|unchecked)\b", text):
+        return "no"
+    return _value_key(value)
+
+
 _NUMERIC_DATE = re.compile(r"^\s*(\d{1,2})\s*[/.-]\s*(\d{1,2})\s*[/.-]\s*(\d{2}|\d{4})\s*$")
 
 
@@ -196,10 +207,18 @@ def distinct_alternatives(
     base = used or read
     name = doubt.field.strip().lower()
     is_name = name in _NAME_FIELDS
-    key = _name_key if is_name else _date_key if name.endswith("date") else _value_key
-    seen = {key(read), key(base)}
+    if base in ("yes", "no"):
+        key = _yes_no_key  # the record holds only yes or no
+    elif is_name:
+        key = _name_key
+    elif name.endswith("date"):
+        key = _date_key
+    else:
+        key = _value_key
+    seen = {key(base)}
     out: list[str] = []
-    for alt in doubt.alternatives:
+    # What the reader saw is itself an alternative when the record differs from it.
+    for alt in [read, *doubt.alternatives]:
         k = key(alt)
         if k in seen or _ABSENT.match(alt):
             continue

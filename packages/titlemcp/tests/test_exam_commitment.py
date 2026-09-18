@@ -399,6 +399,16 @@ class ExamReconciliationTests(unittest.TestCase):
         )
         self.assertEqual(distinct_alternatives(d, used="5/1/2039"), ["5/1/34"])
 
+    def test_what_the_reader_saw_is_an_alternative_only_when_it_differs(self) -> None:
+        from title_mcp.services.exam import distinct_alternatives
+
+        county = UncertainReading(field="county", read_as="Exampel", alternatives=["Sampel"])
+        self.assertEqual(distinct_alternatives(county, used="Example"), ["Exampel", "Sampel"])
+        flag = UncertainReading(field="cauv", read_as="Y 3450", alternatives=["Y 3150"])
+        self.assertEqual(distinct_alternatives(flag, used="yes"), [], "both say yes")
+        flag = UncertainReading(field="cauv", read_as="Y", alternatives=["N"])
+        self.assertEqual(distinct_alternatives(flag, used="yes"), ["N"])
+
     def test_an_unnamed_low_confidence_read_still_asks_for_a_check(self) -> None:
         package = sample_package()
         package.mortgages[0].provenance.confidence = ExtractionConfidence.LOW
