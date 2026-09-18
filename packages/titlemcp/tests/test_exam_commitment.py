@@ -30,6 +30,7 @@ from title_mcp.services.exam import (
     DiscrepancyCode,
     DiscrepancySeverity,
     ExamReconciliationService,
+    ReconciliationChecks,
     ReconciliationStatus,
 )
 
@@ -197,6 +198,44 @@ def sample_order(**overrides: object) -> CommitmentOrder:
 
 
 class ExamReconciliationTests(unittest.TestCase):
+    def test_an_unstated_count_is_not_reconciled(self) -> None:
+        package = sample_package()
+        package.cover.declared_mortgage_count = None
+        package.mortgages.append(package.mortgages[0].model_copy())
+
+        rec = ExamReconciliationService().reconcile(package)
+
+        codes = {d.code for d in rec.discrepancies}
+        self.assertNotIn(DiscrepancyCode.MORTGAGE_COUNT_MISMATCH, codes)
+
+    def test_checks_the_form_does_not_support_are_skipped_and_recorded(self) -> None:
+        package = sample_package()
+        package.cover.declared_exception_count = 9
+        package.index = IndexSummarySheet(
+            mortgages=[], easements_rights_of_way=[],
+            provenance=_prov(ExamSheetKind.INDEX_SUMMARY, 19),
+        )
+        full = ExamReconciliationService().reconcile(package)
+        self.assertEqual(full.status, ReconciliationStatus.RED)
+
+        rec = ExamReconciliationService().reconcile(
+            package, ReconciliationChecks(declared_counts=False, index_cross_reference=False)
+        )
+        self.assertEqual(rec.status, ReconciliationStatus.GREEN, rec.blocking)
+        self.assertIn("declared_counts:not_supported_by_form", rec.checks_run)
+        self.assertIn("index_cross_reference:not_supported_by_form", rec.checks_run)
+
+    def test_an_unrecorded_instrument_is_not_expected_on_the_index(self) -> None:
+        package = sample_package()
+        package.exceptions.append(
+            package.exceptions[0].model_copy(update={"recording": RecordingReference()})
+        )
+        package.cover.declared_exception_count = len(package.exceptions)
+
+        rec = ExamReconciliationService().reconcile(package)
+
+        self.assertEqual(rec.status, ReconciliationStatus.GREEN, rec.blocking)
+
     def setUp(self) -> None:
         self.service = ExamReconciliationService()
 

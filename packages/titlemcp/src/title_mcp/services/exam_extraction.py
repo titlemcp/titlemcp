@@ -372,9 +372,24 @@ class ExtractedCoverSheet(ExtractedRow):
     completed_by: str | None = None
     lsot_book: str | None = None
     lsot_page: str | None = None
-    declared_mortgage_count: int = 0
-    declared_judgment_count: int = 0
-    declared_exception_count: int = 0
+    declared_mortgage_count: int | None = Field(
+        default=None,
+        description=(
+            "The count written in the form's mortgage-count box; null if the form has none."
+        ),
+    )
+    declared_judgment_count: int | None = Field(
+        default=None,
+        description=(
+            "The count written in the form's judgment-count box; null if the form has none."
+        ),
+    )
+    declared_exception_count: int | None = Field(
+        default=None,
+        description=(
+            "The count written in the form's exception-count box; null if the form has none."
+        ),
+    )
     matters_of_concern: list[str] = Field(default_factory=list)
 
 

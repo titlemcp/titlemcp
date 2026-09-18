@@ -138,9 +138,11 @@ class SearchCoverSheet(BaseModel):
     completed_date: date | None = None
     completed_by: str | None = None
     last_shown_owner_transfer: RecordingReference | None = None
-    declared_mortgage_count: int = Field(ge=0)
-    declared_judgment_count: int = Field(ge=0)
-    declared_exception_count: int = Field(ge=0)
+    # None when the abstractor's form has no count for the category: "not stated"
+    # is not the same as zero, and only a stated count is reconciled.
+    declared_mortgage_count: int | None = Field(default=None, ge=0)
+    declared_judgment_count: int | None = Field(default=None, ge=0)
+    declared_exception_count: int | None = Field(default=None, ge=0)
     matters_of_concern: list[str] = Field(default_factory=list)
     provenance: FieldProvenance
 

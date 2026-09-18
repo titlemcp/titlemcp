@@ -35,6 +35,10 @@ class ReconciliationStatus(StrEnum):
     RED = "red"
 
 
+def _cited(reference: RecordingReference) -> bool:
+    return bool(reference.instrument_number or reference.book or reference.page)
+
+
 def recording_key(reference: RecordingReference) -> str:
     """Normalized identity for a recording reference, for set comparison."""
 
@@ -54,6 +58,22 @@ class Discrepancy(BaseModel):
     expected: str | None = None
     actual: str | None = None
     src_pages: list[int] = Field(default_factory=list)
+
+
+class ReconciliationChecks(BaseModel):
+    """Which checks an abstractor's forms support.
+
+    Package formats differ. One abstractor's cover sheet declares counts and the
+    package carries an index page; another's typed report has neither. Running a
+    check the form cannot satisfy produces false discrepancies that bury real
+    ones, so a caller that knows the form can switch such checks off. Skipped
+    checks are recorded in ``checks_run``.
+    """
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    declared_counts: bool = True
+    index_cross_reference: bool = True
 
 
 class ReconciliationResult(BaseModel):
@@ -92,16 +112,24 @@ class ExamReconciliationService:
     compares what a person already wrote down.
     """
 
-    def reconcile(self, package: ExamPackage) -> ReconciliationResult:
+    def reconcile(
+        self, package: ExamPackage, checks_enabled: ReconciliationChecks | None = None
+    ) -> ReconciliationResult:
+        enabled = checks_enabled or ReconciliationChecks()
         discrepancies: list[Discrepancy] = []
         checks: list[str] = []
 
-        discrepancies.extend(self._check_declared_counts(package))
-        checks.append("declared_counts")
+        if enabled.declared_counts:
+            discrepancies.extend(self._check_declared_counts(package))
+            checks.append("declared_counts")
+        else:
+            checks.append("declared_counts:not_supported_by_form")
 
-        if package.index is not None:
+        if package.index is not None and enabled.index_cross_reference:
             discrepancies.extend(self._check_index_cross_reference(package))
             checks.append("index_cross_reference")
+        elif package.index is not None:
+            checks.append("index_cross_reference:not_supported_by_form")
 
         discrepancies.extend(self._check_extraction_confidence(package))
         checks.append("extraction_confidence")
@@ -143,8 +171,8 @@ class ExamReconciliationService:
 
         found: list[Discrepancy] = []
         for code, label, declared, actual in pairs:
-            if declared == actual:
-                continue
+            if declared is None or declared == actual:
+                continue  # not stated on this form, or agrees
             found.append(
                 Discrepancy(
                     code=code,
@@ -176,8 +204,9 @@ class ExamReconciliationService:
         )
 
         for label, index_refs, sheet_refs in groups:
-            index_keys = {recording_key(ref): ref for ref in index_refs}
-            sheet_keys = {recording_key(ref): ref for ref in sheet_refs}
+            # An unrecorded instrument has no reference to find on an index.
+            index_keys = {recording_key(ref): ref for ref in index_refs if _cited(ref)}
+            sheet_keys = {recording_key(ref): ref for ref in sheet_refs if _cited(ref)}
 
             for key, ref in index_keys.items():
                 if key in sheet_keys:
