@@ -467,6 +467,7 @@ class CommitmentRenderTests(unittest.TestCase):
         package.tax_parcels[0].parcel_id = "UNREADABLE"
         package.tax_parcels[0].first_half_amount = None
         package.mortgages[0].original_amount = None
+        package.mortgages[0].executed_date = None
 
         draft = self._green(package)
         text = " ".join(c.text for c in [*draft.schedule_b1, *draft.schedule_b2])
@@ -474,6 +475,7 @@ class CommitmentRenderTests(unittest.TestCase):
         self.assertNotIn("UNREADABLE", text)
         self.assertIn("Tax Parcel No.: [PARCEL NUMBER].", text)
         self.assertIn("in the amount of $[AMOUNT]", text)
+        self.assertNotIn("dated ,", text)
 
     def test_refuses_to_render_when_reconciliation_is_red(self) -> None:
         package = sample_package()

@@ -368,6 +368,9 @@ class CommitmentRenderService:
             "borrowers": expand_party(_blank(entry.borrowers, "BORROWER")),
             "lender": expand_party(_blank(entry.lender, "LENDER")),
             "amount": _money_or_blank(entry.original_amount),
+            "dated_clause": (
+                f", dated {format_long_date(entry.executed_date)}" if entry.executed_date else ""
+            ),
             "executed_date": format_long_date(entry.executed_date),
             "book_label": clause_set.book_label,
             "book": entry.recording.book or "",
