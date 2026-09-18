@@ -40,6 +40,15 @@ class ClauseTemplate(BaseModel):
     template: str = Field(min_length=1)
 
 
+class ScheduleB2Group(StrEnum):
+    """A group of Schedule B-II exceptions drawn from one kind of abstractor sheet."""
+
+    MORTGAGES = "mortgages"
+    JUDGMENTS = "judgments"
+    TAXES = "taxes"
+    EXCEPTIONS = "exceptions"
+
+
 class ClauseSet(BaseModel):
     """An agency's house wording for one jurisdiction and underwriter."""
 
@@ -72,6 +81,18 @@ class ClauseSet(BaseModel):
     """B-II wording for a mortgage when ``mortgages_as_exceptions``."""
     mortgage_release_requirement: ClauseTemplate | None = None
     """B-I requirement releasing those exceptions; takes ``{items}``, e.g. "10-11"."""
+    judgment_exception: ClauseTemplate | None = None
+    """B-II wording for a judgment when ``mortgages_as_exceptions``; the judgment is then
+    released by ``mortgage_release_requirement`` instead of ``judgment_requirement``."""
+    schedule_b2_order: list[ScheduleB2Group] = Field(
+        default_factory=lambda: [
+            ScheduleB2Group.MORTGAGES,
+            ScheduleB2Group.JUDGMENTS,
+            ScheduleB2Group.TAXES,
+            ScheduleB2Group.EXCEPTIONS,
+        ]
+    )
+    """Order of the abstractor-sheet groups after the standard B-II exceptions."""
     judgment_requirement: ClauseTemplate | None = None
     """Requirement to release each judgment on the abstractor's judgment sheet."""
     judgment_header: str | None = None

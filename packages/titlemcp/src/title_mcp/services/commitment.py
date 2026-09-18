@@ -18,6 +18,7 @@ from title_mcp.domain.commitment import (
     CommitmentSection,
     CommitmentSubClause,
     ScheduleA,
+    ScheduleB2Group,
 )
 from title_mcp.domain.exam import (
     ExamPackage,
@@ -132,22 +133,38 @@ def _money_or_blank(value: Decimal | None) -> str:
     return format_money(value) if value is not None else "[AMOUNT]"
 
 
+def _judgments_as_exceptions(clause_set: ClauseSet) -> bool:
+    return clause_set.mortgages_as_exceptions and clause_set.judgment_exception is not None
+
+
 def _mortgage_items(schedule_b2: list[CommitmentClause]) -> list[int]:
+    """B-II items the release requirement must cite: mortgages and judgments listed there."""
+
+    released = {ExamSheetKind.MORTGAGES, ExamSheetKind.JUDGMENTS}
     return [
         c.number
         for c in schedule_b2
-        if c.source_sheet == ExamSheetKind.MORTGAGES and c.clause_id.endswith(":b2")
+        if c.source_sheet in released and c.clause_id.endswith(":b2")
     ]
 
 
 def _item_range(numbers: list[int]) -> str:
-    """Item numbers as a commitment cites them: [10, 11] -> "10-11", [10, 12] -> "10 and 12"."""
+    """Item numbers as a commitment cites them.
 
-    if len(numbers) > 1 and numbers == list(range(numbers[0], numbers[-1] + 1)):
-        return f"{numbers[0]}-{numbers[-1]}"
-    if len(numbers) == 1:
-        return str(numbers[0])
-    return ", ".join(map(str, numbers[:-1])) + f" and {numbers[-1]}"
+    Runs collapse: [10, 11] -> "10-11"; [10, 12, 13, 14] -> "10 and 12-14";
+    [10, 12, 15] -> "10, 12 and 15".
+    """
+
+    runs: list[list[int]] = []
+    for n in sorted(set(numbers)):
+        if runs and n == runs[-1][-1] + 1:
+            runs[-1].append(n)
+        else:
+            runs.append([n])
+    parts = [f"{r[0]}-{r[-1]}" if len(r) > 1 else str(r[0]) for r in runs]
+    if len(parts) == 1:
+        return parts[0]
+    return ", ".join(parts[:-1]) + f" and {parts[-1]}"
 
 
 def _is_party(value: str | None) -> bool:
@@ -270,7 +287,6 @@ class CommitmentRenderService:
                     text=release.template.format(items=_item_range(mortgage_items)),
                     origin=ClauseOrigin.ABSTRACTOR_SHEET,
                     source_sheet=ExamSheetKind.MORTGAGES,
-                    src_page=package.mortgages[0].provenance.src_page,
                 )
             )
 
@@ -296,7 +312,7 @@ class CommitmentRenderService:
             )
 
         judgment = clause_set.judgment_requirement
-        if judgment is not None:
+        if judgment is not None and not _judgments_as_exceptions(clause_set):
             for position, j in enumerate(package.judgments):
                 number += 1
                 clauses.append(
@@ -317,13 +333,11 @@ class CommitmentRenderService:
     def _render_b2(self, package: ExamPackage, clause_set: ClauseSet) -> list[CommitmentClause]:
         clauses: list[CommitmentClause] = []
         supplied = set(clause_set.form_supplied_clause_ids)
-        number = 0
 
         for template in clause_set.standard_b2:
-            number += 1
             clauses.append(
                 CommitmentClause(
-                    number=number,
+                    number=len(clauses) + 1,
                     clause_id=template.clause_id,
                     section=CommitmentSection.SCHEDULE_B_II,
                     text=template.template,
@@ -332,52 +346,61 @@ class CommitmentRenderService:
                 )
             )
 
-        if clause_set.mortgages_as_exceptions:
-            template = clause_set.mortgage_exception or clause_set.mortgage_payoff
-            for entry in package.mortgages:
-                number += 1
-                clauses.append(
-                    CommitmentClause(
-                        number=number,
-                        clause_id=f"{template.clause_id}:b2",
-                        section=CommitmentSection.SCHEDULE_B_II,
-                        text=template.template.format(**self._mortgage_context(entry, clause_set)),
-                        origin=ClauseOrigin.ABSTRACTOR_SHEET,
-                        source_sheet=ExamSheetKind.MORTGAGES,
-                        src_page=entry.provenance.src_page,
+        county = {"county": package.cover.county or ""}
+
+        def add(clause_id: str, text: str, sheet: ExamSheetKind, src_page: int | None) -> None:
+            clauses.append(
+                CommitmentClause(
+                    number=len(clauses) + 1,
+                    clause_id=clause_id,
+                    section=CommitmentSection.SCHEDULE_B_II,
+                    text=text,
+                    origin=ClauseOrigin.ABSTRACTOR_SHEET,
+                    source_sheet=sheet,
+                    src_page=src_page,
+                )
+            )
+
+        for group in clause_set.schedule_b2_order:
+            if group is ScheduleB2Group.MORTGAGES and clause_set.mortgages_as_exceptions:
+                template = clause_set.mortgage_exception or clause_set.mortgage_payoff
+                for m in package.mortgages:
+                    context = {**county, **self._mortgage_context(m, clause_set)}
+                    add(
+                        f"{template.clause_id}:b2",
+                        template.template.format(**context),
+                        ExamSheetKind.MORTGAGES,
+                        m.provenance.src_page,
                     )
-                )
-
-        for entry in package.tax_parcels:
-            number += 1
-            clauses.append(
-                CommitmentClause(
-                    number=number,
-                    clause_id=clause_set.tax_exception.clause_id,
-                    section=CommitmentSection.SCHEDULE_B_II,
-                    text=clause_set.tax_exception.template.format(
-                        **self._tax_context(entry, package)
-                    ),
-                    origin=ClauseOrigin.ABSTRACTOR_SHEET,
-                    source_sheet=ExamSheetKind.TAX,
-                    src_page=entry.provenance.src_page,
-                )
-            )
-
-        for entry in package.exceptions:
-            number += 1
-            template = self._exception_template(entry, clause_set)
-            clauses.append(
-                CommitmentClause(
-                    number=number,
-                    clause_id=template.clause_id,
-                    section=CommitmentSection.SCHEDULE_B_II,
-                    text=template.template.format(**self._exception_context(entry, clause_set)),
-                    origin=ClauseOrigin.ABSTRACTOR_SHEET,
-                    source_sheet=ExamSheetKind.EXCEPTIONS,
-                    src_page=entry.provenance.src_page,
-                )
-            )
+            elif group is ScheduleB2Group.JUDGMENTS and _judgments_as_exceptions(clause_set):
+                template = clause_set.judgment_exception
+                assert template is not None
+                for j in package.judgments:
+                    context = {**county, **self._judgment_context(j, clause_set)}
+                    add(
+                        f"{template.clause_id}:b2",
+                        template.template.format(**context),
+                        ExamSheetKind.JUDGMENTS,
+                        j.provenance.src_page,
+                    )
+            elif group is ScheduleB2Group.TAXES:
+                for t in package.tax_parcels:
+                    add(
+                        clause_set.tax_exception.clause_id,
+                        clause_set.tax_exception.template.format(**self._tax_context(t, package)),
+                        ExamSheetKind.TAX,
+                        t.provenance.src_page,
+                    )
+            elif group is ScheduleB2Group.EXCEPTIONS:
+                for e in package.exceptions:
+                    template = self._exception_template(e, clause_set)
+                    context = {**county, **self._exception_context(e, clause_set)}
+                    add(
+                        template.clause_id,
+                        template.template.format(**context),
+                        ExamSheetKind.EXCEPTIONS,
+                        e.provenance.src_page,
+                    )
 
         return clauses
 

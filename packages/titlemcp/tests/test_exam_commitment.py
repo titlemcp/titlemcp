@@ -770,6 +770,88 @@ class CommitmentRenderTests(unittest.TestCase):
             "no separate payoff requirements",
         )
 
+    def test_judgments_can_be_exceptions_released_with_the_mortgages(self) -> None:
+        from title_mcp.domain.commitment import ClauseTemplate, CommitmentSection, ScheduleB2Group
+
+        package = sample_package(
+            judgments=[
+                JudgmentEntry(
+                    debtor="Alex Q. Example",
+                    creditor="Example Collections, LLC",
+                    amount=Decimal("1250.00"),
+                    recording=RecordingReference(book="0402", page="17", document_type="JL"),
+                    provenance=_prov(ExamSheetKind.JUDGMENTS, 17),
+                )
+            ]
+        )
+        package.cover.declared_judgment_count = 1
+        package.index = None
+        b2 = CommitmentSection.SCHEDULE_B_II
+        self.clause_set = self.clause_set.model_copy(
+            update={
+                "mortgages_as_exceptions": True,
+                "mortgage_exception": ClauseTemplate(
+                    clause_id="b2.mortgage", section=b2, template="Mortgage to {lender}."
+                ),
+                "judgment_exception": ClauseTemplate(
+                    clause_id="b2.judgment",
+                    section=b2,
+                    template="Judgment Lien in favor of {creditor}{recording_clause} of "
+                    "{county} County Records.",
+                ),
+                "mortgage_release_requirement": ClauseTemplate(
+                    clause_id="b1.release",
+                    section=CommitmentSection.SCHEDULE_B_I,
+                    template="Release of Item(s) {items}.",
+                ),
+                "schedule_b2_order": [
+                    ScheduleB2Group.EXCEPTIONS,
+                    ScheduleB2Group.MORTGAGES,
+                    ScheduleB2Group.JUDGMENTS,
+                    ScheduleB2Group.TAXES,
+                ],
+            }
+        )
+
+        draft = self._green(package)
+
+        kinds = [c.source_sheet for c in draft.schedule_b2 if c.source_sheet is not None]
+        self.assertEqual(
+            kinds,
+            sorted(
+                kinds,
+                key=[
+                    ExamSheetKind.EXCEPTIONS,
+                    ExamSheetKind.MORTGAGES,
+                    ExamSheetKind.JUDGMENTS,
+                    ExamSheetKind.TAX,
+                ].index,
+            ),
+        )
+        (judgment,) = [c for c in draft.schedule_b2 if c.clause_id == "b2.judgment:b2"]
+        self.assertEqual(
+            judgment.text,
+            "Judgment Lien in favor of Example Collections, LLC, recorded in Official Record "
+            "0402, Page 17 of Example County Records.",
+        )
+        released = [
+            c.number
+            for c in draft.schedule_b2
+            if c.clause_id in ("b2.mortgage:b2", "b2.judgment:b2")
+        ]
+        (release,) = [c for c in draft.schedule_b1 if c.clause_id == "b1.release"]
+        self.assertEqual(release.text, f"Release of Item(s) {released[0]}-{released[-1]}.")
+        self.assertFalse([c for c in draft.schedule_b1 if c.clause_id == "b1.judgment_release"])
+
+    def test_item_numbers_are_cited_as_runs(self) -> None:
+        from title_mcp.services.commitment import _item_range
+
+        self.assertEqual(_item_range([10]), "10")
+        self.assertEqual(_item_range([10, 11]), "10-11")
+        self.assertEqual(_item_range([10, 12]), "10 and 12")
+        self.assertEqual(_item_range([10, 12, 13, 14]), "10 and 12-14")
+        self.assertEqual(_item_range([10, 12, 15]), "10, 12 and 15")
+
     def test_refuses_to_render_when_reconciliation_is_red(self) -> None:
         package = sample_package()
         package.cover.declared_mortgage_count = 4
