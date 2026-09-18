@@ -25,6 +25,7 @@ class DiscrepancyCode(StrEnum):
     EXCEPTION_COUNT_MISMATCH = "exception_count_mismatch"
     INDEX_REFERENCE_NOT_ON_SHEET = "index_reference_not_on_sheet"
     SHEET_REFERENCE_NOT_ON_INDEX = "sheet_reference_not_on_index"
+    INDEX_NOT_CORROBORATED = "index_not_corroborated"
     LOW_CONFIDENCE_EXTRACTION = "low_confidence_extraction"
     MISSING_LAST_SHOWN_OWNER_TRANSFER = "missing_last_shown_owner_transfer"
     MATTERS_OF_CONCERN_RAISED = "matters_of_concern_raised"
@@ -192,6 +193,40 @@ class ExamReconciliationService:
         index = package.index
         if index is None:
             return []
+
+        # A genuine index shares most of its references with the detail sheets. A
+        # page read as the index that shares none of them is not this package's
+        # index (a name-search printout, a typed report page); cross-checking
+        # against it would only report every reference as missing.
+        index_refs_all = [*index.mortgages, *index.easements_rights_of_way]
+        sheet_refs_all = [
+            *(m.recording for m in package.mortgages),
+            *(e.recording for e in package.exceptions),
+        ]
+        all_index = {recording_key(r) for r in index_refs_all if _cited(r)}
+        all_sheet = {recording_key(r) for r in sheet_refs_all if _cited(r)}
+        # An index that lists nothing cannot corroborate anything either. A single
+        # sheet reference against a single different index entry is left to the
+        # cross-check below: that is a genuine disagreement, not a wrong page.
+        empty_index = not all_index and bool(all_sheet)
+        unrelated = bool(all_index) and len(all_sheet) >= 2 and not (all_index & all_sheet)
+        if empty_index or unrelated:
+            return [
+                Discrepancy(
+                    code=DiscrepancyCode.INDEX_NOT_CORROBORATED,
+                    severity=DiscrepancySeverity.ADVISORY,
+                    message=(
+                        "The page read as the index "
+                        + (
+                            "lists no references"
+                            if empty_index
+                            else "shares no references with the detail sheets"
+                        )
+                        + ", so it was not used to cross-check them."
+                    ),
+                    src_pages=[index.provenance.src_page],
+                )
+            ]
 
         found: list[Discrepancy] = []
         groups = (

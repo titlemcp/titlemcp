@@ -7,7 +7,7 @@ import re
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from enum import StrEnum
-from typing import Any, Protocol, TypeVar
+from typing import TYPE_CHECKING, Any, Protocol, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
@@ -34,6 +34,9 @@ from title_mcp.services.document_analysis import (
 )
 from title_mcp.settings import TitleMCPSettings, get_settings
 from title_mcp.sources.base import SourceResultStatus
+
+if TYPE_CHECKING:
+    from title_mcp.services.form_fingerprint import FormFingerprintResult
 
 LOGGER = get_logger(__name__)
 
@@ -814,6 +817,57 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
             page_assignments=classification.assignments,
             source_specific=source_specific,
         )
+
+    async def fingerprint_forms(
+        self, request: ExamExtractionRequest, assignments: list[PageAssignment]
+    ) -> FormFingerprintResult:
+        """Fingerprint the package's summary-sheet forms by their printed labels.
+
+        One call over the pages already classified as summary sheets. Only the
+        pre-printed labels are kept, filtered again in code so nothing filled in,
+        and nothing that names the form's owner, reaches the fingerprint.
+        """
+
+        from title_mcp.services.form_fingerprint import (
+            FormFingerprintResult,
+            FormLayouts,
+            fingerprint_result,
+        )
+
+        client = self._resolve_client()
+        if client is None:
+            return FormFingerprintResult(
+                file_number=request.file_number,
+                status=SourceResultStatus.REQUIRES_CONFIGURATION,
+                warnings=["Anthropic credentials are not configured."],
+            )
+        by_page = {p.page_number: p for p in request.pages}
+        sheet_of = {a.page_number: a.sheet for a in assignments if a.sheet}
+        numbers = [n for n in sorted(sheet_of) if n in by_page][:20]
+        if not numbers:
+            return fingerprint_result(request.file_number, [])
+        instruction = (
+            "For each page above, list the form's pre-printed field labels and printed "
+            "headings in reading order, and say whether it prints count boxes for "
+            "mortgages, judgments, or exceptions. Leave out the letterhead, logos, and any "
+            "name, address, phone, email, or web address, and everything handwritten or "
+            "typed into the form. Sheet kinds: "
+            + ", ".join(f"page {n}: {sheet_of[n].value}" for n in numbers)
+        )
+        try:
+            result = await asyncio.to_thread(
+                client.extract,
+                instruction=instruction,
+                images=[classification_view(by_page[n], max_edge=MAX_TILE_EDGE) for n in numbers],
+                schema=FormLayouts,
+            )
+        except Exception as exc:  # noqa: BLE001 - connectors report, never raise
+            return FormFingerprintResult(
+                file_number=request.file_number,
+                status=SourceResultStatus.FAILED,
+                warnings=[f"Form fingerprinting failed: {type(exc).__name__}"],
+            )
+        return fingerprint_result(request.file_number, list(result.sheets))
 
     # -- canonical mapping --------------------------------------------------
 

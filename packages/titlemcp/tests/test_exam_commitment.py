@@ -225,6 +225,60 @@ class ExamReconciliationTests(unittest.TestCase):
         self.assertIn("declared_counts:not_supported_by_form", rec.checks_run)
         self.assertIn("index_cross_reference:not_supported_by_form", rec.checks_run)
 
+    def test_a_page_sharing_nothing_with_the_sheets_is_not_used_as_the_index(self) -> None:
+        package = sample_package()
+        package.index = IndexSummarySheet(
+            mortgages=[RecordingReference(book="0999", page="1")],
+            easements_rights_of_way=[RecordingReference(book="0998", page="2")],
+            provenance=_prov(ExamSheetKind.INDEX_SUMMARY, 39),
+        )
+
+        rec = ExamReconciliationService().reconcile(package)
+
+        self.assertEqual(rec.status, ReconciliationStatus.GREEN, rec.blocking)
+        self.assertEqual(
+            [d.code for d in rec.discrepancies if d.code == DiscrepancyCode.INDEX_NOT_CORROBORATED],
+            [DiscrepancyCode.INDEX_NOT_CORROBORATED],
+        )
+
+    def test_an_empty_index_page_is_not_used_either(self) -> None:
+        package = sample_package()
+        package.index = IndexSummarySheet(provenance=_prov(ExamSheetKind.INDEX_SUMMARY, 39))
+
+        rec = ExamReconciliationService().reconcile(package)
+
+        self.assertEqual(rec.status, ReconciliationStatus.GREEN, rec.blocking)
+        self.assertIn(
+            "lists no references",
+            rec.discrepancies[-1].message + " ".join(d.message for d in rec.discrepancies),
+        )
+
+    def test_a_single_reference_disagreement_is_still_reported(self) -> None:
+        package = sample_package()
+        package.mortgages = []
+        package.cover.declared_mortgage_count = 0
+        package.exceptions = package.exceptions[:1]
+        package.cover.declared_exception_count = 1
+        package.index = IndexSummarySheet(
+            easements_rights_of_way=[RecordingReference(book="0931", page="105")],
+            provenance=_prov(ExamSheetKind.INDEX_SUMMARY, 19),
+        )
+
+        rec = ExamReconciliationService().reconcile(package)
+
+        self.assertEqual(rec.status, ReconciliationStatus.RED)
+
+    def test_a_genuine_index_still_reports_its_one_disagreement(self) -> None:
+        package = sample_package()
+        assert package.index is not None
+        package.index.easements_rights_of_way[0] = RecordingReference(book="0461", page="213")
+
+        rec = ExamReconciliationService().reconcile(package)
+
+        codes = [d.code for d in rec.blocking]
+        self.assertIn(DiscrepancyCode.INDEX_REFERENCE_NOT_ON_SHEET, codes)
+        self.assertIn(DiscrepancyCode.SHEET_REFERENCE_NOT_ON_INDEX, codes)
+
     def test_an_unrecorded_instrument_is_not_expected_on_the_index(self) -> None:
         package = sample_package()
         package.exceptions.append(
