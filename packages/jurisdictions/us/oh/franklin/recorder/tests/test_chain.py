@@ -19,7 +19,7 @@ from titlemcp_us_oh_franklin_recorder.client import RecorderDocument, _to_result
 FIXTURE = pathlib.Path(__file__).parent / "fixtures" / "name_search.json"
 
 SUBJECT_PARCEL = "030-000526-00"
-OWNER = "GRANTHAM ELEANOR V"
+OWNER = "EXAMPLE ELEANOR V"
 
 
 def load() -> list[RecorderDocument]:
@@ -41,7 +41,7 @@ class ParcelScopingTests(unittest.TestCase):
             self.assertIn("030-000526", document.legal_description)
 
     def test_a_neighbouring_subdivision_with_a_similar_name_is_excluded(self) -> None:
-        """``FRANK S WAGENHALS ET AL`` and ``WAGENHALS ET AL`` are two places.
+        """``FRANK S SAMPLETON ET AL`` and ``SAMPLETON ET AL`` are two places.
 
         Matching on the subdivision name picks up both and reports the wrong
         lender with complete confidence.
@@ -66,7 +66,7 @@ class AcquisitionTests(unittest.TestCase):
         self.assertIsNotNone(built.acquisition)
         assert built.acquisition is not None
         self.assertEqual(built.acquisition.instrument_number, "202104120064304")
-        self.assertTrue(any("GRANTHAM" in name for name in built.acquisition.grantees))
+        self.assertTrue(any("EXAMPLE" in name for name in built.acquisition.grantees))
 
     def test_a_deed_where_the_owner_is_the_grantor_is_not_an_acquisition(self) -> None:
         """The same party sold a different property a fortnight after buying.
