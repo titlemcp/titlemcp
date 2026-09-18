@@ -234,7 +234,16 @@ class NormalizationTests(unittest.TestCase):
         ref = parse_recording_ref(" 0311 / 415 ")
         assert ref is not None
         self.assertEqual((ref.book, ref.page), ("0311", "415"))
-        self.assertIsNone(parse_recording_ref("209/602 R"))
+        # Notes around a reference are ignored; the first reference is the entry.
+        noted = parse_recording_ref("209/602 R")
+        assert noted is not None
+        self.assertEqual((noted.book, noted.page), ("209", "602"))
+        labelled = parse_recording_ref("R/W: 1111/576 (P)")
+        assert labelled is not None
+        self.assertEqual((labelled.book, labelled.page), ("1111", "576"))
+        released = parse_recording_ref("1222/1265 R.333/752")
+        assert released is not None
+        self.assertEqual((released.book, released.page), ("1222", "1265"))
         self.assertIsNone(parse_recording_ref(None))
 
     def test_index_reference_keeps_a_record_series_prefix(self) -> None:

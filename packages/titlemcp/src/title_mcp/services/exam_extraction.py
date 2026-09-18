@@ -1031,19 +1031,24 @@ _CHECK_MARK = re.compile(r"✓|✔|\bcheck(?:ed|mark| mark)?\b|\btick(?:ed)?\b",
 _RECORDING_REF = re.compile(
     r"\s*(?:(?P<series>[A-Za-z]{1,4})\.?\s+)?(?P<book>[0-9][0-9A-Za-z-]*)\s*/\s*(?P<page>[0-9A-Za-z-]+)\s*"
 )
+_RECORDING_REF_ANYWHERE = re.compile(
+    r"(?<![\w/.])(?:(?P<series>[A-Za-z]{1,4})\.?\s+)?(?P<book>[0-9][0-9A-Za-z-]*)\s*/\s*(?P<page>[0-9][0-9A-Za-z-]*)"
+)
 
 
 def parse_recording_ref(raw: str | None) -> RecordingReference | None:
-    """Parse an index-page reference written as ``book/page``.
+    """Find the ``book/page`` reference in an index-page entry.
 
     A leading record series (``DV 212/58``, ``OR 733/19``) is kept as the document
-    type; it does not change the reference's identity. Anything trailing, such as
-    an ``R`` for released, makes the reference unparseable on purpose.
+    type; it does not change the reference's identity. Labels and notes around the
+    reference ("R/W: 1029/576 (P)", "1059/1265 R. 328/752") are ignored, and the
+    first reference is taken; a release noted beside it is the entry's
+    ``released`` flag, not part of its identity.
     """
 
     if raw is None:
         return None
-    match = _RECORDING_REF.fullmatch(raw)
+    match = _RECORDING_REF.fullmatch(raw) or _RECORDING_REF_ANYWHERE.search(raw)
     if not match:
         return None
     series = match.group("series")
