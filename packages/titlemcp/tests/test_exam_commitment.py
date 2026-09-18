@@ -729,6 +729,13 @@ class CommitmentRenderTests(unittest.TestCase):
             phrases(RecordingReference(book="Plat Slide 9999"), cs)["cited"], "Plat Slide 9999"
         )
         self.assertEqual(phrases(RecordingReference(), cs)["cited"], "[RECORDING]")
+        self.assertEqual(
+            phrases(RecordingReference(book="2015-00000123"), cs)["cited"],
+            "Instrument No. 2015-00000123",
+        )
+        self.assertEqual(
+            phrases(RecordingReference(book="0921-55"), cs)["cited"], "Official Record 0921-55"
+        )
 
     def test_mortgages_can_be_exceptions_released_in_b1(self) -> None:
         from title_mcp.domain.commitment import ClauseTemplate, CommitmentSection

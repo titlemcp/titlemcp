@@ -133,6 +133,11 @@ def _money_or_blank(value: Decimal | None) -> str:
     return format_money(value) if value is not None else "[AMOUNT]"
 
 
+# A bare instrument or file number, as some counties print it: "201501010000123",
+# "2015-00000123". Seven or more digits; dashes allowed between them.
+_INSTRUMENT_NUMBER = re.compile(r"(?=(?:\D*\d){7})\d[\d-]*\d")
+
+
 def _judgments_as_exceptions(clause_set: ClauseSet) -> bool:
     return clause_set.mortgages_as_exceptions and clause_set.judgment_exception is not None
 
@@ -522,7 +527,7 @@ class CommitmentRenderService:
         ref = reference or RecordingReference()
         book, page = (ref.book or "").strip(), (ref.page or "").strip()
         number = (ref.instrument_number or "").strip()
-        if not number and book and not page and re.fullmatch(r"\d{7,}", book):
+        if not number and book and not page and _INSTRUMENT_NUMBER.fullmatch(book):
             number = book  # a county that records by instrument number
         if number:
             cited = f"Instrument No. {number}"
