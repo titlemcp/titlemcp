@@ -235,9 +235,9 @@ class NormalizationTests(unittest.TestCase):
         assert ref is not None
         self.assertEqual((ref.book, ref.page), ("0311", "415"))
         # Notes around a reference are ignored; the first reference is the entry.
-        noted = parse_recording_ref("209/602 R")
+        noted = parse_recording_ref("0999/111 R")
         assert noted is not None
-        self.assertEqual((noted.book, noted.page), ("209", "602"))
+        self.assertEqual((noted.book, noted.page), ("0999", "111"))
         labelled = parse_recording_ref("R/W: 1111/576 (P)")
         assert labelled is not None
         self.assertEqual((labelled.book, labelled.page), ("1111", "576"))

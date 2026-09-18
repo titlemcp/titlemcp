@@ -99,13 +99,29 @@ def stored_value(entry: Any, field: str) -> str | None:
     return str(getattr(value, "value", value))
 
 
+_NUMERIC_DATE = re.compile(r"^\s*(\d{1,2})\s*[/.-]\s*(\d{1,2})\s*[/.-]\s*(\d{2}|\d{4})\s*$")
+
+
+def _date_key(value: str) -> str:
+    """A written date by month, day, and two-digit year: "5/1/39" is "5/1/2039"."""
+
+    m = _NUMERIC_DATE.match(value)
+    if not m:
+        return _value_key(value)
+    return f"{int(m[1])}/{int(m[2])}/{int(m[3]) % 100:02d}"
+
+
 def _value_key(value: str) -> str:
     """A value with formatting removed: case, punctuation, separators, spacing."""
 
     return re.sub(r"[^a-z0-9]", "", value.lower()).lstrip("0")
 
 
-def is_real_doubt(doubt: UncertainReading) -> bool:
+def is_real_doubt(
+    doubt: UncertainReading,
+    known: list[KnownConfusion] | tuple[KnownConfusion, ...] = (),
+    used: str | None = None,
+) -> bool:
     """Whether a reported doubt could change a value.
 
     Not a doubt: an absent value ("(not written)", "no count box"), or
@@ -116,19 +132,80 @@ def is_real_doubt(doubt: UncertainReading) -> bool:
     read = doubt.read_as or ""
     if _ABSENT.match(read):
         return False
-    return bool(distinct_alternatives(doubt))
+    return bool(distinct_alternatives(doubt, known, used))
 
 
-def distinct_alternatives(doubt: UncertainReading) -> list[str]:
-    """The alternatives that would actually change the value, in the reader's order."""
+# Fields holding a person's or company's name.
+_NAME_FIELDS = {
+    "first_party", "second_party", "borrowers", "lender", "debtor", "creditor",
+    "auditor_owners", "buyers", "taxpayer_name", "parties",
+}
+_SPOUSE_NOTATION = re.compile(r"\b(?:h/w|w/h|husband and wife|wife and husband)\b", re.IGNORECASE)
 
-    seen = {_value_key(doubt.read_as or "")}
+
+def _name_key(value: str) -> str:
+    """A name with shorthand spelled out, so "A + B h/w" and "A and B, husband and
+    wife" compare equal."""
+
+    text = _SPOUSE_NOTATION.sub(" husbandandwife ", value)
+    text = re.sub(r"\s*\+\s*|\s*&\s*", " and ", text)
+    return _value_key(text)
+
+
+class KnownConfusion(BaseModel):
+    """A misreading known to be harmless: what is written, and what a reader takes it for.
+
+    A doubt is set aside only when the difference between the value used and an
+    alternative is exactly this substitution. Each entry is explicit and
+    reviewable, so nothing is dismissed by a guess.
+    """
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    reads: str = Field(min_length=1, description="What is actually written, e.g. 'h/w'.")
+    misread_as: str = Field(min_length=1, description="What a reader may take it for, e.g. '4/w'.")
+    fields: list[str] = Field(
+        default_factory=list, description="Limit to these fields; empty means any field."
+    )
+
+    def explains(self, field: str, used: str, alternative: str) -> bool:
+        if self.fields and field.strip().lower() not in {f.lower() for f in self.fields}:
+            return False
+        token = re.compile(rf"(?<![\w/]){re.escape(self.reads)}(?![\w/])", re.IGNORECASE)
+        if not token.search(used):
+            return False
+        if alternative.strip().lower() == self.misread_as.lower():
+            return True  # the reader offered only the misread fragment
+        swapped = token.sub(self.misread_as, used)
+        return _value_key(swapped) == _value_key(alternative)
+
+
+def distinct_alternatives(
+    doubt: UncertainReading,
+    known: list[KnownConfusion] | tuple[KnownConfusion, ...] = (),
+    used: str | None = None,
+) -> list[str]:
+    """The alternatives that would actually change the value, in the reader's order.
+
+    Dropped: formatting-only differences, absent values, a difference only in
+    spouse notation or "+" for a name, and a difference that a known confusion
+    fully explains.
+    """
+
+    read = doubt.read_as or ""
+    base = used or read
+    name = doubt.field.strip().lower()
+    is_name = name in _NAME_FIELDS
+    key = _name_key if is_name else _date_key if name.endswith("date") else _value_key
+    seen = {key(read), key(base)}
     out: list[str] = []
     for alt in doubt.alternatives:
-        key = _value_key(alt)
-        if key in seen or _ABSENT.match(alt):
+        k = key(alt)
+        if k in seen or _ABSENT.match(alt):
             continue
-        seen.add(key)
+        if any(c.explains(doubt.field, base, alt) for c in known):
+            continue
+        seen.add(k)
         out.append(alt)
     return out
 
@@ -222,9 +299,13 @@ class ExamReconciliationService:
     """
 
     def reconcile(
-        self, package: ExamPackage, checks_enabled: ReconciliationChecks | None = None
+        self,
+        package: ExamPackage,
+        checks_enabled: ReconciliationChecks | None = None,
+        known_confusions: list[KnownConfusion] | None = None,
     ) -> ReconciliationResult:
         enabled = checks_enabled or ReconciliationChecks()
+        suppressed: list[dict[str, Any]] = []
         discrepancies: list[Discrepancy] = []
         checks: list[str] = []
 
@@ -240,7 +321,9 @@ class ExamReconciliationService:
         elif package.index is not None:
             checks.append("index_cross_reference:not_supported_by_form")
 
-        discrepancies.extend(self._check_extraction_confidence(package))
+        discrepancies.extend(
+            self._check_extraction_confidence(package, known_confusions or [], suppressed)
+        )
         checks.append("extraction_confidence")
 
         discrepancies.extend(self._check_review_signals(package))
@@ -253,6 +336,7 @@ class ExamReconciliationService:
             discrepancies=discrepancies,
             checks_run=checks,
             requires_human_review=True,
+            source_specific={"suppressed_doubts": suppressed} if suppressed else {},
         )
 
     def _check_declared_counts(self, package: ExamPackage) -> list[Discrepancy]:
@@ -384,7 +468,12 @@ class ExamReconciliationService:
                 )
         return found
 
-    def _check_extraction_confidence(self, package: ExamPackage) -> list[Discrepancy]:
+    def _check_extraction_confidence(
+        self,
+        package: ExamPackage,
+        known: list[KnownConfusion],
+        suppressed: list[dict[str, Any]],
+    ) -> list[Discrepancy]:
         """One question per value in doubt; blocking only where it reaches the commitment.
 
         A reader that names its doubts ("county read as Exampel, could be Example") gets
@@ -394,10 +483,20 @@ class ExamReconciliationService:
 
         found: list[Discrepancy] = []
         for label, entry, provenance in self._entries(package):
-            doubts = [d for d in provenance.uncertain if is_real_doubt(d)]
+            doubts = []
+            for d in provenance.uncertain:
+                used = stored_value(entry, d.field)
+                if is_real_doubt(d, known, used):
+                    doubts.append(d)
+                elif is_real_doubt(d, (), used):
+                    # Real but for a known, harmless confusion: set aside, on record.
+                    suppressed.append(
+                        {"entry": label, "field": d.field, "used": used or d.read_as,
+                         "alternatives": d.alternatives}
+                    )
             for doubt in doubts:
                 blocking = _reaches_commitment(provenance.sheet, doubt.field)
-                distinct = distinct_alternatives(doubt)
+                distinct = distinct_alternatives(doubt, known, stored_value(entry, doubt.field))
                 alts = " or ".join(distinct)
                 could_be = f"; could be {alts}" if alts else ""
                 why = f" ({doubt.reason})" if doubt.reason else ""

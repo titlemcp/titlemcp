@@ -354,6 +354,51 @@ class ExamReconciliationTests(unittest.TestCase):
         self.assertEqual(used, {"county": "Example", "amount": "100,000.00", "page": "415"})
         self.assertTrue(any(d.message.startswith("Cover sheet: county") for d in rec.discrepancies))
 
+    def test_a_known_confusion_is_set_aside_on_record(self) -> None:
+        from title_mcp.services.exam import KnownConfusion, distinct_alternatives
+
+        known = [KnownConfusion(reads="h/w", misread_as="4/w")]
+
+        def doubt(read: str, *alts: str) -> UncertainReading:
+            return UncertainReading(field="first_party", read_as=read, alternatives=list(alts))
+
+        party = "Alex Q + Jamie Example h/w"
+        # The reader offered just the misread fragment, or the whole value with it.
+        self.assertEqual(distinct_alternatives(doubt(party, "4/w"), known), [])
+        self.assertEqual(
+            distinct_alternatives(doubt(party, "Alex Q + Jamie Example 4/w"), known), []
+        )
+        # Without the mapping, nothing is dismissed by guesswork.
+        self.assertEqual(distinct_alternatives(doubt(party, "4/w")), ["4/w"])
+        # Only that exact substitution: a spelling doubt elsewhere stays.
+        self.assertEqual(
+            distinct_alternatives(doubt(party, "Alex Q + Jamie Exampel 4/w"), known),
+            ["Alex Q + Jamie Exampel 4/w"],
+        )
+        # The written token must be present in the value used.
+        self.assertEqual(distinct_alternatives(doubt("Alex Example", "4/w"), known), ["4/w"])
+        # Spouse notation is the same value, mapping or not.
+        self.assertEqual(
+            distinct_alternatives(doubt(party, "Alex Q and Jamie Example, husband and wife")), []
+        )
+
+        package = sample_package()
+        package.exceptions[0].first_party = party
+        package.exceptions[0].provenance.uncertain = [
+            UncertainReading(field="first_party", read_as=party, alternatives=["4/w"])
+        ]
+        rec = ExamReconciliationService().reconcile(package, known_confusions=known)
+        self.assertNotIn(DiscrepancyCode.UNCERTAIN_READING, {d.code for d in rec.discrepancies})
+        self.assertEqual(rec.source_specific["suppressed_doubts"][0]["field"], "first_party")
+
+    def test_a_two_digit_year_is_the_same_date(self) -> None:
+        from title_mcp.services.exam import distinct_alternatives
+
+        d = UncertainReading(
+            field="maturity_date", read_as="5/1/39", alternatives=["5/1/2039", "5.1.39", "5/1/34"]
+        )
+        self.assertEqual(distinct_alternatives(d, used="5/1/2039"), ["5/1/34"])
+
     def test_an_unnamed_low_confidence_read_still_asks_for_a_check(self) -> None:
         package = sample_package()
         package.mortgages[0].provenance.confidence = ExtractionConfidence.LOW
