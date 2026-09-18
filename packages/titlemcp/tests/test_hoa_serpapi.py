@@ -100,50 +100,52 @@ class HoaSerpApiTests(unittest.IsolatedAsyncioTestCase):
     def test_best_match_prefers_official_contact_pages_and_filters_url_ids(self) -> None:
         record = hoa_contact_record_from_serpapi(
             query=HoaContactSearchQuery(
-                hoa_name="Tartan Fields Homeowners Association",
+                hoa_name="Example Fields Homeowners Association",
                 state="Ohio",
             ),
             search_parameters={
                 "engine": "google",
-                "q": "Tartan Fields Homeowners Association contact",
+                "q": "Example Fields Homeowners Association contact",
             },
             data={
                 "organic_results": [
                     {
                         "position": 1,
                         "title": "Contact",
-                        "link": "https://tartanfieldshoa.com/contact/",
-                        "snippet": "About Tartan Fields Homeowners Association.",
-                        "source": "Tartan Fields HOA",
+                        "link": "https://examplefieldshoa.example/contact/",
+                        "snippet": "About Example Fields Homeowners Association.",
+                        "source": "Example Fields HOA",
                     },
                     {
                         "position": 2,
-                        "title": "Tartan Fields Homeowners Association",
+                        "title": "Example Fields Homeowners Association",
                         "link": (
-                            "https://www.facebook.com/TartanTimesMagazine/posts/"
-                            "tartan-fields-homeowners-association/1075755641372547/"
+                            "https://www.facebook.com/ExampleTimesMagazine/posts/"
+                            "example-fields-homeowners-association/1075755641372547/"
                         ),
-                        "snippet": "Email at jgrooms@ohioequities.com.",
+                        "snippet": "Email at jsample@example.com.",
                         "source": "Facebook",
                     },
                     {
                         "position": 3,
                         "title": "Payments",
-                        "link": "https://tartanfieldshoa.com/assessment/payments/",
+                        "link": "https://examplefieldshoa.example/assessment/payments/",
                         "snippet": (
-                            "Association Name: Tartan Fields Homeowners' Association. "
-                            "Please contact Penny Wilson pwilson@ohioequities.com."
+                            "Association Name: Example Fields Homeowners' Association. "
+                            "Please contact Casey Example cexample@example.com."
                         ),
-                        "source": "Tartan Fields HOA",
+                        "source": "Example Fields HOA",
                     },
                     {
                         "position": 4,
-                        "title": "Tartan Fields Homeowners Association",
+                        "title": "Example Fields Homeowners Association",
                         "link": (
                             "https://www.zoominfo.com/c/"
-                            "tartan-fields-homeowners-association/1251896353"
+                            "example-fields-homeowners-association/1251896353"
                         ),
-                        "snippet": "Phone number: (614) 939-8600 Website: www.tartanfieldshoa.com",
+                        "snippet": (
+                            "Phone number: (555) 555-0100 Website: www.examplefieldshoa.example"
+                        ),
                         "source": "ZoomInfo",
                     },
                 ]
@@ -154,10 +156,10 @@ class HoaSerpApiTests(unittest.IsolatedAsyncioTestCase):
         assert record.best_match is not None
         self.assertEqual(
             record.best_match.website,
-            "https://tartanfieldshoa.com/assessment/payments/",
+            "https://examplefieldshoa.example/assessment/payments/",
         )
-        self.assertIn("pwilson@ohioequities.com", record.email_addresses)
-        self.assertIn("(614) 939-8600", record.phone_numbers)
+        self.assertIn("cexample@example.com", record.email_addresses)
+        self.assertIn("(555) 555-0100", record.phone_numbers)
         self.assertNotIn("10757556413", record.phone_numbers)
         self.assertNotIn("1251896353", record.phone_numbers)
 
@@ -168,10 +170,10 @@ class HoaSerpApiTests(unittest.IsolatedAsyncioTestCase):
                     "organic_results": [
                         {
                             "position": 1,
-                            "title": "Tartan Fields HOA: Home",
-                            "link": "https://tartanfieldshoa.com/",
-                            "snippet": "About Tartan Fields Homeowners Association.",
-                            "source": "Tartan Fields HOA",
+                            "title": "Example Fields HOA: Home",
+                            "link": "https://examplefieldshoa.example/",
+                            "snippet": "About Example Fields Homeowners Association.",
+                            "source": "Example Fields HOA",
                         }
                     ]
                 },
@@ -180,12 +182,12 @@ class HoaSerpApiTests(unittest.IsolatedAsyncioTestCase):
                         {
                             "position": 1,
                             "title": "Payments",
-                            "link": "https://tartanfieldshoa.com/assessment/payments/",
+                            "link": "https://examplefieldshoa.example/assessment/payments/",
                             "snippet": (
-                                "Please contact Penny Wilson "
-                                "pwilson@ohioequities.com for questions."
+                                "Please contact Casey Example "
+                                "cexample@example.com for questions."
                             ),
-                            "source": "Tartan Fields HOA",
+                            "source": "Example Fields HOA",
                         }
                     ]
                 },
@@ -193,15 +195,15 @@ class HoaSerpApiTests(unittest.IsolatedAsyncioTestCase):
         )
         page_fetcher = _RecordingPageFetcher(
             HoaPageFetch(
-                url="https://tartanfieldshoa.com/assessment/payments/",
-                final_url="https://tartanfieldshoa.com/assessment/payments/",
+                url="https://examplefieldshoa.example/assessment/payments/",
+                final_url="https://examplefieldshoa.example/assessment/payments/",
                 status_code=200,
                 content_type="text/html; charset=utf-8",
-                title="Tartan Fields HOA Payments",
+                title="Example Fields HOA Payments",
                 text=(
-                    "Tartan Fields Homeowners' Association\n"
-                    "Contact Penny Wilson pwilson@ohioequities.com or call "
-                    "(614) 939-8600 for assessments and payments."
+                    "Example Fields Homeowners' Association\n"
+                    "Contact Casey Example cexample@example.com or call "
+                    "(555) 555-0100 for assessments and payments."
                 ),
                 text_length=140,
             )
@@ -214,27 +216,27 @@ class HoaSerpApiTests(unittest.IsolatedAsyncioTestCase):
 
         record = client.hoa_contact_search(
             HoaContactSearchQuery(
-                hoa_name="Tartan Fields Homeowners Association",
+                hoa_name="Example Fields Homeowners Association",
                 state="Ohio",
             )
         )
 
         self.assertEqual(len(session.requests), 2)
-        self.assertNotIn("site:tartanfieldshoa.com", session.requests[0]["params"]["q"])
-        self.assertIn("site:tartanfieldshoa.com", session.requests[1]["params"]["q"])
+        self.assertNotIn("site:examplefieldshoa.example", session.requests[0]["params"]["q"])
+        self.assertIn("site:examplefieldshoa.example", session.requests[1]["params"]["q"])
         self.assertEqual(
             record.source_specific["serpapi"]["official_domain"],
-            "tartanfieldshoa.com",
+            "examplefieldshoa.example",
         )
         self.assertEqual(record.best_match.source_type, "site_result")
-        self.assertEqual(record.email_addresses, ["pwilson@ohioequities.com"])
+        self.assertEqual(record.email_addresses, ["cexample@example.com"])
         self.assertEqual(
             page_fetcher.calls,
-            ["https://tartanfieldshoa.com/assessment/payments/"],
+            ["https://examplefieldshoa.example/assessment/payments/"],
         )
         assert record.first_result_page is not None
         self.assertEqual(record.first_result_page.status_code, 200)
-        self.assertIn("pwilson@ohioequities.com", record.first_result_page.text)
+        self.assertIn("cexample@example.com", record.first_result_page.text)
 
     def test_client_skips_page_fetch_when_no_candidates_returned(self) -> None:
         session = _FakeSerpApiSession([{"organic_results": []}, {"organic_results": []}])
