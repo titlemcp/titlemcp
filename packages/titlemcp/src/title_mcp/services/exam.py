@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from enum import StrEnum
 from typing import Any
 
@@ -10,6 +11,7 @@ from title_mcp.domain.exam import (
     ExamSheetKind,
     ExtractionConfidence,
     FieldProvenance,
+    UncertainReading,
 )
 from title_mcp.domain.title import RecordingReference
 
@@ -26,6 +28,7 @@ class DiscrepancyCode(StrEnum):
     INDEX_REFERENCE_NOT_ON_SHEET = "index_reference_not_on_sheet"
     SHEET_REFERENCE_NOT_ON_INDEX = "sheet_reference_not_on_index"
     INDEX_NOT_CORROBORATED = "index_not_corroborated"
+    UNCERTAIN_READING = "uncertain_reading"
     LOW_CONFIDENCE_EXTRACTION = "low_confidence_extraction"
     MISSING_LAST_SHOWN_OWNER_TRANSFER = "missing_last_shown_owner_transfer"
     MATTERS_OF_CONCERN_RAISED = "matters_of_concern_raised"
@@ -34,6 +37,67 @@ class DiscrepancyCode(StrEnum):
 class ReconciliationStatus(StrEnum):
     GREEN = "green"
     RED = "red"
+
+
+# Fields whose doubt cannot reach the commitment: free text, reviewer aids,
+# Schedule A facts (confirmed against the order separately), and index entries
+# (a doubtful index entry surfaces through the cross-check).
+_NON_BEARING = {
+    ExamSheetKind.SEARCH_COVER: {
+        "matters_of_concern", "notes", "completed_by", "completed_date", "search_start_date",
+        "order_number", "src_text", "lsot_book", "lsot_page", "auditor_owners", "buyers",
+        "property_line1", "property_city", "property_postal_code", "state",
+    },
+    ExamSheetKind.INDEX_SUMMARY: {"name_searches", "src_text"},
+    # The record series only labels the citation ("Deed Volume" or "Official Record").
+    ExamSheetKind.EXCEPTIONS: {"record_series", "notes", "src_text"},
+}
+
+_ABSENT = re.compile(
+    r"^\s*(?:|null|none|n/?a|blank|\(.*\)|not (?:written|shown|stated|present).*|no .*box.*)\s*$",
+    re.IGNORECASE,
+)
+
+
+def _value_key(value: str) -> str:
+    """A value with formatting removed: case, punctuation, separators, spacing."""
+
+    return re.sub(r"[^a-z0-9]", "", value.lower()).lstrip("0")
+
+
+def is_real_doubt(doubt: UncertainReading) -> bool:
+    """Whether a reported doubt could change a value.
+
+    Not a doubt: an absent value ("(not written)", "no count box"), or
+    alternatives that differ from the reading only in formatting ("9.8.26" and
+    "9-8-26", "$9121.47" and "$9,121.47", a capital letter).
+    """
+
+    read = doubt.read_as or ""
+    if _ABSENT.match(read):
+        return False
+    return bool(distinct_alternatives(doubt))
+
+
+def distinct_alternatives(doubt: UncertainReading) -> list[str]:
+    """The alternatives that would actually change the value, in the reader's order."""
+
+    seen = {_value_key(doubt.read_as or "")}
+    out: list[str] = []
+    for alt in doubt.alternatives:
+        key = _value_key(alt)
+        if key in seen or _ABSENT.match(alt):
+            continue
+        seen.add(key)
+        out.append(alt)
+    return out
+
+
+def _reaches_commitment(sheet: ExamSheetKind, field: str) -> bool:
+    name = field.strip().lower()
+    if sheet == ExamSheetKind.INDEX_SUMMARY:
+        return False
+    return name not in _NON_BEARING.get(sheet, {"notes", "src_text"})
 
 
 def _cited(reference: RecordingReference) -> bool:
@@ -59,6 +123,8 @@ class Discrepancy(BaseModel):
     expected: str | None = None
     actual: str | None = None
     src_pages: list[int] = Field(default_factory=list)
+    field: str | None = None
+    alternatives: list[str] = Field(default_factory=list)
 
 
 class ReconciliationChecks(BaseModel):
@@ -277,17 +343,49 @@ class ExamReconciliationService:
         return found
 
     def _check_extraction_confidence(self, package: ExamPackage) -> list[Discrepancy]:
+        """One question per value in doubt; blocking only where it reaches the commitment.
+
+        A reader that names its doubts ("county read as Adams, could be Lawr.") gets
+        each checked on its own. Only a low-confidence read with no doubt named falls
+        back to asking for the whole entry to be checked.
+        """
+
         found: list[Discrepancy] = []
         for label, provenance in self._provenances(package):
-            if provenance.confidence != ExtractionConfidence.LOW:
+            doubts = [d for d in provenance.uncertain if is_real_doubt(d)]
+            for doubt in doubts:
+                blocking = _reaches_commitment(provenance.sheet, doubt.field)
+                distinct = distinct_alternatives(doubt)
+                alts = " or ".join(distinct)
+                could_be = f"; could be {alts}" if alts else ""
+                why = f" ({doubt.reason})" if doubt.reason else ""
+                found.append(
+                    Discrepancy(
+                        code=DiscrepancyCode.UNCERTAIN_READING,
+                        severity=(
+                            DiscrepancySeverity.BLOCKING
+                            if blocking
+                            else DiscrepancySeverity.ADVISORY
+                        ),
+                        message=(
+                            f"{label}: {doubt.field.replace('_', ' ')} read as "
+                            f"'{doubt.read_as or ''}'{could_be}{why}."
+                        ),
+                        actual=doubt.read_as,
+                        field=doubt.field,
+                        alternatives=distinct,
+                        src_pages=[provenance.src_page],
+                    )
+                )
+            if provenance.confidence != ExtractionConfidence.LOW or doubts:
                 continue
             found.append(
                 Discrepancy(
                     code=DiscrepancyCode.LOW_CONFIDENCE_EXTRACTION,
                     severity=DiscrepancySeverity.BLOCKING,
                     message=(
-                        f"{label} was extracted with low confidence and must be "
-                        "confirmed against the scan before it can be used."
+                        f"{label} was extracted with low confidence, and the reader did not "
+                        "say which value; check its transcription against the scan."
                     ),
                     src_pages=[provenance.src_page],
                 )

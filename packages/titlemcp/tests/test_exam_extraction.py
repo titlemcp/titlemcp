@@ -508,6 +508,29 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(result.package.tax_parcels), len(TAX_ROWS.tax_parcels) - 1)
         self.assertTrue(any("tax row" in w and "tax_year" in w for w in result.warnings))
 
+    async def test_named_doubts_reach_the_record(self) -> None:
+        from title_mcp.services.exam_extraction import ExtractedUncertainty
+
+        rows = MORTGAGE_ROWS.model_copy(deep=True)
+        rows.mortgages[0].uncertain = [
+            ExtractedUncertainty(
+                field="amount", read_as="$100,000.00", alternatives=["$160,000.00"], why="smudge"
+            )
+        ]
+        index = INDEX.model_copy(deep=True)
+        index.entries[1].uncertain = [
+            ExtractedUncertainty(field="text", read_as="0461/212", alternatives=["0461/272"])
+        ]
+        result = await self._service(overrides={"mortgages": rows, "index": index}).extract_package(
+            self._request()
+        )
+
+        assert result.package is not None and result.package.index is not None
+        doubt = result.package.mortgages[0].provenance.uncertain[0]
+        self.assertEqual((doubt.field, doubt.read_as, doubt.alternatives, doubt.reason),
+                         ("amount", "$100,000.00", ["$160,000.00"], "smudge"))
+        self.assertEqual(result.package.index.provenance.uncertain[0].field, "entry 0461/212")
+
     async def test_a_ticked_entry_reported_struck_stays_live(self) -> None:
         E = IndexColumn.EASEMENTS_RIGHTS_OF_WAY
         index = INDEX.model_copy(

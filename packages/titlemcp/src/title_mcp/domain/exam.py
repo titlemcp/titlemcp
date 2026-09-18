@@ -38,6 +38,17 @@ class ExceptionInstrumentKind(StrEnum):
     PLAT = "plat"
 
 
+class UncertainReading(BaseModel):
+    """One value the reader could not read with certainty."""
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    field: str = Field(min_length=1)
+    read_as: str | None = None
+    alternatives: list[str] = Field(default_factory=list)
+    reason: str | None = None
+
+
 class FieldProvenance(BaseModel):
     """Where an extracted entry came from, so a reviewer can click through to the scan."""
 
@@ -47,6 +58,8 @@ class FieldProvenance(BaseModel):
     src_page: int = Field(ge=1)
     src_text: str | None = None
     confidence: ExtractionConfidence = ExtractionConfidence.LOW
+    uncertain: list[UncertainReading] = Field(default_factory=list)
+    """The specific values in doubt, so a reviewer checks those, not the whole sheet."""
 
     @property
     def is_trusted(self) -> bool:

@@ -23,6 +23,7 @@ from title_mcp.domain.exam import (
     MortgageEntry,
     SearchCoverSheet,
     TaxParcelEntry,
+    UncertainReading,
 )
 from title_mcp.domain.models import Address
 from title_mcp.domain.title import RecordingReference
@@ -289,12 +290,27 @@ def _with_reading_views(images: list[SheetImage]) -> list[SheetImage]:
     return [view for image in images for view in reading_views(image)]
 
 
+class ExtractedUncertainty(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    field: str = Field(description="The name of the field in this schema, e.g. 'page' or 'county'.")
+    read_as: str | None = Field(default=None, description="What you read, exactly as written.")
+    alternatives: list[str] = Field(
+        default_factory=list, description="Other plausible readings, most likely first."
+    )
+    why: str | None = Field(default=None, description="What makes it uncertain, a few words.")
+
+
 class ExtractedRow(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
     confidence: str | None = None
     src_text: str | None = None
     src_page: int | None = None
+    uncertain: list[ExtractedUncertainty] = Field(
+        default_factory=list,
+        description="Every field whose value you could not read with certainty. Empty when sure.",
+    )
 
 
 class ExtractedMortgageRow(ExtractedRow):
@@ -605,6 +621,11 @@ to a human, so it is always safe to use.
 formatting. Do not reformat, expand, or interpret them.
 5. Put the verbatim text you read for each row in src_text so a reviewer can check \
 it against the scan.
+7. Name the doubt. Whenever a value in a row is not certain, list that field in \
+uncertain with what you read, the plausible alternatives, and why. A reviewer checks \
+exactly those fields, so a doubt you do not name will not be checked. A doubt is a \
+character you cannot read, not formatting: do not list punctuation, date separators, \
+capitalization, or a value that is simply absent from the form.
 6. Some pages come with zoomed tiles after the full page. Read handwriting from \
 the tiles and use the full page only for layout. Tiles overlap, so the same row can \
 appear in two of them: report each row once, with the page number of the page it \
@@ -900,6 +921,12 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
             src_page=reported,
             src_text=row.src_text,
             confidence=normalize_confidence(row.confidence),
+            uncertain=[
+                UncertainReading(
+                    field=u.field, read_as=u.read_as, alternatives=u.alternatives, reason=u.why
+                )
+                for u in row.uncertain
+            ],
         )
 
     @classmethod
@@ -1092,6 +1119,17 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
             name_searches=list(raw.name_searches),
             provenance=cls._provenance(ExamSheetKind.INDEX_SUMMARY, page, raw),
         )
+        entry_doubts = [
+            UncertainReading(
+                field=f"entry {e.text}",
+                read_as=u.read_as,
+                alternatives=u.alternatives,
+                reason=u.why,
+            )
+            for e in raw.entries
+            for u in e.uncertain
+        ]
+        index.provenance.uncertain.extend(entry_doubts)
         return index, warnings, struck
 
 

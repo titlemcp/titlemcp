@@ -21,6 +21,7 @@ from title_mcp.domain.exam import (
     MortgageEntry,
     SearchCoverSheet,
     TaxParcelEntry,
+    UncertainReading,
 )
 from title_mcp.domain.models import Address
 from title_mcp.domain.title import RecordingReference
@@ -278,6 +279,68 @@ class ExamReconciliationTests(unittest.TestCase):
         codes = [d.code for d in rec.blocking]
         self.assertIn(DiscrepancyCode.INDEX_REFERENCE_NOT_ON_SHEET, codes)
         self.assertIn(DiscrepancyCode.SHEET_REFERENCE_NOT_ON_INDEX, codes)
+
+    def test_a_named_doubt_is_one_specific_question(self) -> None:
+        package = sample_package()
+        package.exceptions[0].provenance.confidence = ExtractionConfidence.LOW
+        package.exceptions[0].provenance.uncertain = [
+            UncertainReading(field="page", read_as="104", alternatives=["184"], reason="loop")
+        ]
+        package.cover.provenance.uncertain = [
+            UncertainReading(
+                field="matters_of_concern", read_as="Example note", alternatives=["Example nole"]
+            )
+        ]
+
+        rec = ExamReconciliationService().reconcile(package)
+
+        doubts = [d for d in rec.discrepancies if d.code == DiscrepancyCode.UNCERTAIN_READING]
+        blocking = [d for d in doubts if d.severity == DiscrepancySeverity.BLOCKING]
+        self.assertEqual(len(blocking), 1)
+        self.assertEqual((blocking[0].field, blocking[0].actual), ("page", "104"))
+        self.assertEqual(blocking[0].alternatives, ["184"])
+        self.assertIn("could be 184", blocking[0].message)
+        self.assertEqual(
+            [d.severity for d in doubts if d.field == "matters_of_concern"],
+            [DiscrepancySeverity.ADVISORY],
+            "a doubt in free-text notes cannot reach the commitment",
+        )
+        self.assertNotIn(
+            DiscrepancyCode.LOW_CONFIDENCE_EXTRACTION, {d.code for d in rec.discrepancies},
+            "a named doubt replaces the whole-entry question",
+        )
+
+    def test_formatting_and_absent_values_are_not_doubts(self) -> None:
+        from title_mcp.services.exam import is_real_doubt
+
+        def doubt(read: str, *alts: str) -> UncertainReading:
+            return UncertainReading(field="amount", read_as=read, alternatives=list(alts))
+
+        self.assertFalse(is_real_doubt(doubt("9.8.26", "9-8-26")))
+        self.assertFalse(is_real_doubt(doubt("$9121.47", "$9,121.47")))
+        self.assertFalse(is_real_doubt(doubt("example", "Example")))
+        self.assertFalse(is_real_doubt(doubt("65", "65")))
+        self.assertFalse(is_real_doubt(doubt("(not written on cover sheet)", "00000")))
+        self.assertFalse(is_real_doubt(doubt("no count box; lines blank", "null")))
+        self.assertFalse(is_real_doubt(doubt("150.01")), "a doubt needs an alternative")
+        self.assertTrue(is_real_doubt(doubt("$150.01", "$50.01")))
+        self.assertTrue(is_real_doubt(doubt("5/1/39", "5/1/34")))
+
+        from title_mcp.services.exam import distinct_alternatives
+
+        self.assertEqual(
+            distinct_alternatives(doubt("89.74", "89.74", "89.14", "89,14")), ["89.14"]
+        )
+
+    def test_an_unnamed_low_confidence_read_still_asks_for_a_check(self) -> None:
+        package = sample_package()
+        package.mortgages[0].provenance.confidence = ExtractionConfidence.LOW
+
+        rec = ExamReconciliationService().reconcile(package)
+
+        generic = [d for d in rec.blocking if d.code == DiscrepancyCode.LOW_CONFIDENCE_EXTRACTION]
+        self.assertEqual(len(generic), 1)
+        self.assertIn("did not say which value", generic[0].message)
 
     def test_an_unrecorded_instrument_is_not_expected_on_the_index(self) -> None:
         package = sample_package()
