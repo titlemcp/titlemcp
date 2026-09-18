@@ -41,6 +41,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+anthropic = [
+    "anthropic>=0.75.0",
+    "pillow>=10.0",
+]
 aws = [
     "boto3>=1.35.0",
 ]
