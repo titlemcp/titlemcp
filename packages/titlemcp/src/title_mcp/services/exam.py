@@ -548,6 +548,8 @@ class ExamReconciliationService:
                         f"{label} was extracted with low confidence, and the reader did not "
                         "say which value; check its transcription against the scan."
                     ),
+                    # The row as transcribed, so a reviewer can compare it with the scan.
+                    actual=provenance.src_text,
                     src_pages=[provenance.src_page],
                 )
             )

@@ -412,12 +412,14 @@ class ExamReconciliationTests(unittest.TestCase):
     def test_an_unnamed_low_confidence_read_still_asks_for_a_check(self) -> None:
         package = sample_package()
         package.mortgages[0].provenance.confidence = ExtractionConfidence.LOW
+        package.mortgages[0].provenance.src_text = "Example Bank  0312/77  $1.00"
 
         rec = ExamReconciliationService().reconcile(package)
 
         generic = [d for d in rec.blocking if d.code == DiscrepancyCode.LOW_CONFIDENCE_EXTRACTION]
         self.assertEqual(len(generic), 1)
         self.assertIn("did not say which value", generic[0].message)
+        self.assertEqual(generic[0].actual, "Example Bank  0312/77  $1.00", "the row to compare")
 
     def test_an_unrecorded_instrument_is_not_expected_on_the_index(self) -> None:
         package = sample_package()
