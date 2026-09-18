@@ -462,6 +462,19 @@ class CommitmentRenderTests(unittest.TestCase):
             "Owners Association Declaration.",
         )
 
+    def test_unreadable_values_print_as_bracketed_blanks(self) -> None:
+        package = sample_package()
+        package.tax_parcels[0].parcel_id = "UNREADABLE"
+        package.tax_parcels[0].first_half_amount = None
+        package.mortgages[0].original_amount = None
+
+        draft = self._green(package)
+        text = " ".join(c.text for c in [*draft.schedule_b1, *draft.schedule_b2])
+
+        self.assertNotIn("UNREADABLE", text)
+        self.assertIn("Tax Parcel No.: [PARCEL NUMBER].", text)
+        self.assertIn("in the amount of $[AMOUNT]", text)
+
     def test_refuses_to_render_when_reconciliation_is_red(self) -> None:
         package = sample_package()
         package.cover.declared_mortgage_count = 4

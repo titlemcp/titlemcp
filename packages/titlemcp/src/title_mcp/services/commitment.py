@@ -110,6 +110,21 @@ def instrument_name(value: str | None) -> str:
     return text or "instrument"
 
 
+def _blank(value: str | None, label: str) -> str:
+    """A value the sheet did not give legibly prints as a bracketed blank.
+
+    The commitment then reads "[PARCEL NUMBER]" where a person must fill in the
+    value, never "UNREADABLE" or a sentence with a hole in it.
+    """
+
+    legible = _is_party(value) or bool(value and any(c.isdigit() for c in value))
+    return value if legible and value else f"[{label}]"
+
+
+def _money_or_blank(value: Decimal | None) -> str:
+    return format_money(value) if value is not None else "[AMOUNT]"
+
+
 def _is_party(value: str | None) -> bool:
     """False for the placeholders a blank or illegible party line produces."""
 
@@ -350,9 +365,9 @@ class CommitmentRenderService:
     @staticmethod
     def _mortgage_context(entry: MortgageEntry, clause_set: ClauseSet) -> dict[str, str]:
         return {
-            "borrowers": expand_party(entry.borrowers),
-            "lender": expand_party(entry.lender),
-            "amount": format_money(entry.original_amount),
+            "borrowers": expand_party(_blank(entry.borrowers, "BORROWER")),
+            "lender": expand_party(_blank(entry.lender, "LENDER")),
+            "amount": _money_or_blank(entry.original_amount),
             "executed_date": format_long_date(entry.executed_date),
             "book_label": clause_set.book_label,
             "book": entry.recording.book or "",
@@ -437,8 +452,8 @@ class CommitmentRenderService:
                 f"{recording.book or ''}, Page {recording.page or ''}"
             )
         return {
-            "creditor": expand_party(entry.creditor),
-            "debtor": expand_party(entry.debtor),
+            "creditor": expand_party(_blank(entry.creditor, "CREDITOR")),
+            "debtor": expand_party(_blank(entry.debtor, "DEBTOR")),
             "court_clause": f", in the {entry.court}" if entry.court else "",
             "case_clause": f", Case No. {entry.case_number}" if entry.case_number else "",
             "amount_clause": (
@@ -471,11 +486,11 @@ class CommitmentRenderService:
             "taxpayer_clause": (
                 f" listed in the name of {entry.taxpayer_name}," if entry.taxpayer_name else ""
             ),
-            "first_half_amount": format_money(entry.first_half_amount),
+            "first_half_amount": _money_or_blank(entry.first_half_amount),
             "first_half_status": "paid" if entry.first_half_paid else "due and payable",
-            "second_half_amount": format_money(entry.second_half_amount),
+            "second_half_amount": _money_or_blank(entry.second_half_amount),
             "second_half_status": "paid" if entry.second_half_paid else "due and payable",
             "special_assessment_line": special_line,
             "assessment_due_clause": assessment_due,
-            "parcel_id": entry.parcel_id,
+            "parcel_id": _blank(entry.parcel_id, "PARCEL NUMBER"),
         }
