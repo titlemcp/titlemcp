@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import re
+from datetime import date
+from decimal import Decimal
 from enum import StrEnum
 from typing import Any
 
@@ -57,6 +59,44 @@ _ABSENT = re.compile(
     r"^\s*(?:|null|none|n/?a|blank|\(.*\)|not (?:written|shown|stated|present).*|no .*box.*)\s*$",
     re.IGNORECASE,
 )
+
+
+# Where an extracted field's value lives on the record, when the names differ.
+_FIELD_PATHS = {
+    "book": ("recording", "book"),
+    "page": ("recording", "page"),
+    "recorded_date": ("recording", "recorded_date"),
+    "record_series": ("recording", "document_type"),
+    "amount": ("original_amount",),
+    "property_line1": ("property_address", "line1"),
+    "property_city": ("property_address", "city"),
+    "property_postal_code": ("property_address", "postal_code"),
+    "lsot_book": ("last_shown_owner_transfer", "book"),
+    "lsot_page": ("last_shown_owner_transfer", "page"),
+}
+
+
+def stored_value(entry: Any, field: str) -> str | None:
+    """The value a record holds for an extracted field, as drafting prints it."""
+
+    name = field.strip().lower()
+    path = _FIELD_PATHS.get(name, (name,))
+    if name == "amount" and hasattr(entry, "amount"):
+        path = ("amount",)
+    value: Any = entry
+    for part in path:
+        value = getattr(value, part, None)
+        if value is None:
+            return None
+    if isinstance(value, date):
+        return f"{value.month}/{value.day}/{value.year}"
+    if isinstance(value, Decimal):
+        return f"{value:,.2f}"
+    if isinstance(value, bool):
+        return "yes" if value else "no"
+    if isinstance(value, list):
+        return ", ".join(str(getattr(v, "value", v)) for v in value)
+    return str(getattr(value, "value", value))
 
 
 def _value_key(value: str) -> str:
@@ -125,6 +165,8 @@ class Discrepancy(BaseModel):
     src_pages: list[int] = Field(default_factory=list)
     field: str | None = None
     alternatives: list[str] = Field(default_factory=list)
+    used: str | None = None
+    """For a doubtful reading: the value the record holds, which drafting used."""
 
 
 class ReconciliationChecks(BaseModel):
@@ -345,13 +387,13 @@ class ExamReconciliationService:
     def _check_extraction_confidence(self, package: ExamPackage) -> list[Discrepancy]:
         """One question per value in doubt; blocking only where it reaches the commitment.
 
-        A reader that names its doubts ("county read as Adams, could be Lawr.") gets
+        A reader that names its doubts ("county read as Exampel, could be Example") gets
         each checked on its own. Only a low-confidence read with no doubt named falls
         back to asking for the whole entry to be checked.
         """
 
         found: list[Discrepancy] = []
-        for label, provenance in self._provenances(package):
+        for label, entry, provenance in self._entries(package):
             doubts = [d for d in provenance.uncertain if is_real_doubt(d)]
             for doubt in doubts:
                 blocking = _reaches_commitment(provenance.sheet, doubt.field)
@@ -374,6 +416,7 @@ class ExamReconciliationService:
                         actual=doubt.read_as,
                         field=doubt.field,
                         alternatives=distinct,
+                        used=stored_value(entry, doubt.field),
                         src_pages=[provenance.src_page],
                     )
                 )
@@ -421,24 +464,18 @@ class ExamReconciliationService:
         return found
 
     @staticmethod
-    def _provenances(package: ExamPackage) -> list[tuple[str, FieldProvenance]]:
-        items: list[tuple[str, FieldProvenance]] = [
-            (f"Cover sheet ({ExamSheetKind.SEARCH_COVER.value})", package.cover.provenance)
+    def _entries(package: ExamPackage) -> list[tuple[str, Any, FieldProvenance]]:
+        items: list[tuple[str, Any, FieldProvenance]] = [
+            ("Cover sheet", package.cover, package.cover.provenance)
         ]
         items.extend(
-            (f"Mortgage {entry.recording.display}", entry.provenance)
-            for entry in package.mortgages
+            (f"Mortgage {e.recording.display}", e, e.provenance) for e in package.mortgages
         )
         items.extend(
-            (f"Exception {entry.recording.display}", entry.provenance)
-            for entry in package.exceptions
+            (f"Exception {e.recording.display}", e, e.provenance) for e in package.exceptions
         )
-        items.extend(
-            (f"Judgment against {entry.debtor}", entry.provenance) for entry in package.judgments
-        )
-        items.extend(
-            (f"Tax parcel {entry.parcel_id}", entry.provenance) for entry in package.tax_parcels
-        )
+        items.extend((f"Judgment against {e.debtor}", e, e.provenance) for e in package.judgments)
+        items.extend((f"Tax parcel {e.parcel_id}", e, e.provenance) for e in package.tax_parcels)
         if package.index is not None:
-            items.append(("Index page", package.index.provenance))
+            items.append(("Index page", package.index, package.index.provenance))
         return items

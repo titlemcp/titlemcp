@@ -332,6 +332,28 @@ class ExamReconciliationTests(unittest.TestCase):
             distinct_alternatives(doubt("89.74", "89.74", "89.14", "89,14")), ["89.14"]
         )
 
+    def test_each_doubt_carries_the_value_the_record_uses(self) -> None:
+        package = sample_package()
+        package.cover.county = "Example"
+        package.cover.provenance.uncertain = [
+            UncertainReading(field="county", read_as="Exampel", alternatives=["Sample"])
+        ]
+        package.mortgages[0].provenance.uncertain = [
+            UncertainReading(field="amount", read_as="$100,000.00", alternatives=["$160,000.00"]),
+            UncertainReading(field="page", read_as="415", alternatives=["445"]),
+        ]
+
+        rec = ExamReconciliationService().reconcile(package)
+
+        used = {
+            d.field: d.used
+            for d in rec.discrepancies
+            if d.code == DiscrepancyCode.UNCERTAIN_READING
+        }
+        # The record's value, even where it differs from what the doubt describes.
+        self.assertEqual(used, {"county": "Example", "amount": "100,000.00", "page": "415"})
+        self.assertTrue(any(d.message.startswith("Cover sheet: county") for d in rec.discrepancies))
+
     def test_an_unnamed_low_confidence_read_still_asks_for_a_check(self) -> None:
         package = sample_package()
         package.mortgages[0].provenance.confidence = ExtractionConfidence.LOW
