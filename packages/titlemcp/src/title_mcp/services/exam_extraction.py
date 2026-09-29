@@ -21,7 +21,9 @@ from title_mcp.domain.exam import (
     IndexSummarySheet,
     JudgmentEntry,
     MortgageEntry,
+    MortgageInstrumentKind,
     SearchCoverSheet,
+    SubsequentInstrument,
     TaxParcelEntry,
     UncertainReading,
 )
@@ -313,6 +315,20 @@ class ExtractedRow(BaseModel):
     )
 
 
+class ExtractedSubsequentInstrument(BaseModel):
+    """An assignment, modification or subordination recorded against a mortgage."""
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    kind: str = Field(description="One of: assignment, modification, subordination.")
+    book: str | None = None
+    page: str | None = None
+    recorded_date: str | None = None
+    party: str | None = Field(
+        default=None, description="For an assignment, who the mortgage was assigned to."
+    )
+
+
 class ExtractedMortgageRow(ExtractedRow):
     book: str | None = None
     page: str | None = None
@@ -324,6 +340,15 @@ class ExtractedMortgageRow(ExtractedRow):
     maturity_date: str | None = None
     prior_owner: bool = False
     heloc: bool = False
+    subsequent: list[ExtractedSubsequentInstrument] = Field(
+        default_factory=list,
+        description=(
+            "Assignments, modifications and subordinations of this mortgage, in recorded "
+            "order. These belong to the mortgage and are not separate encumbrances: an "
+            "abstractor lists them beneath it, often as bare references such as "
+            "'assign to ... 1927/1374' or 'Mod 2076/899'."
+        ),
+    )
     notes: str | None = None
 
 
@@ -469,7 +494,15 @@ class PageAssignment(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
     page_number: int = Field(ge=1)
-    sheet: ExamSheetKind | None = None
+    sheet: ExamSheetKind | None = Field(
+        default=None,
+        description=(
+            "Which of the abstractor's summary sheets this page is, or null when the "
+            "page is a recorded document, a county printout, a plat, or a map. A sheet "
+            "covering several categories at once is index_summary, even when one "
+            "category's heading dominates it."
+        ),
+    )
     confidence: str | None = None
 
 
@@ -732,8 +765,26 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
 
         classification = client.extract(
             instruction=(
-                f"{preamble}Identify which summary sheet each page is. Pages that are "
-                "recorded documents, county printouts, or maps have no sheet type."
+                f"{preamble}Identify which of the abstractor's summary sheets each page "
+                "is.\n\n"
+                "These sheets are the abstractor's own summaries of what the search "
+                "found. A page that is a recorded document, a county printout, a plat, "
+                "or a map is not a summary sheet and has no sheet type.\n\n"
+                "  search_cover    the order or cover page: file number, property, and "
+                "who ordered the search\n"
+                "  index_summary   one sheet summarising the search across several "
+                "categories at once. It commonly carries a mortgages block and also "
+                "covers assignments, encumbrances, taxes, restrictions or easements. A "
+                "sheet that spans more than one category is this one, whatever heading "
+                "is printed largest.\n"
+                "  mortgages       a sheet listing mortgages and nothing else\n"
+                "  exceptions      a sheet listing exceptions or other encumbrances, "
+                "and nothing else\n"
+                "  judgments       a sheet listing judgments and liens, and nothing "
+                "else\n"
+                "  tax             tax figures from the auditor or treasurer\n"
+                "  chain_of_title  conveyances listed in sequence\n\n"
+                "Judge each sheet by everything it covers, not by its largest heading."
             ),
             images=[classification_view(page) for page in request.pages],
             schema=PageClassification,
@@ -982,9 +1033,41 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
             maturity_date=parse_sheet_date(raw.maturity_date, prefer_future=True),
             prior_owner=parse_bool(raw.prior_owner),
             heloc=parse_bool(raw.heloc),
+            subsequent=cls._build_subsequent(raw.subsequent),
             notes=raw.notes,
             provenance=cls._provenance(ExamSheetKind.MORTGAGES, page, raw),
         )
+
+    @classmethod
+    def _build_subsequent(
+        cls, rows: list[ExtractedSubsequentInstrument]
+    ) -> list[SubsequentInstrument]:
+        """Keep only the ones that say what they are and where they are recorded.
+
+        A reference with no book and page cannot be cited on a commitment, and a
+        kind that is not one of the three is not something this models.
+        """
+
+        built: list[SubsequentInstrument] = []
+        for raw in rows:
+            try:
+                kind = MortgageInstrumentKind((raw.kind or "").strip().lower())
+            except ValueError:
+                continue
+            if not raw.book:
+                continue
+            built.append(
+                SubsequentInstrument(
+                    kind=kind,
+                    recording=RecordingReference(
+                        book=raw.book,
+                        page=raw.page,
+                        recorded_date=parse_sheet_date(raw.recorded_date),
+                    ),
+                    party=raw.party,
+                )
+            )
+        return built
 
     @classmethod
     def _build_exception(cls, raw: ExtractedExceptionRow, page: int) -> ExceptionEntry:

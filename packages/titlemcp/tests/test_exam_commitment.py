@@ -19,7 +19,9 @@ from title_mcp.domain.exam import (
     IndexSummarySheet,
     JudgmentEntry,
     MortgageEntry,
+    MortgageInstrumentKind,
     SearchCoverSheet,
+    SubsequentInstrument,
     TaxParcelEntry,
     UncertainReading,
 )
@@ -1119,3 +1121,81 @@ class OrderDataTests(unittest.TestCase):
         self.assertEqual(result.status, CommitmentRenderStatus.REFUSED)
         self.assertIsNone(result.draft)
         self.assertIn("Order belongs to file", result.refusal_reason or "")
+
+
+class SubsequentInstrumentTests(unittest.TestCase):
+    """An assignment or a modification belongs to its mortgage, not beside it."""
+
+    def _mortgage(self, subsequent: list[SubsequentInstrument]) -> MortgageEntry:
+        return MortgageEntry(
+            recording=RecordingReference(book="100", page="200"),
+            borrowers="Alex Q. Example",
+            lender="Example Savings Bank",
+            subsequent=subsequent,
+            provenance=FieldProvenance(
+                sheet=ExamSheetKind.MORTGAGES,
+                src_page=1,
+                confidence=ExtractionConfidence.HIGH,
+            ),
+        )
+
+    def test_a_mortgage_with_none_reads_as_it_always_did(self) -> None:
+        clause_set = ohio_default_clause_set()
+        context = CommitmentRenderService._mortgage_context(self._mortgage([]), clause_set)
+        self.assertEqual(context["subsequent_clause"], "")
+        rendered = clause_set.mortgage_payoff.template.format(**context)
+        self.assertTrue(rendered.endswith("Official Record 100, Page 200."))
+
+    def test_an_assignment_says_who_now_holds_it(self) -> None:
+        clause_set = ohio_default_clause_set()
+        entry = self._mortgage(
+            [
+                SubsequentInstrument(
+                    kind=MortgageInstrumentKind.ASSIGNMENT,
+                    recording=RecordingReference(book="300", page="400"),
+                    party="Example Holdings LLC",
+                )
+            ]
+        )
+        rendered = clause_set.mortgage_payoff.template.format(
+            **CommitmentRenderService._mortgage_context(entry, clause_set)
+        )
+        self.assertIn("Mortgage assigned to Example Holdings LLC", rendered)
+        self.assertIn("Official Record 300, Page 400", rendered)
+
+    def test_they_are_recited_in_the_order_recorded(self) -> None:
+        clause_set = ohio_default_clause_set()
+        entry = self._mortgage(
+            [
+                SubsequentInstrument(
+                    kind=MortgageInstrumentKind.MODIFICATION,
+                    recording=RecordingReference(book="300", page="400"),
+                ),
+                SubsequentInstrument(
+                    kind=MortgageInstrumentKind.ASSIGNMENT,
+                    recording=RecordingReference(book="500", page="600"),
+                ),
+            ]
+        )
+        clause = CommitmentRenderService._mortgage_context(entry, clause_set)["subsequent_clause"]
+        self.assertLess(clause.index("300, Page 400"), clause.index("500, Page 600"))
+        self.assertIn("Loan Modification Agreement", clause)
+        self.assertIn("Assignment of Mortgage", clause)
+
+    def test_an_instrument_with_no_recording_is_not_cited(self) -> None:
+        """A commitment cannot cite what the sheet does not say is recorded."""
+
+        from title_mcp.services.exam_extraction import (
+            ClaudeExamExtractionService,
+            ExtractedSubsequentInstrument,
+        )
+
+        built = ClaudeExamExtractionService._build_subsequent(
+            [
+                ExtractedSubsequentInstrument(kind="assignment", book="", page="400"),
+                ExtractedSubsequentInstrument(kind="not-a-kind", book="300", page="400"),
+                ExtractedSubsequentInstrument(kind="assignment", book="300", page="400"),
+            ]
+        )
+        self.assertEqual(len(built), 1)
+        self.assertEqual(built[0].recording.book, "300")

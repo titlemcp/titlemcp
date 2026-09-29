@@ -66,6 +66,34 @@ class FieldProvenance(BaseModel):
         return self.confidence == ExtractionConfidence.HIGH
 
 
+class MortgageInstrumentKind(StrEnum):
+    """What a later instrument did to a mortgage already of record."""
+
+    ASSIGNMENT = "assignment"
+    MODIFICATION = "modification"
+    SUBORDINATION = "subordination"
+
+
+class SubsequentInstrument(BaseModel):
+    """An instrument recorded against a mortgage after the mortgage itself.
+
+    An assignment or a modification is not a separate encumbrance: it belongs to
+    the mortgage, and a commitment recites it inside that mortgage's exception.
+    Recorded separately it reads as a second lien; left out entirely, the
+    commitment does not say who now holds the debt or on what terms.
+    """
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    kind: MortgageInstrumentKind
+    recording: RecordingReference
+    party: str | None = Field(
+        default=None,
+        description="Who it runs to, for an assignment: the entity the mortgage was assigned to.",
+    )
+    executed_date: date | None = None
+
+
 class MortgageEntry(BaseModel):
     """One row of the abstractor's MORTGAGES sheet. Destined for Schedule B, Part I."""
 
@@ -79,6 +107,10 @@ class MortgageEntry(BaseModel):
     maturity_date: date | None = None
     prior_owner: bool = False
     heloc: bool = False
+    subsequent: list[SubsequentInstrument] = Field(
+        default_factory=list,
+        description="Assignments, modifications and subordinations of this mortgage, in order.",
+    )
     notes: str | None = None
     provenance: FieldProvenance
 

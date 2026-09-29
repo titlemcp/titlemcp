@@ -145,7 +145,7 @@ _NEW_MORTGAGE_REQUIREMENT = _b1(
 _MORTGAGE_PAYOFF = _b1(
     "b1.mortgage_payoff",
     "Mortgage from {borrowers}, to {lender}, in the amount of ${amount}{dated_clause}, "
-    "as {recorded}.",
+    "as {recorded}.{subsequent_clause}",
 )
 
 _EASEMENT_EXCEPTION = _b2(
