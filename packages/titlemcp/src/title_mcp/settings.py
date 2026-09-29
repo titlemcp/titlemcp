@@ -68,6 +68,10 @@ class TitleMCPSettings(BaseSettings):
     regrid_timeout_seconds: float = Field(default=10.0, ge=1.0, le=120.0)
     regrid_cookie_timeout_seconds: float = Field(default=5.0, ge=1.0, le=120.0)
 
+    anthropic_api_key: str | None = None
+    anthropic_model: str = "claude-opus-5"
+    anthropic_timeout_seconds: float = Field(default=300.0, ge=1.0, le=1800.0)
+
     serpapi_api_key: str | None = None
     serpapi_timeout_seconds: float = Field(default=30.0, ge=1.0, le=120.0)
 

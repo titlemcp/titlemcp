@@ -1,0 +1,614 @@
+from __future__ import annotations
+
+import re
+from datetime import date
+from decimal import Decimal
+from enum import StrEnum
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field
+
+from title_mcp.domain.commitment import (
+    ClauseOrigin,
+    ClauseSet,
+    ClauseTemplate,
+    CommitmentClause,
+    CommitmentDraft,
+    CommitmentOrder,
+    CommitmentSection,
+    CommitmentSubClause,
+    ScheduleA,
+    ScheduleB2Group,
+)
+from title_mcp.domain.exam import (
+    ExamPackage,
+    ExamSheetKind,
+    ExceptionEntry,
+    ExceptionInstrumentKind,
+    JudgmentEntry,
+    MortgageEntry,
+    TaxParcelEntry,
+)
+from title_mcp.domain.title import RecordingReference
+from title_mcp.services.exam import Discrepancy, ReconciliationResult, ReconciliationStatus
+
+
+class CommitmentRenderStatus(StrEnum):
+    RENDERED = "rendered"
+    REFUSED = "refused"
+
+
+class CommitmentRenderResult(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    schema_name: str = "title_mcp.commitment_render"
+    schema_version: str = "1.0"
+    record_type: str = "commitment_render"
+    file_number: str
+    status: CommitmentRenderStatus
+    draft: CommitmentDraft | None = None
+    refusal_reason: str | None = None
+    blocking_discrepancies: list[Discrepancy] = Field(default_factory=list)
+    requires_human_review: bool = True
+    source_specific: dict[str, Any] = Field(default_factory=dict)
+
+
+def format_long_date(value: date | None) -> str:
+    if value is None:
+        return ""
+    return f"{value.strftime('%B')} {value.day}, {value.year}"
+
+
+def format_money(value: Decimal | None) -> str:
+    if value is None:
+        return ""
+    return f"{value:,.2f}"
+
+
+_SPOUSES = re.compile(r",?\s*\b(?:h/w|w/h)\b\.?", re.IGNORECASE)
+_PLUS = re.compile(r"\s*\+\s*")
+_BARE_CO = re.compile(r"\bCo$")
+# A document's defined-term label after a party: ("Grantee"), ("Owner").
+_ROLE_LABEL = re.compile(
+    r"\s*\(\s*[\"“]?(?:grantors?|grantees?|owners?|city|county|mortgagors?|mortgagees?|"
+    r"lenders?|borrowers?|sellers?|buyers?|purchasers?|district|company)[\"”]?\s*\)",
+    re.IGNORECASE,
+)
+
+
+def expand_party(value: str) -> str:
+    """Spell out an abstractor's shorthand in a party name for the commitment.
+
+    "Alex Q + Jamie Example h/w" becomes "Alex Q and Jamie Example, husband and wife".
+    Only notation is expanded; names are never completed or guessed.
+    """
+
+    text = _ROLE_LABEL.sub("", value.strip())
+    text = _PLUS.sub(" and ", text)
+    text = _SPOUSES.sub(", husband and wife", text)
+    return _BARE_CO.sub("Co.", text)
+
+
+# A bare category label numbered by the form: "Easement #3", "Restrictions 2".
+_FORM_ROW = re.compile(
+    r"^(?P<label>(?:easements?|restrictions?|exceptions?|agreements?|leases?|plats?|"
+    r"rights?[- ]of[- ]ways?|items?))\s*#?\s*\d+$",
+    re.IGNORECASE,
+)
+# A numbered row label in front of the real name: "Other Adverse 1 - Memo of Trust".
+_NUMBERED_LABEL = re.compile(
+    r"^(?:other(?:\s+adverse)?|adverse|exception|item)\s*#?\s*\d+\s*[-–:]\s+(?=\S)",
+    re.IGNORECASE,
+)
+
+
+def instrument_name(value: str | None) -> str:
+    """An instrument's name as a clause can use it.
+
+    Sheets number their rows ("Easement #3", "Other Adverse 1 - Memo of Trust"); that
+    numbering is the form's, not the instrument's, so it is dropped. Numbers that
+    belong to the instrument ("Ordinance #444") are kept.
+    """
+
+    text = (value or "").strip()
+    row = _FORM_ROW.match(text)
+    if row:
+        return row["label"]
+    text = _NUMBERED_LABEL.sub("", text).strip()
+    return text or "instrument"
+
+
+def _blank(value: str | None, label: str) -> str:
+    """A value the sheet did not give legibly prints as a bracketed blank.
+
+    The commitment then reads "[PARCEL NUMBER]" where a person must fill in the
+    value, never "UNREADABLE" or a sentence with a hole in it.
+    """
+
+    legible = _is_party(value) or bool(value and any(c.isdigit() for c in value))
+    return value if legible and value else f"[{label}]"
+
+
+def _money_or_blank(value: Decimal | None) -> str:
+    return format_money(value) if value is not None else "[AMOUNT]"
+
+
+# A bare instrument or file number, as some counties print it: "201501010000123",
+# "2015-00000123". Seven or more digits; dashes allowed between them.
+_INSTRUMENT_NUMBER = re.compile(r"(?=(?:\D*\d){7})\d[\d-]*\d")
+
+
+def _judgments_as_exceptions(clause_set: ClauseSet) -> bool:
+    return clause_set.mortgages_as_exceptions and clause_set.judgment_exception is not None
+
+
+def _mortgage_items(schedule_b2: list[CommitmentClause]) -> list[int]:
+    """B-II items the release requirement must cite: mortgages and judgments listed there."""
+
+    released = {ExamSheetKind.MORTGAGES, ExamSheetKind.JUDGMENTS}
+    return [
+        c.number
+        for c in schedule_b2
+        if c.source_sheet in released and c.clause_id.endswith(":b2")
+    ]
+
+
+def _item_range(numbers: list[int]) -> str:
+    """Item numbers as a commitment cites them.
+
+    Runs collapse: [10, 11] -> "10-11"; [10, 12, 13, 14] -> "10 and 12-14";
+    [10, 12, 15] -> "10, 12 and 15".
+    """
+
+    runs: list[list[int]] = []
+    for n in sorted(set(numbers)):
+        if runs and n == runs[-1][-1] + 1:
+            runs[-1].append(n)
+        else:
+            runs.append([n])
+    parts = [f"{r[0]}-{r[-1]}" if len(r) > 1 else str(r[0]) for r in runs]
+    if len(parts) == 1:
+        return parts[0]
+    return ", ".join(parts[:-1]) + f" and {parts[-1]}"
+
+
+def _is_party(value: str | None) -> bool:
+    """False for the placeholders a blank or illegible party line produces."""
+
+    text = (value or "").strip()
+    return bool(text) and text.upper() != "UNREADABLE" and re.search(r"[A-Za-z]", text) is not None
+
+
+class CommitmentRenderService:
+    """Turns reconciled abstractor sheets into commitment clauses.
+
+    Two properties make this safe to automate, and both are structural rather than
+    prompted:
+
+    * It renders only from summary-sheet entries a human abstractor wrote, plus
+      transaction facts the order supplies. Nothing is derived from the underlying
+      documents, so the draft cannot acquire a discretionary exception the
+      abstractor did not call for.
+    * It refuses outright unless reconciliation came back green, so an internally
+      inconsistent package cannot produce a commitment at all.
+
+    There are no model calls here. Every clause is either agency boilerplate or a
+    template filled from a typed record.
+    """
+
+    def render(
+        self,
+        *,
+        package: ExamPackage,
+        reconciliation: ReconciliationResult,
+        clause_set: ClauseSet,
+        order: CommitmentOrder | None = None,
+    ) -> CommitmentRenderResult:
+        if reconciliation.file_number != package.file_number:
+            return CommitmentRenderResult(
+                file_number=package.file_number,
+                status=CommitmentRenderStatus.REFUSED,
+                refusal_reason=(
+                    "Reconciliation belongs to file "
+                    f"{reconciliation.file_number}, not {package.file_number}."
+                ),
+            )
+
+        if order is not None and order.file_number != package.file_number:
+            return CommitmentRenderResult(
+                file_number=package.file_number,
+                status=CommitmentRenderStatus.REFUSED,
+                refusal_reason=(
+                    f"Order belongs to file {order.file_number}, "
+                    f"not {package.file_number}."
+                ),
+            )
+
+        if reconciliation.status is not ReconciliationStatus.GREEN:
+            blocking = reconciliation.blocking
+            return CommitmentRenderResult(
+                file_number=package.file_number,
+                status=CommitmentRenderStatus.REFUSED,
+                refusal_reason=(
+                    f"Reconciliation is {reconciliation.status.value}: "
+                    f"{len(blocking)} blocking discrepancy(ies) must be resolved by a "
+                    "human before a commitment can be drafted."
+                ),
+                blocking_discrepancies=blocking,
+            )
+
+        schedule_b2 = self._render_b2(package, clause_set)
+        draft = CommitmentDraft(
+            file_number=package.file_number,
+            clause_set_id=clause_set.clause_set_id,
+            schedule_a=ScheduleA.from_order(order) if order is not None else None,
+            schedule_b1=self._render_b1(package, clause_set, order, _mortgage_items(schedule_b2)),
+            schedule_b2=schedule_b2,
+            source_specific={
+                "advisory_discrepancies": [
+                    d.model_dump(mode="json") for d in reconciliation.advisory
+                ],
+            },
+        )
+        return CommitmentRenderResult(
+            file_number=package.file_number,
+            status=CommitmentRenderStatus.RENDERED,
+            draft=draft,
+        )
+
+    def _render_b1(
+        self,
+        package: ExamPackage,
+        clause_set: ClauseSet,
+        order: CommitmentOrder | None = None,
+        mortgage_items: list[int] | None = None,
+    ) -> list[CommitmentClause]:
+        clauses: list[CommitmentClause] = []
+        supplied = set(clause_set.form_supplied_clause_ids)
+        number = 0
+
+        for template in clause_set.standard_b1:
+            number += 1
+            clauses.append(
+                CommitmentClause(
+                    number=number,
+                    clause_id=template.clause_id,
+                    section=CommitmentSection.SCHEDULE_B_I,
+                    text=template.template,
+                    origin=ClauseOrigin.STANDARD,
+                    form_supplied=template.clause_id in supplied,
+                    sub_items=self._order_sub_items(template, clause_set, order),
+                )
+            )
+
+        release = clause_set.mortgage_release_requirement
+        if clause_set.mortgages_as_exceptions and release is not None and mortgage_items:
+            number += 1
+            clauses.append(
+                CommitmentClause(
+                    number=number,
+                    clause_id=release.clause_id,
+                    section=CommitmentSection.SCHEDULE_B_I,
+                    text=release.template.format(items=_item_range(mortgage_items)),
+                    origin=ClauseOrigin.ABSTRACTOR_SHEET,
+                    source_sheet=ExamSheetKind.MORTGAGES,
+                )
+            )
+
+        for position, entry in enumerate(
+            [] if clause_set.mortgages_as_exceptions else package.mortgages
+        ):
+            number += 1
+            clauses.append(
+                CommitmentClause(
+                    number=number,
+                    clause_id=clause_set.mortgage_payoff.clause_id,
+                    section=CommitmentSection.SCHEDULE_B_I,
+                    text=clause_set.mortgage_payoff.template.format(
+                        **self._mortgage_context(entry, clause_set)
+                    ),
+                    origin=ClauseOrigin.ABSTRACTOR_SHEET,
+                    section_header=(
+                        clause_set.mortgage_payoff_header if position == 0 else None
+                    ),
+                    source_sheet=ExamSheetKind.MORTGAGES,
+                    src_page=entry.provenance.src_page,
+                )
+            )
+
+        judgment = clause_set.judgment_requirement
+        if judgment is not None and not _judgments_as_exceptions(clause_set):
+            for position, j in enumerate(package.judgments):
+                number += 1
+                clauses.append(
+                    CommitmentClause(
+                        number=number,
+                        clause_id=judgment.clause_id,
+                        section=CommitmentSection.SCHEDULE_B_I,
+                        text=judgment.template.format(**self._judgment_context(j, clause_set)),
+                        origin=ClauseOrigin.ABSTRACTOR_SHEET,
+                        section_header=clause_set.judgment_header if position == 0 else None,
+                        source_sheet=ExamSheetKind.JUDGMENTS,
+                        src_page=j.provenance.src_page,
+                    )
+                )
+
+        return clauses
+
+    def _render_b2(self, package: ExamPackage, clause_set: ClauseSet) -> list[CommitmentClause]:
+        clauses: list[CommitmentClause] = []
+        supplied = set(clause_set.form_supplied_clause_ids)
+
+        for template in clause_set.standard_b2:
+            clauses.append(
+                CommitmentClause(
+                    number=len(clauses) + 1,
+                    clause_id=template.clause_id,
+                    section=CommitmentSection.SCHEDULE_B_II,
+                    text=template.template,
+                    origin=ClauseOrigin.STANDARD,
+                    form_supplied=template.clause_id in supplied,
+                )
+            )
+
+        county = {"county": package.cover.county or ""}
+
+        def add(clause_id: str, text: str, sheet: ExamSheetKind, src_page: int | None) -> None:
+            clauses.append(
+                CommitmentClause(
+                    number=len(clauses) + 1,
+                    clause_id=clause_id,
+                    section=CommitmentSection.SCHEDULE_B_II,
+                    text=text,
+                    origin=ClauseOrigin.ABSTRACTOR_SHEET,
+                    source_sheet=sheet,
+                    src_page=src_page,
+                )
+            )
+
+        for group in clause_set.schedule_b2_order:
+            if group is ScheduleB2Group.MORTGAGES and clause_set.mortgages_as_exceptions:
+                template = clause_set.mortgage_exception or clause_set.mortgage_payoff
+                for m in package.mortgages:
+                    context = {**county, **self._mortgage_context(m, clause_set)}
+                    add(
+                        f"{template.clause_id}:b2",
+                        template.template.format(**context),
+                        ExamSheetKind.MORTGAGES,
+                        m.provenance.src_page,
+                    )
+            elif group is ScheduleB2Group.JUDGMENTS and _judgments_as_exceptions(clause_set):
+                template = clause_set.judgment_exception
+                assert template is not None
+                for j in package.judgments:
+                    context = {**county, **self._judgment_context(j, clause_set)}
+                    add(
+                        f"{template.clause_id}:b2",
+                        template.template.format(**context),
+                        ExamSheetKind.JUDGMENTS,
+                        j.provenance.src_page,
+                    )
+            elif group is ScheduleB2Group.TAXES:
+                for t in package.tax_parcels:
+                    add(
+                        clause_set.tax_exception.clause_id,
+                        clause_set.tax_exception.template.format(**self._tax_context(t, package)),
+                        ExamSheetKind.TAX,
+                        t.provenance.src_page,
+                    )
+            elif group is ScheduleB2Group.EXCEPTIONS:
+                for e in package.exceptions:
+                    template = self._exception_template(e, clause_set)
+                    context = {**county, **self._exception_context(e, clause_set)}
+                    add(
+                        template.clause_id,
+                        template.template.format(**context),
+                        ExamSheetKind.EXCEPTIONS,
+                        e.provenance.src_page,
+                    )
+
+        return clauses
+
+    @staticmethod
+    def _order_sub_items(
+        template: ClauseTemplate,
+        clause_set: ClauseSet,
+        order: CommitmentOrder | None,
+    ) -> list[CommitmentSubClause]:
+        """Deed and new-mortgage requirements, built from order data only."""
+
+        if order is None or template.clause_id != clause_set.conveyance_clause_id:
+            return []
+
+        items: list[CommitmentSubClause] = []
+        labels = ("a.", "b.", "c.", "d.")
+
+        deed = clause_set.deed_requirement
+        if deed is not None and order.sellers and order.buyers:
+            items.append(
+                CommitmentSubClause(
+                    label=labels[len(items)],
+                    clause_id=deed.clause_id,
+                    text=deed.template.format(sellers=order.sellers, buyers=order.buyers),
+                    origin=ClauseOrigin.ORDER_DATA,
+                )
+            )
+
+        mortgage = clause_set.mortgage_requirement
+        if mortgage is not None and order.lender and order.loan_amount is not None:
+            items.append(
+                CommitmentSubClause(
+                    label=labels[len(items)],
+                    clause_id=mortgage.clause_id,
+                    text=mortgage.template.format(
+                        mortgagors=order.mortgagors or order.buyers or "",
+                        lender=order.lender,
+                        amount=format_money(order.loan_amount),
+                    ),
+                    origin=ClauseOrigin.ORDER_DATA,
+                )
+            )
+        return items
+
+    @classmethod
+    def _mortgage_context(cls, entry: MortgageEntry, clause_set: ClauseSet) -> dict[str, str]:
+        return {
+            "borrowers": expand_party(_blank(entry.borrowers, "BORROWER")),
+            "lender": expand_party(_blank(entry.lender, "LENDER")),
+            "amount": _money_or_blank(entry.original_amount),
+            "dated_clause": (
+                f", dated {format_long_date(entry.executed_date)}" if entry.executed_date else ""
+            ),
+            "executed_date": format_long_date(entry.executed_date),
+            "book_label": clause_set.book_label,
+            "book": entry.recording.book or "",
+            "page": entry.recording.page or "",
+            **cls._recording_phrases(entry.recording, clause_set),
+        }
+
+    # Most specific first: a plat that also grants easements reads as a plat, and
+    # an easement agreement reads as an easement.
+    _KIND_PRECEDENCE = (
+        ExceptionInstrumentKind.PLAT,
+        ExceptionInstrumentKind.RESTRICTION,
+        ExceptionInstrumentKind.EASEMENT,
+        ExceptionInstrumentKind.RIGHT_OF_WAY,
+        ExceptionInstrumentKind.LEASE,
+        ExceptionInstrumentKind.AGREEMENT,
+    )
+    _PARTY_KINDS = frozenset(
+        {
+            ExceptionInstrumentKind.EASEMENT,
+            ExceptionInstrumentKind.RIGHT_OF_WAY,
+            ExceptionInstrumentKind.LEASE,
+            ExceptionInstrumentKind.AGREEMENT,
+        }
+    )
+
+    @classmethod
+    def _exception_template(cls, entry: ExceptionEntry, clause_set: ClauseSet) -> ClauseTemplate:
+        ref = entry.recording
+        recorded = bool(ref.book or ref.page or ref.instrument_number)
+        if not recorded and clause_set.unrecorded_exception is not None:
+            return clause_set.unrecorded_exception
+        kinds = set(entry.instrument_kinds)
+        chosen_kind = next((k for k in cls._KIND_PRECEDENCE if k in kinds), None)
+        template = (
+            clause_set.exception_by_kind.get(chosen_kind.value) if chosen_kind else None
+        ) or clause_set.easement_exception
+        # Wording that names the parties is only usable when the sheet gives them.
+        needs_parties = chosen_kind is None or chosen_kind in cls._PARTY_KINDS
+        if needs_parties and not (_is_party(entry.first_party) and _is_party(entry.second_party)):
+            easement = chosen_kind in (
+                None,
+                ExceptionInstrumentKind.EASEMENT,
+                ExceptionInstrumentKind.RIGHT_OF_WAY,
+            )
+            if (
+                easement
+                and _is_party(entry.second_party)
+                and clause_set.grantee_easement_exception is not None
+            ):
+                return clause_set.grantee_easement_exception
+            if clause_set.instrument_exception is not None:
+                return clause_set.instrument_exception
+        return template
+
+    @classmethod
+    def _recording_phrases(
+        cls, reference: RecordingReference | None, clause_set: ClauseSet
+    ) -> dict[str, str]:
+        """How a clause cites a recording, whatever form the sheet gives it in.
+
+        ``cited`` names it ("Official Record 926, Page 87", "Instrument No. 2011...",
+        "Plat Slide 2071"); ``recorded`` is the phrase for "recorded in/as ...".
+        """
+
+        ref = reference or RecordingReference()
+        book, page = (ref.book or "").strip(), (ref.page or "").strip()
+        number = (ref.instrument_number or "").strip()
+        if not number and book and not page and _INSTRUMENT_NUMBER.fullmatch(book):
+            number = book  # a county that records by instrument number
+        if number:
+            cited = f"Instrument No. {number}"
+            return {"cited": cited, "recorded": f"recorded as {cited}"}
+        if book and page:
+            cited = f"{cls._book_label(ref, clause_set)} {book}, Page {page}"
+        elif book:
+            named = re.search(r"[A-Za-z]", book) is not None
+            cited = book if named else f"{cls._book_label(ref, clause_set)} {book}"
+        else:
+            cited = "[RECORDING]"
+        return {"cited": cited, "recorded": f"recorded in {cited}"}
+
+    @staticmethod
+    def _book_label(reference: RecordingReference | None, clause_set: ClauseSet) -> str:
+        series = (reference.document_type if reference else None) or ""
+        key = re.sub(r"[^A-Z]", "", series.upper())
+        return clause_set.book_labels.get(key, clause_set.book_label)
+
+    @classmethod
+    def _exception_context(cls, entry: ExceptionEntry, clause_set: ClauseSet) -> dict[str, str]:
+        dated = format_long_date(entry.executed_date)
+        return {
+            "first_party": expand_party(entry.first_party),
+            "second_party": expand_party(entry.second_party),
+            "executed_date": dated,
+            "dated_clause": f", dated {dated}" if dated else "",
+            "instrument_name": instrument_name(entry.instrument_name),
+            "book_label": cls._book_label(entry.recording, clause_set),
+            "book": entry.recording.book or "",
+            "page": entry.recording.page or "",
+            **cls._recording_phrases(entry.recording, clause_set),
+        }
+
+    @classmethod
+    def _judgment_context(cls, entry: JudgmentEntry, clause_set: ClauseSet) -> dict[str, str]:
+        recording = entry.recording
+        recorded = ""
+        cited = recording and (recording.book or recording.page or recording.instrument_number)
+        if recording is not None and cited:
+            recorded = ", " + cls._recording_phrases(recording, clause_set)["recorded"]
+        return {
+            "creditor": expand_party(_blank(entry.creditor, "CREDITOR")),
+            "debtor": expand_party(_blank(entry.debtor, "DEBTOR")),
+            "court_clause": f", in the {entry.court}" if entry.court else "",
+            "case_clause": f", Case No. {entry.case_number}" if entry.case_number else "",
+            "amount_clause": (
+                f", in the amount of ${format_money(entry.amount)}"
+                if entry.amount is not None
+                else ""
+            ),
+            "recording_clause": recorded,
+        }
+
+    @staticmethod
+    def _tax_context(entry: TaxParcelEntry, package: ExamPackage) -> dict[str, str]:
+        special_line = ""
+        assessment_due = ""
+        if entry.special_assessment_amount is not None:
+            status = "paid" if entry.special_assessment_paid else "due and payable"
+            special_line = (
+                f"\nSpecial Assessment in the amount of "
+                f"${format_money(entry.special_assessment_amount)} is {status}.\n"
+            )
+            assessment_due = (
+                ", assessments are due and payable annually beginning on or about February 1"
+            )
+
+        return {
+            "county": package.cover.county or "",
+            "tax_year": str(entry.tax_year),
+            "next_tax_year": str(entry.tax_year + 1),
+            "taxpayer_name": entry.taxpayer_name or "",
+            "taxpayer_clause": (
+                f" listed in the name of {entry.taxpayer_name}," if entry.taxpayer_name else ""
+            ),
+            "first_half_amount": _money_or_blank(entry.first_half_amount),
+            "first_half_status": "paid" if entry.first_half_paid else "due and payable",
+            "second_half_amount": _money_or_blank(entry.second_half_amount),
+            "second_half_status": "paid" if entry.second_half_paid else "due and payable",
+            "special_assessment_line": special_line,
+            "assessment_due_clause": assessment_due,
+            "parcel_id": _blank(entry.parcel_id, "PARCEL NUMBER"),
+        }
