@@ -469,7 +469,15 @@ class PageAssignment(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
     page_number: int = Field(ge=1)
-    sheet: ExamSheetKind | None = None
+    sheet: ExamSheetKind | None = Field(
+        default=None,
+        description=(
+            "Which of the abstractor's summary sheets this page is, or null when the "
+            "page is a recorded document, a county printout, a plat, or a map. A sheet "
+            "covering several categories at once is index_summary, even when one "
+            "category's heading dominates it."
+        ),
+    )
     confidence: str | None = None
 
 
@@ -732,8 +740,26 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
 
         classification = client.extract(
             instruction=(
-                f"{preamble}Identify which summary sheet each page is. Pages that are "
-                "recorded documents, county printouts, or maps have no sheet type."
+                f"{preamble}Identify which of the abstractor's summary sheets each page "
+                "is.\n\n"
+                "These sheets are the abstractor's own summaries of what the search "
+                "found. A page that is a recorded document, a county printout, a plat, "
+                "or a map is not a summary sheet and has no sheet type.\n\n"
+                "  search_cover    the order or cover page: file number, property, and "
+                "who ordered the search\n"
+                "  index_summary   one sheet summarising the search across several "
+                "categories at once. It commonly carries a mortgages block and also "
+                "covers assignments, encumbrances, taxes, restrictions or easements. A "
+                "sheet that spans more than one category is this one, whatever heading "
+                "is printed largest.\n"
+                "  mortgages       a sheet listing mortgages and nothing else\n"
+                "  exceptions      a sheet listing exceptions or other encumbrances, "
+                "and nothing else\n"
+                "  judgments       a sheet listing judgments and liens, and nothing "
+                "else\n"
+                "  tax             tax figures from the auditor or treasurer\n"
+                "  chain_of_title  conveyances listed in sequence\n\n"
+                "Judge each sheet by everything it covers, not by its largest heading."
             ),
             images=[classification_view(page) for page in request.pages],
             schema=PageClassification,
