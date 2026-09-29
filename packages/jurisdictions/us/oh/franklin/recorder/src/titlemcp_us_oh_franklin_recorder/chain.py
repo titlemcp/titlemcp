@@ -3,8 +3,8 @@
 A name search returns every document naming that party anywhere in the county.
 For the search that motivated this module, one owner returned twenty-one
 documents across three unrelated properties, two of which sat in subdivisions
-with nearly the same name: ``FRANK S WAGENHALS ET AL AMENDED SUBD`` and
-``WAGENHALS ET AL AMENDED SUBD``. Matching on the subdivision picks the wrong
+with nearly the same name: ``FRANK S SAMPLETON ET AL AMENDED SUBD`` and
+``SAMPLETON ET AL AMENDED SUBD``. Matching on the subdivision picks the wrong
 chain and reports the wrong lender, confidently.
 
 What makes the answer right is that the county writes the parcel number into

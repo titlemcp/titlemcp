@@ -8,8 +8,10 @@ near-identical subdivision names, document types, recording dates, instrument
 numbers, search-highlight markup, and the institutions named as lenders and
 nominees.
 
-**Changed**: the natural persons. Every personal-name token is replaced with an
-invented one, consistently, so grantor and grantee relationships still hold.
+**Changed**: the natural persons, and the people named in subdivision and firm
+names. Every one is replaced with an obviously fictitious name (EXAMPLE, SAMPLE,
+PLACEHOLDER, ...), consistently, so grantor and grantee relationships still hold
+and no reader could mistake a name for a real person's.
 
 **Removed**: `ocrText`, `highlights`, `thumbnail`, and `downloadLink`. The OCR
 text is the scanned page, carrying names in arbitrary order and mailing

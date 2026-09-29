@@ -161,14 +161,14 @@ class ToolCatalogRouteTests(unittest.TestCase):
             self.assertIn("sample_hoa_contact_search", prompts)
             rendered = await server.get_prompt(
                 "parcel_lookup_review",
-                {"address": "1150 Glenn Ave, Columbus, OH"},
+                {"address": "123 Example Ave, Columbus, OH"},
             )
             self.assertIn("parcel_lookup", rendered.messages[0].content.text)
 
             sample = await server.get_prompt(
                 "sample_parcel_lookup",
                 {
-                    "address": "1150 Glenn Ave, Columbus, OH",
+                    "address": "123 Example Ave, Columbus, OH",
                     "summarize": True,
                 },
             )

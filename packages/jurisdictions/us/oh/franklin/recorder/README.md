@@ -13,15 +13,15 @@ account, nothing to store.
 ### It does not search by address
 
 The recorder indexes by **party name** and **legal description**, never by street address. That is
-the most common wrong assumption about county records: searching `1150 GLENN` returns a 1946
-sheriff's deed, because `1150` matched a volume number. The auditor is where an address becomes a
+the most common wrong assumption about county records: searching a street address such as `1234 EXAMPLE`
+returns an unrelated 1940s deed, because the house number matched a volume number. The auditor is where an address becomes a
 parcel and an owner, and those two are what this searches with, so the order is auditor first.
 
 ### Scoping to one parcel is the whole job
 
 A name search returns that party's documents across the entire county. On the search this was
 built against, one owner returned twenty-one documents spanning three unrelated properties, two of
-them in subdivisions named `FRANK S WAGENHALS ET AL AMENDED SUBD` and `WAGENHALS ET AL AMENDED
+them in subdivisions named `FRANK S SAMPLETON ET AL AMENDED SUBD` and `SAMPLETON ET AL AMENDED
 SUBD`. Matching on the subdivision picks the wrong chain and names the wrong lender, confidently.
 
 What makes the answer right is that the county writes the parcel number into the legal description
