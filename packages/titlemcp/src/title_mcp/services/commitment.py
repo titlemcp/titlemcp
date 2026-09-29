@@ -27,6 +27,7 @@ from title_mcp.domain.exam import (
     ExceptionInstrumentKind,
     JudgmentEntry,
     MortgageEntry,
+    MortgageInstrumentKind,
     TaxParcelEntry,
 )
 from title_mcp.domain.title import RecordingReference
@@ -463,8 +464,36 @@ class CommitmentRenderService:
             "book_label": clause_set.book_label,
             "book": entry.recording.book or "",
             "page": entry.recording.page or "",
+            "subsequent_clause": cls._subsequent_clause(entry, clause_set),
             **cls._recording_phrases(entry.recording, clause_set),
         }
+
+    #: How a mortgage's later instruments read, in the commitment's own voice.
+    _SUBSEQUENT_NAMES = {
+        MortgageInstrumentKind.MODIFICATION: "Loan Modification Agreement",
+        MortgageInstrumentKind.SUBORDINATION: "Subordination Agreement",
+        MortgageInstrumentKind.ASSIGNMENT: "Assignment of Mortgage",
+    }
+
+    @classmethod
+    def _subsequent_clause(cls, entry: MortgageEntry, clause_set: ClauseSet) -> str:
+        """The assignments and modifications recited inside the mortgage's own item.
+
+        They are recited here, and not as items of their own, because that is
+        what they are: an assignment does not encumber the land a second time, it
+        says who now holds the encumbrance already listed. Given as separate
+        items they read as further liens; left out, the commitment does not say
+        who holds the debt or on what terms it now stands.
+        """
+
+        sentences = []
+        for instrument in entry.subsequent:
+            cited = cls._recording_phrases(instrument.recording, clause_set)["recorded"]
+            if instrument.kind is MortgageInstrumentKind.ASSIGNMENT and instrument.party:
+                sentences.append(f"Mortgage assigned to {expand_party(instrument.party)}, {cited}.")
+            else:
+                sentences.append(f"{cls._SUBSEQUENT_NAMES[instrument.kind]} {cited}.")
+        return (" " + " ".join(sentences)) if sentences else ""
 
     # Most specific first: a plat that also grants easements reads as a plat, and
     # an easement agreement reads as an easement.

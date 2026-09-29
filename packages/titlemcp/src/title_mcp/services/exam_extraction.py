@@ -21,7 +21,9 @@ from title_mcp.domain.exam import (
     IndexSummarySheet,
     JudgmentEntry,
     MortgageEntry,
+    MortgageInstrumentKind,
     SearchCoverSheet,
+    SubsequentInstrument,
     TaxParcelEntry,
     UncertainReading,
 )
@@ -313,6 +315,20 @@ class ExtractedRow(BaseModel):
     )
 
 
+class ExtractedSubsequentInstrument(BaseModel):
+    """An assignment, modification or subordination recorded against a mortgage."""
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    kind: str = Field(description="One of: assignment, modification, subordination.")
+    book: str | None = None
+    page: str | None = None
+    recorded_date: str | None = None
+    party: str | None = Field(
+        default=None, description="For an assignment, who the mortgage was assigned to."
+    )
+
+
 class ExtractedMortgageRow(ExtractedRow):
     book: str | None = None
     page: str | None = None
@@ -324,6 +340,15 @@ class ExtractedMortgageRow(ExtractedRow):
     maturity_date: str | None = None
     prior_owner: bool = False
     heloc: bool = False
+    subsequent: list[ExtractedSubsequentInstrument] = Field(
+        default_factory=list,
+        description=(
+            "Assignments, modifications and subordinations of this mortgage, in recorded "
+            "order. These belong to the mortgage and are not separate encumbrances: an "
+            "abstractor lists them beneath it, often as bare references such as "
+            "'assign to ... 1927/1374' or 'Mod 2076/899'."
+        ),
+    )
     notes: str | None = None
 
 
@@ -1008,9 +1033,41 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
             maturity_date=parse_sheet_date(raw.maturity_date, prefer_future=True),
             prior_owner=parse_bool(raw.prior_owner),
             heloc=parse_bool(raw.heloc),
+            subsequent=cls._build_subsequent(raw.subsequent),
             notes=raw.notes,
             provenance=cls._provenance(ExamSheetKind.MORTGAGES, page, raw),
         )
+
+    @classmethod
+    def _build_subsequent(
+        cls, rows: list[ExtractedSubsequentInstrument]
+    ) -> list[SubsequentInstrument]:
+        """Keep only the ones that say what they are and where they are recorded.
+
+        A reference with no book and page cannot be cited on a commitment, and a
+        kind that is not one of the three is not something this models.
+        """
+
+        built: list[SubsequentInstrument] = []
+        for raw in rows:
+            try:
+                kind = MortgageInstrumentKind((raw.kind or "").strip().lower())
+            except ValueError:
+                continue
+            if not raw.book:
+                continue
+            built.append(
+                SubsequentInstrument(
+                    kind=kind,
+                    recording=RecordingReference(
+                        book=raw.book,
+                        page=raw.page,
+                        recorded_date=parse_sheet_date(raw.recorded_date),
+                    ),
+                    party=raw.party,
+                )
+            )
+        return built
 
     @classmethod
     def _build_exception(cls, raw: ExtractedExceptionRow, page: int) -> ExceptionEntry:
