@@ -276,6 +276,15 @@ def _png(width: int, height: int) -> str:
     return base64.b64encode(buffer.getvalue()).decode()
 
 
+try:  # Pillow is an optional extra, and these tests are the part that needs it.
+    import PIL  # noqa: F401
+
+    HAS_PILLOW = True
+except ImportError:  # pragma: no cover - depends on how the package was installed
+    HAS_PILLOW = False
+
+
+@unittest.skipUnless(HAS_PILLOW, "Pillow is an optional extra; install .[anthropic] to run these")
 class ImageViewTests(unittest.TestCase):
     def test_reading_tiles_cover_the_page_unscaled(self) -> None:
         import base64

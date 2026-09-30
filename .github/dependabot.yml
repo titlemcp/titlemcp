@@ -1,0 +1,21 @@
+# Dependency updates, opened as pull requests so CI decides whether they are
+# safe. Grouped, because a separate pull request per package is noise that gets
+# ignored, and an ignored update is the one that matters later.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /packages/titlemcp
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      python-dependencies:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

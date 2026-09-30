@@ -1,0 +1,76 @@
+name: Bug report
+description: Something returns the wrong record, or does not return one.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please give the smallest case that shows the problem. A tool name, the
+        input, what came back, and what should have come back is usually enough.
+
+  - type: input
+    id: tool
+    attributes:
+      label: Tool or service
+      description: The MCP tool or the module, e.g. `parcel_lookup_review` or `services/exam`.
+      placeholder: services/exam_extraction
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce it
+      description: >
+        Exact steps or a short snippet someone can run. Use fictitious parcels,
+        names and recordings: this is a public repository and anything pasted
+        here stays public.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened
+      description: The record or behaviour you expected, and why.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+      description: >
+        The output, the traceback, or the field that was wrong. Paste it rather
+        than describing it.
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "Output of: python -c \"import title_mcp; print(title_mcp.__version__)\""
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "3.12.6"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before opening
+      options:
+        - label: The example uses fictitious parcels, names and recordings.
+          required: true
+        - label: I checked this against the current `main`.
+          required: false
