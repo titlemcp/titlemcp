@@ -7,7 +7,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from starlette.testclient import TestClient
 
-from title_mcp.mcp.server import create_mcp_server
+from title_mcp.mcp.server import create_mcp_server, transport_options
 from title_mcp.mcp.tool_catalog import _public_parcel_lookup_result
 from title_mcp.settings import TitleMCPSettings
 
@@ -142,7 +142,7 @@ class ToolCatalogRouteTests(unittest.TestCase):
             self.assertIn("titlemcp://workflows/kinds", resource_uris)
 
             template_uris = {
-                str(template.uriTemplate) for template in await server.list_resource_templates()
+                str(template.uri_template) for template in await server.list_resource_templates()
             }
             self.assertIn("titlemcp://tools/{tool_name}", template_uris)
 
@@ -198,9 +198,12 @@ class ToolCatalogRouteTests(unittest.TestCase):
             mcp_allowed_hosts="localhost:*,127.0.0.1:*",
             mcp_allowed_origins="http://localhost:*,http://127.0.0.1:*",
         )
-        server = create_mcp_server(settings)
+        self.assertEqual(transport_options(settings), {})
 
-        security = server.settings.transport_security
+        served = settings.model_copy(update={"mcp_transport": "streamable-http"})
+        options = transport_options(served)
+        self.assertEqual((options["host"], options["port"]), (served.mcp_host, served.mcp_port))
+        security = options["transport_security"]
         self.assertIsNotNone(security)
         assert security is not None
         self.assertTrue(security.enable_dns_rebinding_protection)

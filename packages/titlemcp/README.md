@@ -18,7 +18,7 @@ If you are new to the project, start with the root docs:
 
 ## What Is Included
 
-- FastMCP server with reusable title operations tools
+- MCP server with reusable title operations tools
 - MCP client bridge for Ollama/local LLM function calling
 - Pydantic domain schemas for workflows, audits, reviews, tasks, orders, and jurisdictions
 - Async workflow engine with review-first state transitions

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
 from title_mcp.capabilities import CapabilityType
@@ -25,8 +25,8 @@ from title_mcp.sources import (
 from title_mcp.vendors import VendorKind
 
 
-def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
-    """Register the core TitleMCP tool surface on a FastMCP server."""
+def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
+    """Register the core TitleMCP tool surface on a MCPServer server."""
 
     async def ensure_ready() -> None:
         await platform.initialize()

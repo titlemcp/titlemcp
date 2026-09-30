@@ -7,7 +7,7 @@ Jurisdiction and vendor behavior is installed around it through normal Python pa
 ## Runtime Layers
 
 ```text
-FastMCP transport
+MCP transport
   -> core tool catalog and installed toolsets
     -> workflow services
       -> workflow engine
@@ -77,7 +77,7 @@ The domain layer includes workflow primitives and title-specific primitives:
 - `TitleMatterSnapshot`, `ParcelIdentifier`, `RecordingReference`, `LienReference`,
   `PayoffTerms`, `DocumentReference`, and `TitleParty` for title-order context.
 
-These schemas are intentionally independent of FastMCP so they can later be embedded in Django
+These schemas are intentionally independent of the MCP SDK so they can later be embedded in Django
 models, forms, admin views, Celery jobs, or external APIs.
 
 ## Review-First Rule

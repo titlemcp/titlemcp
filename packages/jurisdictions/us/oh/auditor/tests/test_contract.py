@@ -154,9 +154,9 @@ class OhioAuditorContractTests(unittest.TestCase):
             self.assertTrue(connector.supports(site.jurisdiction, SourceKind.TAX_AUTHORITY))
 
     def test_toolset_registers_tool_per_county(self) -> None:
-        from mcp.server.fastmcp import FastMCP
+        from mcp.server.mcpserver import MCPServer
 
-        mcp = FastMCP("test")
+        mcp = MCPServer("test")
         OhioAuditorToolset().register(mcp, types.SimpleNamespace())
 
         tools = asyncio.run(mcp.list_tools())
