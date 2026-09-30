@@ -41,6 +41,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# What the test suite needs beyond the runtime dependencies. Pillow is optional
+# at runtime and the image-view tests are the part that exercises it, so without
+# this the full suite cannot be run from a plain install and those tests skip.
+test = [
+    "pillow>=10.0",
+]
 anthropic = [
     "anthropic>=0.75.0",
     "pillow>=10.0",

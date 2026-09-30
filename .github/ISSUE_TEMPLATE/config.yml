@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Conventions for contributors
+    url: https://github.com/titlemcp/titlemcp/blob/main/AGENTS.md
+    about: >
+      Read this before opening a pull request. It is the source of truth for
+      domain-record conventions, the tool and test layout, and what a change is
+      expected to include.

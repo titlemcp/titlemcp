@@ -1,0 +1,61 @@
+name: Jurisdiction or source
+description: Support for a county, a recorder, an auditor, or another public source.
+labels: [jurisdiction]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The catalog already carries the jurisdictions themselves. What is usually
+        missing is a source: where the data is, how it is reached, and what it
+        returns.
+
+  - type: input
+    id: jurisdiction
+    attributes:
+      label: Jurisdiction
+      description: State, and county or municipality, as the catalog names it.
+      placeholder: Ohio, Franklin County
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of source
+      options:
+        - County recorder
+        - County auditor or assessor
+        - Court records
+        - Tax or treasurer
+        - Municipal lien or utility
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Where it is
+      description: The public search page or API endpoint.
+    validations:
+      required: true
+
+  - type: textarea
+    id: access
+    attributes:
+      label: How it is reached
+      description: >
+        Whether it is an open API, a search form, a login, or a paid vendor.
+        Note any rate limits, terms of use, or credentials it needs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: returns
+    attributes:
+      label: What it returns
+      description: >
+        The fields available, and which domain record they map to. A sample
+        response helps; use a fictitious property.
+    validations:
+      required: false
