@@ -222,3 +222,23 @@ differ between minor versions. `pre-commit install` runs both on each commit.
 - [ ] Runnable sample + sample README + links in `samples/README.md` and `docs/SAMPLES.md`.
 - [ ] Secrets never logged; sensitive fields redacted.
 - [ ] `ruff check` and `ruff format --check` clean; relevant test suite green.
+
+---
+
+## 10. Releasing
+
+The core package's version is the release tag. Nothing in the tree states it, so
+there is no file to edit and no version-bump pull request.
+
+1. Make sure `main` is green.
+2. Publish a GitHub release with a new tag on `main`, named `vX.Y.Z`.
+
+Publishing the release runs the publish workflow, which builds the package at
+that tag and uploads it to PyPI as `X.Y.Z`. A commit that is not a release tag
+builds as a development version (`0.2.1.dev3+g1a2b3c4`), which the workflow
+refuses to publish and PyPI would not accept.
+
+Raise the minor version when a jurisdiction or platform package written for the
+previous release would stop working, and say so in the release notes. The
+jurisdiction and platform packages keep their own versions in their own
+`pyproject.toml` and are published by running the workflow by hand.
