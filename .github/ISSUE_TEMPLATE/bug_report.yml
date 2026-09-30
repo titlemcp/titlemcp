@@ -53,7 +53,7 @@ body:
     attributes:
       label: Version
       description: "Output of: python -c \"import title_mcp; print(title_mcp.__version__)\""
-      placeholder: 0.1.0
+      placeholder: 0.2.0
     validations:
       required: true
 

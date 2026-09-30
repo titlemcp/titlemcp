@@ -1,6 +1,6 @@
 [project]
 name = "titlemcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "Reusable MCP platform for title and real estate service operations."
 readme = "README.md"
 requires-python = ">=3.12"

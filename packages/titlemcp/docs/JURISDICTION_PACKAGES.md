@@ -63,7 +63,7 @@ name = "titlemcp-us-oh-franklin-recorder"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-    "titlemcp>=0.1.0",
+    "titlemcp>=0.2.0",
     "websockets>=14.0,<16.0",
 ]
 
