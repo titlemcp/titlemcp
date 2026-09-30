@@ -85,9 +85,7 @@ class IasWorldAuditorSourceConnector:
         )
         return SourceResult(
             source_id=self.source_id,
-            status=(
-                SourceResultStatus.SUCCEEDED if records else SourceResultStatus.NO_RESULTS
-            ),
+            status=(SourceResultStatus.SUCCEEDED if records else SourceResultStatus.NO_RESULTS),
             records=[record.model_dump(mode="json") for record in records],
             citations=[
                 SourceCitation(

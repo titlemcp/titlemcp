@@ -184,8 +184,7 @@ class HoaSerpApiTests(unittest.IsolatedAsyncioTestCase):
                             "title": "Payments",
                             "link": "https://examplefieldshoa.example/assessment/payments/",
                             "snippet": (
-                                "Please contact Casey Example "
-                                "cexample@example.com for questions."
+                                "Please contact Casey Example cexample@example.com for questions."
                             ),
                             "source": "Example Fields HOA",
                         }
@@ -428,11 +427,7 @@ class _FakeUrlOpener:
     def open(self, request, data=None, timeout=None):
         if self._open_override is not None:
             return self._open_override(request, timeout)
-        url = (
-            request.full_url
-            if isinstance(request, urllib.request.Request)
-            else str(request)
-        )
+        url = request.full_url if isinstance(request, urllib.request.Request) else str(request)
         return _FakeHttpResponse(body=self._payloads[url], url=url)
 
 

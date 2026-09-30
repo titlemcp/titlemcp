@@ -134,8 +134,8 @@ def _record_from_hit_and_detail(
         map_routing=detail.map_routing if detail else None,
         permalink=detail.permalink if detail else None,
     )
-    owner_names = detail.owners if detail and detail.owners else _clean_lines(
-        [hit.owner if hit else None]
+    owner_names = (
+        detail.owners if detail and detail.owners else _clean_lines([hit.owner if hit else None])
     )
     ownership = PropertyAssessmentOwnership(
         owner_display=_first(detail.owner_display if detail else None, hit.owner if hit else None),

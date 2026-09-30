@@ -106,8 +106,7 @@ class FranklinCountyOhioRecorderAdapter:
     def supports(self, jurisdiction):
         return self.scope.matches(jurisdiction)
 
-    async def plan(self, request):
-        ...
+    async def plan(self, request): ...
 ```
 
 ## Template

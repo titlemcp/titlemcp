@@ -152,9 +152,7 @@ class IasWorldNewerBuildTests(unittest.TestCase):
         from titlemcp_platform_iasworld.client import _compact_parcel_id
 
         # Default strips whitespace; the knob preserves the spaces the form needs.
-        self.assertEqual(
-            _compact_parcel_id("A01 00000 0001", numeric_only=False), "A01000000001"
-        )
+        self.assertEqual(_compact_parcel_id("A01 00000 0001", numeric_only=False), "A01000000001")
         self.assertEqual(
             _compact_parcel_id("A01 00000 0001", numeric_only=False, preserve_whitespace=True),
             "A01 00000 0001",
@@ -530,7 +528,9 @@ class IasWorldAlphanumericParcelTests(unittest.TestCase):
         self.assertEqual(detail.legal_description, ["EXAMPLE CITY SUBDIVISION LOT 1"])
         # Public Access labels normalized into the same keys the classic profile uses.
         self.assertEqual(detail.tax_status["Property Class"], "RESIDENTIAL")
-        self.assertEqual(detail.tax_status["Land Use"], "510-R - SINGLE FAMILY DWELLING, PLATTED LOT")
+        self.assertEqual(
+            detail.tax_status["Land Use"], "510-R - SINGLE FAMILY DWELLING, PLATTED LOT"
+        )
 
     def test_public_access_detailed_parses_renamed_sections(self) -> None:
         detail = IasWorldAuditorClient(BUTLER).parse_detail(BUTLER_DETAIL_HTML)
@@ -626,7 +626,9 @@ class IasWorldAlphanumericParcelTests(unittest.TestCase):
         self.assertEqual(record["parcel"]["parcel_number"], "100200C003D")
         self.assertEqual(record["ownership"]["owners"], ["DOE JANE A TRUSTEE"])
         self.assertEqual(record["property"]["site_address_display"], "100 EXAMPLE DR")
-        self.assertEqual(record["property"]["legal_description_text"], "EXAMPLE CITY SUBDIVISION LOT 1")
+        self.assertEqual(
+            record["property"]["legal_description_text"], "EXAMPLE CITY SUBDIVISION LOT 1"
+        )
         self.assertEqual(record["tax_status"]["property_class"], "RESIDENTIAL")
         self.assertEqual(record["taxes"]["annual"][0]["net_annual_tax"]["display"], "$5,000.00")
 
@@ -756,7 +758,9 @@ BUTLER_DETAIL_HTML = """
 class _ClermontFakeClient:
     def search(self, query: IasWorldAuditorSearchQuery) -> IasWorldAuditorSearchResponse:
         client = IasWorldAuditorClient(CLERMONT)
-        detail = client.parse_detail(CLERMONT_DETAIL_HTML, source_url="https://example.test/clermont")
+        detail = client.parse_detail(
+            CLERMONT_DETAIL_HTML, source_url="https://example.test/clermont"
+        )
         hit = client._parse_search_results(CLERMONT_SEARCH_HTML)[0]
         return IasWorldAuditorSearchResponse(
             query=query,
@@ -828,9 +832,7 @@ class LakeDetailProfileTests(unittest.TestCase):
 
     def test_singular_labels_populate_owner_and_legal_fields(self) -> None:
         self.assertEqual(self.detail.owners, ["DOE JANE A"])
-        self.assertEqual(
-            self.detail.owner_mailing_address, ["100 EXAMPLE ST", "ANYTOWN OH 44000"]
-        )
+        self.assertEqual(self.detail.owner_mailing_address, ["100 EXAMPLE ST", "ANYTOWN OH 44000"])
         self.assertEqual(self.detail.legal_description, ["EXAMPLE SUBDIVISION LOT 1"])
 
     def test_section_ids_with_trailing_anchor_markup_are_matched(self) -> None:
@@ -1124,9 +1126,7 @@ class KeyedLabelLayoutTests(unittest.TestCase):
     """Montgomery: labelled rows, a single-column owner table, continuations."""
 
     def setUp(self) -> None:
-        self.detail = IasWorldAuditorClient(MONTGOMERY_KEYED).parse_detail(
-            MONTGOMERY_DETAIL_HTML
-        )
+        self.detail = IasWorldAuditorClient(MONTGOMERY_KEYED).parse_detail(MONTGOMERY_DETAIL_HTML)
 
     def test_single_column_owner_table_is_read(self) -> None:
         self.assertEqual(self.detail.owners, ["DOE JANE A AND JOHN Q TRS"])
@@ -1211,9 +1211,7 @@ class SummarySectionsLayoutTests(unittest.TestCase):
 
     def test_a_genuinely_wrong_profile_still_warns(self) -> None:
         # Same page under a profile that does expect an owner table.
-        wrong = LUCAS_SUMMARY.model_copy(
-            update={"detail_profile": DetailProfile.PUBLIC_ACCESS}
-        )
+        wrong = LUCAS_SUMMARY.model_copy(update={"detail_profile": DetailProfile.PUBLIC_ACCESS})
 
         detail = IasWorldAuditorClient(wrong).parse_detail(LUCAS_DETAIL_HTML)
 

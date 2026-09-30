@@ -177,7 +177,7 @@ class ClassificationTests(unittest.TestCase):
                 self.assertIs(chain.classify(document_type), expected)
 
     def test_a_release_is_classified_before_a_mortgage(self) -> None:
-        """"RELEASE OF MORTGAGE" contains both words; order decides."""
+        """A "RELEASE OF MORTGAGE" contains both words; order decides."""
         self.assertIs(chain.classify("RELEASE OF MORTGAGE"), chain.InstrumentKind.RELEASE)
         self.assertIs(chain.classify("ASSIGN OF MORTGAGE"), chain.InstrumentKind.ASSIGNMENT)
 

@@ -113,8 +113,7 @@ def summarize_source_result(text: str) -> str:
             summary = first_record["summary"]
             if summary.get("title_officer_review_required") is not None:
                 parts.append(
-                    "title_officer_review_required="
-                    f"{summary['title_officer_review_required']!r}"
+                    f"title_officer_review_required={summary['title_officer_review_required']!r}"
                 )
     return ", ".join(parts)
 

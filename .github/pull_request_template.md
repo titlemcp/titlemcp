@@ -16,6 +16,7 @@ Paste the commands and their output. "Tests pass" on its own is not verification
 a reviewer can check.
 
     ruff check .
+    ruff format --check .
     python -m unittest discover -s packages/titlemcp/tests
 
 If the change affects what a tool or service returns, show a before and after of
@@ -27,7 +28,7 @@ the record, using fictitious parcels, names and recordings.
 
 ## Checklist
 
-- [ ] `ruff check .` is clean.
+- [ ] `ruff check .` and `ruff format --check .` are clean.
 - [ ] `python -m unittest discover -s packages/titlemcp/tests` passes.
 - [ ] New or changed behaviour has a test, and the test would fail without the change.
 - [ ] Domain records keep their `schema_version`, `record_type`, `source` block and provenance, per AGENTS.md.
