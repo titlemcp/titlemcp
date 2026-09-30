@@ -808,9 +808,27 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
         # checks that read it, and those are skipped by name below.
         cover = None
         cover_pages = grouped.get(ExamSheetKind.SEARCH_COVER)
+        cover_from = "its own sheet"
+        if not cover_pages:
+            # A cover sheet is a set of facts, not a page kind. Several
+            # abstractors put them on the same sheet as the first summary: a
+            # "TITLE REPORT, Page One" carries the file number, the property,
+            # who ordered it and the search period, and then runs straight into
+            # the mortgages. That sheet classifies as a summary, correctly, and
+            # the order details on it are worth reading anyway. Asking for them
+            # costs one call and returns nulls when they are not there.
+            cover_pages = grouped.get(ExamSheetKind.INDEX_SUMMARY)
+            cover_from = "the summary sheet"
         if cover_pages:
             cover_raw = client.extract(
-                instruction=f"{preamble}Transcribe the search cover sheet.",
+                instruction=(
+                    f"{preamble}Transcribe the order details from this sheet: the file "
+                    "number, the property, the county, who the search was for, the search "
+                    "period and dates, the declared counts, and any matters of concern. "
+                    "This may be a sheet that carries those details and then runs into the "
+                    "mortgages or other matters; read only the order details from it and "
+                    "leave anything not shown null."
+                ),
                 images=_with_reading_views(cover_pages),
                 schema=ExtractedCoverSheet,
             )
@@ -822,9 +840,14 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
                 )
         else:
             warnings.append(
-                "No search cover sheet was found. The declared counts could not be "
-                "cross-checked, and the file number, county and dates come from the "
-                "documents instead."
+                "No search cover sheet was found, and no summary sheet to read the order "
+                "details from. The declared counts could not be cross-checked, and the file "
+                "number, county and dates come from the documents instead."
+            )
+        if cover is not None and cover_from != "its own sheet":
+            warnings.append(
+                f"The package has no separate cover sheet; the order details were read from "
+                f"{cover_from}, which carries them on this abstractor's form."
             )
 
         mortgages: list[MortgageEntry] = []
