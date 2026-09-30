@@ -1,0 +1,8 @@
+# Optional, and the same two checks CI runs: `pip install pre-commit && pre-commit install`.
+# The ruff version here is the one CI is held to; move them together.
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.8
+    hooks:
+      - id: ruff-check
+      - id: ruff-format

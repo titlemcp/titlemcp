@@ -36,8 +36,7 @@ def default_prompt(
     else:
         name = " ".join(part for part in [first_name, last_name] if part)
         prompt = (
-            "Can you check bankruptcy records for "
-            f"{name} and return the structured PACER result?"
+            f"Can you check bankruptcy records for {name} and return the structured PACER result?"
         )
 
     if summarize_with_ollama:

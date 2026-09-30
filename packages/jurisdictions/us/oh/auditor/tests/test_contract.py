@@ -108,9 +108,7 @@ class OhioAuditorContractTests(unittest.TestCase):
         self.assertEqual(LAKE.tool_name, "lake_county_auditor_search")
         # Lake's datalet is a third layout, handled by its own DetailProfile.
         self.assertEqual(LAKE.detail_profile, DetailProfile.LAKE)
-        self.assertEqual(
-            LAKE.form_field_overrides, {"inpNumber": "inpNo", "inpOwner": "inpOwner1"}
-        )
+        self.assertEqual(LAKE.form_field_overrides, {"inpNumber": "inpNo", "inpOwner": "inpOwner1"})
         # Every mode resolves to the realprop unified-search URL.
         for mode in (
             AuditorSearchMode.ADDRESS,
@@ -153,9 +151,7 @@ class OhioAuditorContractTests(unittest.TestCase):
         for site in OH_IASWORLD_SITES:
             connector = registry.get(site.source_id)
             self.assertIsNotNone(connector)
-            self.assertTrue(
-                connector.supports(site.jurisdiction, SourceKind.TAX_AUTHORITY)
-            )
+            self.assertTrue(connector.supports(site.jurisdiction, SourceKind.TAX_AUTHORITY))
 
     def test_toolset_registers_tool_per_county(self) -> None:
         from mcp.server.fastmcp import FastMCP

@@ -30,9 +30,7 @@ class JurisdictionScope(BaseModel):
     @property
     def specificity(self) -> int:
         return sum(
-            1
-            for value in [self.country, self.state, self.county, self.municipality]
-            if value
+            1 for value in [self.country, self.state, self.county, self.municipality] if value
         )
 
 

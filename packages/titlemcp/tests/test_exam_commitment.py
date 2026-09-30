@@ -81,9 +81,7 @@ def sample_package(**overrides: object) -> ExamPackage:
 
     mortgages = [
         MortgageEntry(
-            recording=RecordingReference(
-                book="0311", page="415", recorded_date=date(2010, 1, 22)
-            ),
+            recording=RecordingReference(book="0311", page="415", recorded_date=date(2010, 1, 22)),
             borrowers="Alex Q. Example and Jamie Example, husband and wife",
             lender="Example Savings Bank",
             original_amount=Decimal("100000.00"),
@@ -175,8 +173,10 @@ def sample_order(**overrides: object) -> CommitmentOrder:
         "commitment_number": FILE_NUMBER,
         "commitment_date": "September 1, 2026 at 8:00 A.M.",
         "property_address": Address(
-            line1="123 Example Road", city="Exampleville",
-            state="OH", postal_code="00000",
+            line1="123 Example Road",
+            city="Exampleville",
+            state="OH",
+            postal_code="00000",
         ),
         "county": "Example",
         "vested_in": "Alex Q. Example and Jamie Example, husband and wife",
@@ -215,7 +215,8 @@ class ExamReconciliationTests(unittest.TestCase):
         package = sample_package()
         package.cover.declared_exception_count = 9
         package.index = IndexSummarySheet(
-            mortgages=[], easements_rights_of_way=[],
+            mortgages=[],
+            easements_rights_of_way=[],
             provenance=_prov(ExamSheetKind.INDEX_SUMMARY, 19),
         )
         full = ExamReconciliationService().reconcile(package)
@@ -308,7 +309,8 @@ class ExamReconciliationTests(unittest.TestCase):
             "a doubt in free-text notes cannot reach the commitment",
         )
         self.assertNotIn(
-            DiscrepancyCode.LOW_CONFIDENCE_EXTRACTION, {d.code for d in rec.discrepancies},
+            DiscrepancyCode.LOW_CONFIDENCE_EXTRACTION,
+            {d.code for d in rec.discrepancies},
             "a named doubt replaces the whole-entry question",
         )
 
@@ -462,9 +464,7 @@ class ExamReconciliationTests(unittest.TestCase):
 
     def test_index_reference_missing_from_detail_sheet_blocks(self) -> None:
         package = sample_package()
-        package.index.easements_rights_of_way.append(
-            RecordingReference(book="0555", page="900")
-        )
+        package.index.easements_rights_of_way.append(RecordingReference(book="0555", page="900"))
 
         result = self.service.reconcile(package)
 
@@ -507,9 +507,7 @@ class ExamReconciliationTests(unittest.TestCase):
         advisory_codes = {d.code for d in result.advisory}
         self.assertIn(DiscrepancyCode.MATTERS_OF_CONCERN_RAISED, advisory_codes)
         self.assertEqual(result.status, ReconciliationStatus.GREEN)
-        self.assertTrue(
-            all(d.severity is DiscrepancySeverity.ADVISORY for d in result.advisory)
-        )
+        self.assertTrue(all(d.severity is DiscrepancySeverity.ADVISORY for d in result.advisory))
 
 
 class CommitmentRenderTests(unittest.TestCase):
@@ -981,9 +979,7 @@ class CommitmentRenderTests(unittest.TestCase):
         result = self._render()
         assert result.draft is not None
 
-        derived = [
-            c for c in result.draft.clauses if c.origin is ClauseOrigin.ABSTRACTOR_SHEET
-        ]
+        derived = [c for c in result.draft.clauses if c.origin is ClauseOrigin.ABSTRACTOR_SHEET]
         self.assertEqual(len(derived), 5)
         for clause in derived:
             self.assertIsNotNone(clause.source_sheet)
@@ -994,9 +990,7 @@ class CommitmentRenderTests(unittest.TestCase):
         assert result.draft is not None
 
         for schedule in (result.draft.schedule_b1, result.draft.schedule_b2):
-            self.assertEqual(
-                [c.number for c in schedule], list(range(1, len(schedule) + 1))
-            )
+            self.assertEqual([c.number for c in schedule], list(range(1, len(schedule) + 1)))
 
     def test_draft_carries_advisory_discrepancies_forward(self) -> None:
         result = self._render()
@@ -1066,8 +1060,7 @@ class OrderDataTests(unittest.TestCase):
         assert result.draft is not None
 
         conveyance = next(
-            c for c in result.draft.schedule_b1
-            if c.clause_id == "b1.conveyance_documents"
+            c for c in result.draft.schedule_b1 if c.clause_id == "b1.conveyance_documents"
         )
         self.assertEqual([s.label for s in conveyance.sub_items], ["a.", "b."])
         self.assertEqual(
@@ -1099,8 +1092,7 @@ class OrderDataTests(unittest.TestCase):
         assert result.draft is not None
 
         conveyance = next(
-            c for c in result.draft.schedule_b1
-            if c.clause_id == "b1.conveyance_documents"
+            c for c in result.draft.schedule_b1 if c.clause_id == "b1.conveyance_documents"
         )
         self.assertEqual([s.label for s in conveyance.sub_items], ["a."])
 
