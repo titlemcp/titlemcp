@@ -1174,6 +1174,72 @@ class SubsequentInstrumentTests(unittest.TestCase):
         self.assertIn("Loan Modification Agreement", clause)
         self.assertIn("Assignment of Mortgage", clause)
 
+    def test_a_re_recording_cites_both_recordings_on_one_item(self) -> None:
+        """Recorded again to correct it, it is still one mortgage."""
+
+        clause_set = ohio_default_clause_set()
+        entry = self._mortgage(
+            [
+                SubsequentInstrument(
+                    kind=MortgageInstrumentKind.RE_RECORDING,
+                    recording=RecordingReference(book="300", page="400"),
+                )
+            ]
+        )
+        rendered = clause_set.mortgage_payoff.template.format(
+            **CommitmentRenderService._mortgage_context(entry, clause_set)
+        )
+        self.assertIn("Official Record 100, Page 200", rendered)
+        self.assertIn("Said mortgage re-recorded in Official Record 300, Page 400.", rendered)
+
+    def test_a_partial_release_says_what_it_released(self) -> None:
+        clause_set = ohio_default_clause_set()
+        clause = CommitmentRenderService._instrument_sentences(
+            [
+                SubsequentInstrument(
+                    kind=MortgageInstrumentKind.PARTIAL_RELEASE,
+                    recording=RecordingReference(instrument_number="200000000001"),
+                    party="Alex Q. Example",
+                ),
+                SubsequentInstrument(
+                    kind=MortgageInstrumentKind.PARTIAL_RELEASE,
+                    recording=RecordingReference(book="300", page="400"),
+                ),
+            ],
+            clause_set,
+            "Lien",
+        )
+        self.assertIn(
+            "Partial release as to Alex Q. Example only, recorded as Instrument No. 200000000001.",
+            clause,
+        )
+        self.assertIn("Partial release recorded in Official Record 300, Page 400.", clause)
+
+    def test_a_lien_keeps_what_was_noted_beside_it(self) -> None:
+        """A partial release noted on the judgment sheet reaches the lien's own item."""
+
+        from title_mcp.services.exam_extraction import (
+            ClaudeExamExtractionService,
+            ExtractedJudgmentRow,
+            ExtractedSubsequentInstrument,
+        )
+
+        judgment = ClaudeExamExtractionService._build_judgment(
+            ExtractedJudgmentRow(
+                debtor="Alex Q. Example",
+                creditor="Example Revenue Department",
+                book="200000000000",
+                subsequent=[
+                    ExtractedSubsequentInstrument(
+                        kind="partial_release", book="200000000001", party="Alex Q. Example"
+                    )
+                ],
+            ),
+            page=5,
+        )
+        self.assertEqual(len(judgment.subsequent), 1)
+        self.assertIs(judgment.subsequent[0].kind, MortgageInstrumentKind.PARTIAL_RELEASE)
+
     def test_an_instrument_with_no_recording_is_not_cited(self) -> None:
         """A commitment cannot cite what the sheet does not say is recorded."""
 

@@ -67,11 +67,17 @@ class FieldProvenance(BaseModel):
 
 
 class MortgageInstrumentKind(StrEnum):
-    """What a later instrument did to a mortgage already of record."""
+    """What a later instrument did to a mortgage or lien already of record."""
 
     ASSIGNMENT = "assignment"
     MODIFICATION = "modification"
     SUBORDINATION = "subordination"
+    #: The same instrument recorded again, usually to correct it. It is still one
+    #: encumbrance, and both recordings are cited.
+    RE_RECORDING = "re_recording"
+    #: A release of part of the land, or of one of the parties, leaving the rest
+    #: of the lien in place.
+    PARTIAL_RELEASE = "partial_release"
 
 
 class SubsequentInstrument(BaseModel):
@@ -89,7 +95,10 @@ class SubsequentInstrument(BaseModel):
     recording: RecordingReference
     party: str | None = Field(
         default=None,
-        description="Who it runs to, for an assignment: the entity the mortgage was assigned to.",
+        description=(
+            "For an assignment, who the mortgage was assigned to. For a partial release, "
+            "who or what it releases."
+        ),
     )
     executed_date: date | None = None
 
@@ -141,6 +150,10 @@ class JudgmentEntry(BaseModel):
     court: str | None = None
     amount: Decimal | None = None
     recording: RecordingReference | None = None
+    subsequent: list[SubsequentInstrument] = Field(
+        default_factory=list,
+        description="Partial releases and other instruments recorded against the lien since.",
+    )
     provenance: FieldProvenance
 
 

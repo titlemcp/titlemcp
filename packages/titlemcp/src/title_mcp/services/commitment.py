@@ -28,6 +28,7 @@ from title_mcp.domain.exam import (
     JudgmentEntry,
     MortgageEntry,
     MortgageInstrumentKind,
+    SubsequentInstrument,
     TaxParcelEntry,
 )
 from title_mcp.domain.title import RecordingReference
@@ -321,7 +322,8 @@ class CommitmentRenderService:
                         number=number,
                         clause_id=judgment.clause_id,
                         section=CommitmentSection.SCHEDULE_B_I,
-                        text=judgment.template.format(**self._judgment_context(j, clause_set)),
+                        text=judgment.template.format(**self._judgment_context(j, clause_set))
+                        + self._instrument_sentences(j.subsequent, clause_set, "Lien"),
                         origin=ClauseOrigin.ABSTRACTOR_SHEET,
                         section_header=clause_set.judgment_header if position == 0 else None,
                         source_sheet=ExamSheetKind.JUDGMENTS,
@@ -380,7 +382,8 @@ class CommitmentRenderService:
                     context = {**county, **self._judgment_context(j, clause_set)}
                     add(
                         f"{template.clause_id}:b2",
-                        template.template.format(**context),
+                        template.template.format(**context)
+                        + self._instrument_sentences(j.subsequent, clause_set, "Lien"),
                         ExamSheetKind.JUDGMENTS,
                         j.provenance.src_page,
                     )
@@ -468,6 +471,7 @@ class CommitmentRenderService:
         MortgageInstrumentKind.MODIFICATION: "Loan Modification Agreement",
         MortgageInstrumentKind.SUBORDINATION: "Subordination Agreement",
         MortgageInstrumentKind.ASSIGNMENT: "Assignment of Mortgage",
+        MortgageInstrumentKind.PARTIAL_RELEASE: "Partial release",
     }
 
     @classmethod
@@ -481,13 +485,26 @@ class CommitmentRenderService:
         who holds the debt or on what terms it now stands.
         """
 
+        return cls._instrument_sentences(entry.subsequent, clause_set, "Mortgage")
+
+    @classmethod
+    def _instrument_sentences(
+        cls, instruments: list[SubsequentInstrument], clause_set: ClauseSet, noun: str
+    ) -> str:
+        """Each later instrument as a sentence, to follow the clause it belongs to."""
+
         sentences = []
-        for instrument in entry.subsequent:
+        for instrument in instruments:
             cited = cls._recording_phrases(instrument.recording, clause_set)["recorded"]
-            if instrument.kind is MortgageInstrumentKind.ASSIGNMENT and instrument.party:
-                sentences.append(f"Mortgage assigned to {expand_party(instrument.party)}, {cited}.")
+            kind = instrument.kind
+            if kind is MortgageInstrumentKind.ASSIGNMENT and instrument.party:
+                sentences.append(f"{noun} assigned to {expand_party(instrument.party)}, {cited}.")
+            elif kind is MortgageInstrumentKind.RE_RECORDING:
+                sentences.append(f"Said {noun.lower()} re-{cited}.")
+            elif kind is MortgageInstrumentKind.PARTIAL_RELEASE and instrument.party:
+                sentences.append(f"Partial release as to {instrument.party} only, {cited}.")
             else:
-                sentences.append(f"{cls._SUBSEQUENT_NAMES[instrument.kind]} {cited}.")
+                sentences.append(f"{cls._SUBSEQUENT_NAMES[kind]} {cited}.")
         return (" " + " ".join(sentences)) if sentences else ""
 
     # Most specific first: a plat that also grants easements reads as a plat, and
