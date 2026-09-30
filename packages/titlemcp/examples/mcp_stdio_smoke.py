@@ -13,9 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 async def main() -> None:
     env = dict(os.environ)
-    env["PYTHONPATH"] = f"{ROOT / 'src'}{os.pathsep}{env.get('PYTHONPATH', '')}".rstrip(
-        os.pathsep
-    )
+    env["PYTHONPATH"] = f"{ROOT / 'src'}{os.pathsep}{env.get('PYTHONPATH', '')}".rstrip(os.pathsep)
     server_params = StdioServerParameters(
         command=sys.executable,
         args=["-m", "title_mcp.mcp.server"],

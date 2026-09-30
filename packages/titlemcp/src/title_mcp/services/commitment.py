@@ -148,9 +148,7 @@ def _mortgage_items(schedule_b2: list[CommitmentClause]) -> list[int]:
 
     released = {ExamSheetKind.MORTGAGES, ExamSheetKind.JUDGMENTS}
     return [
-        c.number
-        for c in schedule_b2
-        if c.source_sheet in released and c.clause_id.endswith(":b2")
+        c.number for c in schedule_b2 if c.source_sheet in released and c.clause_id.endswith(":b2")
     ]
 
 
@@ -220,8 +218,7 @@ class CommitmentRenderService:
                 file_number=package.file_number,
                 status=CommitmentRenderStatus.REFUSED,
                 refusal_reason=(
-                    f"Order belongs to file {order.file_number}, "
-                    f"not {package.file_number}."
+                    f"Order belongs to file {order.file_number}, not {package.file_number}."
                 ),
             )
 
@@ -309,9 +306,7 @@ class CommitmentRenderService:
                         **self._mortgage_context(entry, clause_set)
                     ),
                     origin=ClauseOrigin.ABSTRACTOR_SHEET,
-                    section_header=(
-                        clause_set.mortgage_payoff_header if position == 0 else None
-                    ),
+                    section_header=(clause_set.mortgage_payoff_header if position == 0 else None),
                     source_sheet=ExamSheetKind.MORTGAGES,
                     src_page=entry.provenance.src_page,
                 )

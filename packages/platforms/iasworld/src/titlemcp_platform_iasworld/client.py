@@ -411,11 +411,7 @@ class IasWorldAuditorClient:
             if table.attrs.get("id") and table.rows
         }
         header = next(
-            (
-                table
-                for table in parser.tables
-                if "DataletHeader" in table.attrs.get("class", "")
-            ),
+            (table for table in parser.tables if "DataletHeader" in table.attrs.get("class", "")),
             None,
         )
         header_data = _parse_header_table(header)
@@ -426,8 +422,7 @@ class IasWorldAuditorClient:
             if _is_data_section(section_id, table.rows)
         }
         sections = {
-            section_id: _section_payload(rows)
-            for section_id, rows in raw_section_rows.items()
+            section_id: _section_payload(rows) for section_id, rows in raw_section_rows.items()
         }
 
         parcel_number = _compact_parcel_id(
@@ -530,9 +525,7 @@ class IasWorldAuditorClient:
         referer: str | None = None,
     ) -> tuple[str, str]:
         headers = {
-            "User-Agent": (
-                f"Mozilla/5.0 (compatible; TitleMCP/0.1; +{self.config.base_url})"
-            ),
+            "User-Agent": (f"Mozilla/5.0 (compatible; TitleMCP/0.1; +{self.config.base_url})"),
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         }
         if data is not None:
@@ -726,7 +719,7 @@ def _street_without_suffix(street: str) -> str:
 
 
 def _dedupe_attempts(
-    attempts: list[tuple[dict[str, str], str]]
+    attempts: list[tuple[dict[str, str], str]],
 ) -> list[tuple[dict[str, str], str]]:
     seen: set[tuple[tuple[tuple[str, str], ...], str]] = set()
     deduped: list[tuple[dict[str, str], str]] = []
@@ -1236,9 +1229,7 @@ def _detail_fields_public_access(
         annual_taxes = _public_access_annual_taxes(charged_rows, tax_year)
 
     if layout.value_style == "transposed":
-        appraised = _transposed_value_table(
-            value_rows, layout.appraised_column, "Market (100%)"
-        )
+        appraised = _transposed_value_table(value_rows, layout.appraised_column, "Market (100%)")
         taxable = _transposed_value_table(value_rows, layout.taxable_column, "Assessed (35%)")
     else:
         appraised = _kv_value_table(values, layout.appraised_labels, "Market (100%)")
@@ -1380,9 +1371,7 @@ def _transposed_value_table(
         return {}
     return {
         "headers": ["", "Land", "Improvements", "Total"],
-        "rows": [
-            {"": category, "Land": land, "Improvements": improvements, "Total": total}
-        ],
+        "rows": [{"": category, "Land": land, "Improvements": improvements, "Total": total}],
     }
 
 
@@ -1496,7 +1485,6 @@ def _kv_value_table(
             }
         ],
     }
-
 
 
 def _half_year_annual_taxes(

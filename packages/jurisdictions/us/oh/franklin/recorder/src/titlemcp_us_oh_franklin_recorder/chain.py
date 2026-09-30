@@ -203,8 +203,7 @@ def build(
     mortgages = [
         document
         for document in chain
-        if document.kind is InstrumentKind.MORTGAGE
-        and (document.recorded_on or date.min) >= floor
+        if document.kind is InstrumentKind.MORTGAGE and (document.recorded_on or date.min) >= floor
     ]
     releases = [document for document in chain if document.kind is InstrumentKind.RELEASE]
 

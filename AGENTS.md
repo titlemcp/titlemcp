@@ -200,12 +200,17 @@ true`, and each workflow `status = "ready"` with `human_review_required = true`.
 
 ## 9. Lint, format, and definition of done
 
-Lint is Ruff (line length 100, target `py312`, rules `E,F,I,UP,B`):
+Lint and formatting are both Ruff (line length 100, target `py312`, rules
+`E,F,I,UP,B`). CI runs both and fails on either:
 
 ```bash
 .venv/bin/ruff check .
 .venv/bin/ruff check --fix .   # autofix imports/lint where safe
+.venv/bin/ruff format .        # layout; do not hand-format around it
 ```
+
+Use the ruff version CI installs (`>=0.16,<0.17`); the formatter's output can
+differ between minor versions. `pre-commit install` runs both on each commit.
 
 **Definition of done for a new endpoint/connector:**
 
@@ -216,4 +221,4 @@ Lint is Ruff (line length 100, target `py312`, rules `E,F,I,UP,B`):
 - [ ] Unit tests: normalization, canonical mapping, missing-config, redaction.
 - [ ] Runnable sample + sample README + links in `samples/README.md` and `docs/SAMPLES.md`.
 - [ ] Secrets never logged; sensitive fields redacted.
-- [ ] `ruff check` clean; relevant test suite green.
+- [ ] `ruff check` and `ruff format --check` clean; relevant test suite green.

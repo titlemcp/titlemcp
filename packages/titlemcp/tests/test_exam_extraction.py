@@ -43,10 +43,7 @@ FILE_NUMBER = "OH-00000-SAMPLE"
 FAKE_API_KEY = "sk-ant-test-DO-NOT-LEAK-0123456789"
 
 # Page images are opaque to these tests; only the page numbers matter.
-PAGES = [
-    SheetImage(page_number=n, data_base64="ZmFrZQ==")
-    for n in (1, 11, 13, 15, 16, 19)
-]
+PAGES = [SheetImage(page_number=n, data_base64="ZmFrZQ==") for n in (1, 11, 13, 15, 16, 19)]
 
 CLASSIFICATION = PageClassification(
     assignments=[
@@ -484,7 +481,8 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
             overrides={
                 "classification": PageClassification(
                     assignments=[
-                        a for a in CLASSIFICATION.assignments
+                        a
+                        for a in CLASSIFICATION.assignments
                         if a.sheet is not ExamSheetKind.INDEX_SUMMARY
                     ]
                 )
@@ -530,8 +528,11 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
                 "entries": [
                     *INDEX.entries,
                     ExtractedIndexEntry(
-                        column=IndexColumn.MORTGAGES, text="0198/220", struck=True,
-                        strike_evidence="hand-drawn line through the entry", annotation="rel",
+                        column=IndexColumn.MORTGAGES,
+                        text="0198/220",
+                        struck=True,
+                        strike_evidence="hand-drawn line through the entry",
+                        annotation="rel",
                     ),
                     ExtractedIndexEntry(column=E, text="0455/10", struck=True),
                 ]
@@ -597,8 +598,10 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
 
         assert result.package is not None and result.package.index is not None
         doubt = result.package.mortgages[0].provenance.uncertain[0]
-        self.assertEqual((doubt.field, doubt.read_as, doubt.alternatives, doubt.reason),
-                         ("amount", "$100,000.00", ["$160,000.00"], "smudge"))
+        self.assertEqual(
+            (doubt.field, doubt.read_as, doubt.alternatives, doubt.reason),
+            ("amount", "$100,000.00", ["$160,000.00"], "smudge"),
+        )
         self.assertEqual(result.package.index.provenance.uncertain[0].field, "entry 0461/212")
 
     async def test_a_ticked_entry_reported_struck_stays_live(self) -> None:
@@ -608,7 +611,10 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
                 "entries": [
                     ExtractedIndexEntry(column=IndexColumn.MORTGAGES, text="0311/415"),
                     ExtractedIndexEntry(
-                        column=E, text="DV 0461/212", struck=True, annotation="check mark",
+                        column=E,
+                        text="DV 0461/212",
+                        struck=True,
+                        annotation="check mark",
                         strike_evidence="stroke through the leading letters",
                     ),
                     ExtractedIndexEntry(column=E, text="0931/104", annotation="✓"),
@@ -628,7 +634,9 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
                 "entries": [
                     *INDEX.entries,
                     ExtractedIndexEntry(
-                        column=IndexColumn.MORTGAGES, text="0187/1265", annotation="R. 0290/752",
+                        column=IndexColumn.MORTGAGES,
+                        text="0187/1265",
+                        annotation="R. 0290/752",
                         released=True,
                     ),
                 ]

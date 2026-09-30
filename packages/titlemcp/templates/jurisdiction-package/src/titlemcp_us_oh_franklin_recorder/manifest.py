@@ -15,18 +15,14 @@ def capability_manifest() -> CapabilityManifest:
             CapabilityType.WORKFLOW_ADAPTER,
             CapabilityType.GOVERNMENT_SOURCE,
         ],
-        jurisdiction_scopes=[
-            JurisdictionScope(country="US", state="OH", county="Franklin County")
-        ],
+        jurisdiction_scopes=[JurisdictionScope(country="US", state="OH", county="Franklin County")],
         workflow_kinds=[WorkflowKind.PUBLIC_RECORDS_SEARCH],
         entry_points={
             "title_mcp.adapters": (
-                "titlemcp_us_oh_franklin_recorder.adapters:"
-                "FranklinCountyOhioRecorderAdapter"
+                "titlemcp_us_oh_franklin_recorder.adapters:FranklinCountyOhioRecorderAdapter"
             ),
             "title_mcp.sources": (
-                "titlemcp_us_oh_franklin_recorder.sources:"
-                "FranklinRecorderSourceConnector"
+                "titlemcp_us_oh_franklin_recorder.sources:FranklinRecorderSourceConnector"
             ),
         },
         review_required=True,

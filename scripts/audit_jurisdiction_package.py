@@ -92,9 +92,7 @@ def audit_package(package_path: Path, *, require_publish_ready: bool) -> list[st
             if workflow.get("status") != "ready":
                 errors.append(f"workflows.{workflow_name}.status must be ready before publishing")
             if workflow.get("human_review_required") is not True:
-                errors.append(
-                    f"workflows.{workflow_name}.human_review_required must be true"
-                )
+                errors.append(f"workflows.{workflow_name}.human_review_required must be true")
 
     return errors
 
