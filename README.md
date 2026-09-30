@@ -179,6 +179,7 @@ directly.
 ```bash
 # Lint (Ruff: line length 100, target py312, rules E,F,I,UP,B)
 .venv/bin/ruff check .
+.venv/bin/ruff format --check .
 
 # Core test suite
 PYTHONPATH=packages/titlemcp/src .venv/bin/python -m unittest discover \
