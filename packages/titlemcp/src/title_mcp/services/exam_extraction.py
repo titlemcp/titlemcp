@@ -439,7 +439,13 @@ class ExtractedJudgmentRow(ExtractedRow):
 
 class ExtractedTaxRow(ExtractedRow):
     parcel_id: str | None = None
-    tax_year: int | None = None
+    tax_year: int | None = Field(
+        default=None,
+        description=(
+            "The year the taxes are assessed for, not the year they are paid in. A "
+            "printout headed '2025 Payable 2026' is 2025."
+        ),
+    )
     taxpayer_name: str | None = None
     first_half_amount: str | None = None
     first_half_paid: bool = False
