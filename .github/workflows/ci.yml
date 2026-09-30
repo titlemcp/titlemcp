@@ -35,7 +35,10 @@ jobs:
       - name: Install
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e packages/titlemcp
+          # With the extras, so the optional paths are covered rather than
+          # skipped. Pillow sits behind the anthropic extra and three image
+          # tests need it; without this they are quietly not run.
+          python -m pip install -e "packages/titlemcp[anthropic]"
           python -m pip install ruff
 
       # Ruff is the project's linter, configured in pyproject: line length 100,
