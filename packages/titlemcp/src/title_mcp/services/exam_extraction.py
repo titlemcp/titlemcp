@@ -1260,6 +1260,17 @@ _RECORDING_REF_ANYWHERE = re.compile(
     r"(?<![\w/.])(?:(?P<series>[A-Za-z]{1,4})\.?\s+)?(?P<book>[0-9][0-9A-Za-z-]*)\s*/\s*(?P<page>[0-9][0-9A-Za-z-]*)"
 )
 
+# An abstractor who does not write a slash writes the labels out, or writes the pair
+# with a hyphen or a comma. The labelled form can sit anywhere in an entry. The bare
+# pair has to be the whole entry, and short enough to be a book and a page: a long
+# hyphenated number is a recorder's instrument number, not a volume.
+_LABELLED_REF = re.compile(
+    r"(?:(?P<series>[A-Za-z]{1,4})\.?\s+)?(?:bk|book|vol|volume|liber)\.?\s*"
+    r"(?P<book>[0-9][0-9A-Za-z]*)\W{0,3}(?:pg|page|p)\.?\s*(?P<page>[0-9][0-9A-Za-z]*)",
+    re.IGNORECASE,
+)
+_BARE_PAIR = re.compile(r"\s*(?P<series>)(?P<book>[0-9]{1,5})\s*[-,]\s*(?P<page>[0-9]{1,4})\s*")
+
 
 def parse_recording_ref(raw: str | None) -> RecordingReference | None:
     """Find the ``book/page`` reference in an index-page entry.
@@ -1269,11 +1280,21 @@ def parse_recording_ref(raw: str | None) -> RecordingReference | None:
     reference ("R/W: 1029/576 (P)", "1059/1265 R. 328/752") are ignored, and the
     first reference is taken; a release noted beside it is the entry's
     ``released`` flag, not part of its identity.
+
+    The slash is the usual form and is tried first. Entries written "plat bk 7 pg
+    48", "311-415" or "1222,906" are the same kind of reference, and an entry that
+    is not read as one is left out of the cross-check, which is the only place a
+    matter the abstractor indexed and never wrote up would be noticed.
     """
 
     if raw is None:
         return None
-    match = _RECORDING_REF.fullmatch(raw) or _RECORDING_REF_ANYWHERE.search(raw)
+    match = (
+        _RECORDING_REF.fullmatch(raw)
+        or _RECORDING_REF_ANYWHERE.search(raw)
+        or _LABELLED_REF.search(raw)
+        or _BARE_PAIR.fullmatch(raw)
+    )
     if not match:
         return None
     series = match.group("series")

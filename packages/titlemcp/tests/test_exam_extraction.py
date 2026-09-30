@@ -256,6 +256,29 @@ class NormalizationTests(unittest.TestCase):
         # A case number is not a book/page reference.
         self.assertIsNone(parse_recording_ref("18 JL 2207"))
 
+    def test_index_reference_written_without_a_slash(self) -> None:
+        # Abstractors also write the pair with labels, a hyphen or a comma. An entry
+        # that is not read as a reference is left out of the cross-check, so a matter
+        # on the index with no detail sheet would go unnoticed.
+        for text, book, page, series in (
+            ("plat bk 7 pg 48", "7", "48", "PLAT"),
+            ("Vol. 311, Page 415", "311", "415", None),
+            ("Book 311 Pg 415 (easement)", "311", "415", None),
+            ("311-415", "311", "415", None),
+            ("1222,906", "1222", "906", None),
+            (" 1222 , 906 ", "1222", "906", None),
+        ):
+            ref = parse_recording_ref(text)
+            assert ref is not None, text
+            self.assertEqual((ref.book, ref.page, ref.document_type), (book, page, series), text)
+
+    def test_a_hyphenated_instrument_number_is_not_a_book_and_page(self) -> None:
+        # Year and sequence: too long to be a page, and not a volume.
+        self.assertIsNone(parse_recording_ref("2000-0000001"))
+        # A bare pair is only read when it is the whole entry.
+        self.assertIsNone(parse_recording_ref("see 311-415 and others"))
+        self.assertIsNone(parse_recording_ref("00 JL 0000"))
+
     def test_state_names_normalize_to_codes(self) -> None:
         self.assertEqual(normalize_state("West Virginia"), "WV")
         self.assertEqual(normalize_state(" ohio "), "OH")
