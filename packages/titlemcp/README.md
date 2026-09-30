@@ -286,8 +286,7 @@ class MiamiDadePublicRecordsAdapter:
     def supports(self, jurisdiction: Jurisdiction) -> bool:
         return self.scope.matches(jurisdiction)
 
-    async def plan(self, request: WorkflowRequest) -> AdapterPlan:
-        ...
+    async def plan(self, request: WorkflowRequest) -> AdapterPlan: ...
 ```
 
 Adapters can be registered directly on `TitleMCPPlatform.adapters`, exposed through the

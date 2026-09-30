@@ -277,8 +277,7 @@ class RegridParcelQueryService:
 
         if last_error:
             raise RegridClientError(
-                "All Regrid search query variants failed. Last error: "
-                f"{last_error}"
+                f"All Regrid search query variants failed. Last error: {last_error}"
             ) from last_error
         LOGGER.debug("No Regrid results found for address %r.", address)
         return [], variants[0]
@@ -430,17 +429,14 @@ class RegridParcelQueryService:
                 )
                 if response.status_code == 429:
                     last_error = RegridClientError("Regrid returned HTTP 429.")
-                    LOGGER.warning(
-                        "Regrid returned 429. Retrying with a new cookie and proxy."
-                    )
+                    LOGGER.warning("Regrid returned 429. Retrying with a new cookie and proxy.")
                     self.cookies["_session_id"] = self._fetch_new_cookie()
                     self.current_proxy = self._get_next_proxy()
                     rate_limit_attempts += 1
                     attempts += 1
                     continue
-                if (
-                    response.status_code == 503
-                    and _is_regrid_service_unavailable_response(response)
+                if response.status_code == 503 and _is_regrid_service_unavailable_response(
+                    response
                 ):
                     body_preview = _response_text_preview(response)
                     raise RegridServiceUnavailableError(
@@ -471,8 +467,7 @@ class RegridParcelQueryService:
                 last_error = exc
                 elapsed = time.monotonic() - start
                 LOGGER.warning(
-                    "Regrid smart proxy failed on attempt %s/%s after %.3fs: %s. "
-                    "Switching proxy.",
+                    "Regrid smart proxy failed on attempt %s/%s after %.3fs: %s. Switching proxy.",
                     attempt_number,
                     max_attempts,
                     elapsed,
@@ -484,8 +479,7 @@ class RegridParcelQueryService:
                 last_error = exc
                 elapsed = time.monotonic() - start
                 LOGGER.warning(
-                    "Regrid GET attempt %s/%s timed out after %.3fs: %s. "
-                    "Switching proxy.",
+                    "Regrid GET attempt %s/%s timed out after %.3fs: %s. Switching proxy.",
                     attempt_number,
                     max_attempts,
                     elapsed,
@@ -494,10 +488,7 @@ class RegridParcelQueryService:
                 self.current_proxy = self._get_next_proxy()
             except requests.RequestException:
                 raise
-        raise RegridClientError(
-            "All Regrid smart proxy attempts failed."
-            f" Last error: {last_error}"
-        )
+        raise RegridClientError(f"All Regrid smart proxy attempts failed. Last error: {last_error}")
 
 
 def canonical_parcel_record_from_regrid(record: RegridParcelLookupRecord) -> ParcelRecord:

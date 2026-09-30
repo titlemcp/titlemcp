@@ -190,9 +190,7 @@ class PropertyAssessmentRecord(BaseModel):
     record_type: Literal["property_assessment"] = "property_assessment"
     source: PropertyAssessmentSource
     jurisdiction: Jurisdiction
-    search: PropertyAssessmentSearchContext = Field(
-        default_factory=PropertyAssessmentSearchContext
-    )
+    search: PropertyAssessmentSearchContext = Field(default_factory=PropertyAssessmentSearchContext)
     parcel: PropertyAssessmentParcel = Field(default_factory=PropertyAssessmentParcel)
     ownership: PropertyAssessmentOwnership = Field(default_factory=PropertyAssessmentOwnership)
     property: PropertyAssessmentProperty = Field(default_factory=PropertyAssessmentProperty)

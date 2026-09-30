@@ -46,9 +46,21 @@ class ReconciliationStatus(StrEnum):
 # (a doubtful index entry surfaces through the cross-check).
 _NON_BEARING = {
     ExamSheetKind.SEARCH_COVER: {
-        "matters_of_concern", "notes", "completed_by", "completed_date", "search_start_date",
-        "order_number", "src_text", "lsot_book", "lsot_page", "auditor_owners", "buyers",
-        "property_line1", "property_city", "property_postal_code", "state",
+        "matters_of_concern",
+        "notes",
+        "completed_by",
+        "completed_date",
+        "search_start_date",
+        "order_number",
+        "src_text",
+        "lsot_book",
+        "lsot_page",
+        "auditor_owners",
+        "buyers",
+        "property_line1",
+        "property_city",
+        "property_postal_code",
+        "state",
     },
     ExamSheetKind.INDEX_SUMMARY: {"name_searches", "src_text"},
     # The record series only labels the citation ("Deed Volume" or "Official Record").
@@ -148,8 +160,16 @@ def is_real_doubt(
 
 # Fields holding a person's or company's name.
 _NAME_FIELDS = {
-    "first_party", "second_party", "borrowers", "lender", "debtor", "creditor",
-    "auditor_owners", "buyers", "taxpayer_name", "parties",
+    "first_party",
+    "second_party",
+    "borrowers",
+    "lender",
+    "debtor",
+    "creditor",
+    "auditor_owners",
+    "buyers",
+    "taxpayer_name",
+    "parties",
 }
 _SPOUSE_NOTATION = re.compile(r"\b(?:h/w|w/h|husband and wife|wife and husband)\b", re.IGNORECASE)
 
@@ -515,8 +535,12 @@ class ExamReconciliationService:
                 elif is_real_doubt(d, (), used):
                     # Real but for a known, harmless confusion: set aside, on record.
                     suppressed.append(
-                        {"entry": label, "field": d.field, "used": used or d.read_as,
-                         "alternatives": d.alternatives}
+                        {
+                            "entry": label,
+                            "field": d.field,
+                            "used": used or d.read_as,
+                            "alternatives": d.alternatives,
+                        }
                     )
             for doubt in doubts:
                 blocking = _reaches_commitment(provenance.sheet, doubt.field)

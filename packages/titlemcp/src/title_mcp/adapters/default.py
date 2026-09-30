@@ -214,8 +214,7 @@ class MiamiDadePublicRecordsAdapter(GenericTitleAdapter):
 
     def supports(self, jurisdiction: Jurisdiction) -> bool:
         return jurisdiction.matches(country="US", state="FL") and (
-            jurisdiction.matches(county="Miami-Dade")
-            or jurisdiction.matches(county="Dade")
+            jurisdiction.matches(county="Miami-Dade") or jurisdiction.matches(county="Dade")
         )
 
     async def plan(self, request: WorkflowRequest) -> AdapterPlan:

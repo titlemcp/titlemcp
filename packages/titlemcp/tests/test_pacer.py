@@ -142,8 +142,7 @@ class _FakePacerClient:
             summary=PacerBankruptcySearchSummary(
                 title_officer_review_required=True,
                 text=(
-                    "TITLE OFFICER REVIEW IS REQUIRED\n\n"
-                    "John Smith - Ch.7 - 2025 - OHSB - 25-10001"
+                    "TITLE OFFICER REVIEW IS REQUIRED\n\nJohn Smith - Ch.7 - 2025 - OHSB - 25-10001"
                 ),
             ),
             duration_seconds=0.01,

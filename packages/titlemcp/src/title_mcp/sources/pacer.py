@@ -124,9 +124,7 @@ class PacerClient:
         self.client_code = client_code
         self.environment = PacerEnvironment.QA if qa_mode else PacerEnvironment.PRODUCTION
         self.base_url = (
-            "https://qa-login.uscourts.gov"
-            if qa_mode
-            else "https://pacer.login.uscourts.gov"
+            "https://qa-login.uscourts.gov" if qa_mode else "https://pacer.login.uscourts.gov"
         )
         self.pcl_base_url = (
             "https://qa-pcl.uscourts.gov/pcl-public-api/rest"
@@ -176,8 +174,7 @@ class PacerClient:
         result_without_receipt = dict(result)
         result_without_receipt.pop("receipt", None)
         cases = [
-            _case_record_from_party(party)
-            for party in result_without_receipt.get("content") or []
+            _case_record_from_party(party) for party in result_without_receipt.get("content") or []
         ]
         summary = bankruptcy_search_summary(cases)
         retrieved_at = datetime.now(UTC).isoformat(timespec="seconds")
@@ -348,9 +345,7 @@ class PacerBankruptcySourceConnector(SourceConnector):
                 "canonical_schema": record.schema_name,
                 "canonical_schema_version": record.schema_version,
                 "result_count": record.result_count,
-                "title_officer_review_required": (
-                    record.summary.title_officer_review_required
-                ),
+                "title_officer_review_required": (record.summary.title_officer_review_required),
             },
         )
 
@@ -433,8 +428,7 @@ def bankruptcy_search_summary(
         return PacerBankruptcySearchSummary(
             title_officer_review_required=False,
             text=(
-                "TITLE OFFICER REVIEW IS NOT REQUIRED\n\n"
-                "No bankruptcy cases found for this search."
+                "TITLE OFFICER REVIEW IS NOT REQUIRED\n\nNo bankruptcy cases found for this search."
             ),
         )
 
@@ -543,9 +537,7 @@ def _case_record_from_party(party: dict[str, Any]) -> PacerBankruptcyCaseRecord:
         last_name=_string(party.get("lastName")),
         business_name=_string(party.get("businessName")),
         court_id=_string(court_case.get("courtId") or party.get("courtId")),
-        case_number=_string(
-            court_case.get("caseNumberFull") or party.get("caseNumberFull")
-        ),
+        case_number=_string(court_case.get("caseNumberFull") or party.get("caseNumberFull")),
         case_title=_string(court_case.get("caseTitle") or party.get("caseTitle")),
         case_id=_string(court_case.get("caseId") or party.get("caseId")),
         date_filed=_string(court_case.get("dateFiled") or party.get("dateFiled")),

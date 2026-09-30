@@ -521,11 +521,7 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
                     if capability_type in capability.capability_types
                 ]
 
-        return {
-            "capabilities": [
-                capability.model_dump(mode="json") for capability in capabilities
-            ]
-        }
+        return {"capabilities": [capability.model_dump(mode="json") for capability in capabilities]}
 
     @mcp.tool(
         title="List Source Connectors",
@@ -557,15 +553,11 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
         ]
         if source_kind and jurisdiction is None:
             connectors = [
-                connector
-                for connector in connectors
-                if connector.descriptor.kind == source_kind
+                connector for connector in connectors if connector.descriptor.kind == source_kind
             ]
 
         return {
-            "sources": [
-                connector.descriptor.model_dump(mode="json") for connector in connectors
-            ]
+            "sources": [connector.descriptor.model_dump(mode="json") for connector in connectors]
         }
 
     @mcp.tool(
@@ -598,15 +590,11 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
         ]
         if vendor_kind and jurisdiction is None:
             connectors = [
-                connector
-                for connector in connectors
-                if connector.descriptor.kind == vendor_kind
+                connector for connector in connectors if connector.descriptor.kind == vendor_kind
             ]
 
         return {
-            "vendors": [
-                connector.descriptor.model_dump(mode="json") for connector in connectors
-            ]
+            "vendors": [connector.descriptor.model_dump(mode="json") for connector in connectors]
         }
 
 
@@ -652,8 +640,10 @@ def _public_parcel_lookup_result(result: dict[str, Any]) -> dict[str, Any]:
 
 
 def _hide_parcel_provider_name(value: Any) -> str:
-    return str(value).replace("Regrid parcel lookup", "Parcel lookup").replace(
-        "Regrid Parcel Search", "Parcel Lookup"
+    return (
+        str(value)
+        .replace("Regrid parcel lookup", "Parcel lookup")
+        .replace("Regrid Parcel Search", "Parcel Lookup")
     )
 
 

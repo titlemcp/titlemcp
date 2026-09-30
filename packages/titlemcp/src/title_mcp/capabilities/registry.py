@@ -41,9 +41,7 @@ class CapabilityRegistry:
             self.register(manifest)
 
 
-def create_default_capability_registry(
-    *, include_entry_points: bool = False
-) -> CapabilityRegistry:
+def create_default_capability_registry(*, include_entry_points: bool = False) -> CapabilityRegistry:
     registry = CapabilityRegistry()
     if include_entry_points:
         registry.load_entry_points()
