@@ -352,7 +352,7 @@ class CommitmentRenderService:
                 )
             )
 
-        county = {"county": (package.cover.county if package.cover else "") or ""}
+        county = {"county": package.county or (package.cover.county if package.cover else "") or ""}
 
         def add(clause_id: str, text: str, sheet: ExamSheetKind, src_page: int | None) -> None:
             clauses.append(
@@ -626,7 +626,7 @@ class CommitmentRenderService:
             )
 
         return {
-            "county": (package.cover.county if package.cover else "") or "",
+            "county": package.county or (package.cover.county if package.cover else "") or "",
             "tax_year": str(entry.tax_year),
             "next_tax_year": str(entry.tax_year + 1),
             "taxpayer_name": entry.taxpayer_name or "",

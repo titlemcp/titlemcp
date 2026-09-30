@@ -233,6 +233,14 @@ class ExamPackage(BaseModel):
             "matters are on the documents either way."
         ),
     )
+    county: str | None = Field(
+        default=None,
+        description=(
+            "The county whose records the clauses cite. Taken from the cover sheet when "
+            "there is one, and from the documents when there is not, because a clause "
+            "reading 'of  County Records' is worse than one with no county at all."
+        ),
+    )
     mortgages: list[MortgageEntry] = Field(default_factory=list)
     exceptions: list[ExceptionEntry] = Field(default_factory=list)
     judgments: list[JudgmentEntry] = Field(default_factory=list)

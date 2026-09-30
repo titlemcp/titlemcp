@@ -881,6 +881,7 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
             file_number=request.file_number,
             source={"provider": "anthropic", "document_uri": request.document_uri},
             cover=cover,
+            county=cover.county if cover else None,
             mortgages=mortgages,
             exceptions=exceptions,
             judgments=judgments,
