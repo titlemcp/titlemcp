@@ -647,6 +647,10 @@ class CommitmentRenderService:
             ),
             "first_half_amount": _money_or_blank(entry.first_half_amount),
             "first_half_status": "paid" if entry.first_half_paid else "due and payable",
+            # Plain states, for a state whose wording gives each installment its own
+            # due date: an installment not yet due is unpaid, not "due and payable".
+            "first_half_state": "paid" if entry.first_half_paid else "unpaid",
+            "second_half_state": "paid" if entry.second_half_paid else "unpaid",
             "second_half_amount": _money_or_blank(entry.second_half_amount),
             "second_half_status": "paid" if entry.second_half_paid else "due and payable",
             "special_assessment_line": special_line,

@@ -1115,6 +1115,30 @@ class OrderDataTests(unittest.TestCase):
         self.assertIn("Order belongs to file", result.refusal_reason or "")
 
 
+class TaxInstallmentStateTests(unittest.TestCase):
+    """An installment not yet due is unpaid, which is not the same as due and payable."""
+
+    def test_each_installment_has_a_plain_state(self) -> None:
+        from title_mcp.domain.exam import ExamPackage, TaxParcelEntry
+
+        entry = TaxParcelEntry(
+            parcel_id="00-00-00",
+            tax_year=2025,
+            first_half_amount=Decimal("100.00"),
+            first_half_paid=True,
+            second_half_amount=Decimal("100.00"),
+            second_half_paid=False,
+            provenance=FieldProvenance(
+                sheet=ExamSheetKind.TAX, src_page=1, confidence=ExtractionConfidence.HIGH
+            ),
+        )
+        context = CommitmentRenderService._tax_context(entry, ExamPackage.model_construct())
+        self.assertEqual(
+            (context["first_half_state"], context["second_half_state"]), ("paid", "unpaid")
+        )
+        self.assertEqual(context["second_half_status"], "due and payable", "unchanged for Ohio")
+
+
 class SubsequentInstrumentTests(unittest.TestCase):
     """An assignment or a modification belongs to its mortgage, not beside it."""
 
