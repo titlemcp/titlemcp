@@ -360,6 +360,11 @@ class ExamReconciliationService:
 
     def _check_declared_counts(self, package: ExamPackage) -> list[Discrepancy]:
         cover = package.cover
+        if cover is None:
+            # The declared counts live on the cover. With no cover there is
+            # nothing to compare the detail sheets against, which is a check not
+            # run rather than a check passed.
+            return []
         pairs = (
             (
                 DiscrepancyCode.MORTGAGE_COUNT_MISMATCH,
@@ -558,6 +563,8 @@ class ExamReconciliationService:
     def _check_review_signals(self, package: ExamPackage) -> list[Discrepancy]:
         found: list[Discrepancy] = []
         cover = package.cover
+        if cover is None:
+            return found
 
         if cover.matters_of_concern:
             found.append(
@@ -585,9 +592,11 @@ class ExamReconciliationService:
 
     @staticmethod
     def _entries(package: ExamPackage) -> list[tuple[str, Any, FieldProvenance]]:
-        items: list[tuple[str, Any, FieldProvenance]] = [
-            ("Cover sheet", package.cover, package.cover.provenance)
-        ]
+        items: list[tuple[str, Any, FieldProvenance]] = (
+            [("Cover sheet", package.cover, package.cover.provenance)]
+            if package.cover is not None
+            else []
+        )
         items.extend(
             (f"Mortgage {e.recording.display}", e, e.provenance) for e in package.mortgages
         )

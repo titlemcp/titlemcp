@@ -801,24 +801,30 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
 
         warnings: list[str] = []
         source_specific: dict[str, Any] = {}
+        # A package without a cover sheet is still a package. Some abstractors
+        # send a stack of recorded documents and nothing else, and the sheet is
+        # sometimes there but not recognised, which used to refuse the whole
+        # commitment over one page classification. What its absence costs is the
+        # checks that read it, and those are skipped by name below.
+        cover = None
         cover_pages = grouped.get(ExamSheetKind.SEARCH_COVER)
-        if not cover_pages:
-            return ExamExtractionResult(
-                file_number=request.file_number,
-                status=SourceResultStatus.PARTIAL,
-                warnings=["No search cover sheet was found; the package cannot be reconciled."],
-                page_assignments=classification.assignments,
+        if cover_pages:
+            cover_raw = client.extract(
+                instruction=f"{preamble}Transcribe the search cover sheet.",
+                images=_with_reading_views(cover_pages),
+                schema=ExtractedCoverSheet,
             )
-
-        cover_raw = client.extract(
-            instruction=f"{preamble}Transcribe the search cover sheet.",
-            images=_with_reading_views(cover_pages),
-            schema=ExtractedCoverSheet,
-        )
-        cover = self._build_cover(cover_raw, cover_pages[0].page_number, request.file_number)
-        if cover_raw.state and cover.state is None:
+            cover = self._build_cover(cover_raw, cover_pages[0].page_number, request.file_number)
+            if cover_raw.state and cover.state is None:
+                warnings.append(
+                    f"Cover sheet state {cover_raw.state!r} is not a recognized US state; "
+                    "left blank."
+                )
+        else:
             warnings.append(
-                f"Cover sheet state {cover_raw.state!r} is not a recognized US state; left blank."
+                "No search cover sheet was found. The declared counts could not be "
+                "cross-checked, and the file number, county and dates come from the "
+                "documents instead."
             )
 
         mortgages: list[MortgageEntry] = []
@@ -883,7 +889,12 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
         )
         return ExamExtractionResult(
             file_number=request.file_number,
-            status=SourceResultStatus.SUCCEEDED,
+            # Partial when the cover is missing: the package is usable and the
+            # declared counts were never cross-checked, and a caller deciding
+            # how much to trust it should be able to see the difference.
+            status=(
+                SourceResultStatus.SUCCEEDED if cover is not None else SourceResultStatus.PARTIAL
+            ),
             package=package,
             warnings=warnings,
             page_assignments=classification.assignments,

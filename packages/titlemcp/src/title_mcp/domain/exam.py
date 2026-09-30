@@ -224,7 +224,15 @@ class ExamPackage(BaseModel):
     record_type: str = "exam_package"
     source: dict[str, Any] = Field(default_factory=dict)
     file_number: str = Field(min_length=1)
-    cover: SearchCoverSheet
+    cover: SearchCoverSheet | None = Field(
+        default=None,
+        description=(
+            "The abstractor's cover sheet, when the package has one. Some packages are a "
+            "stack of recorded documents with no cover at all. Its absence costs the "
+            "checks that read it, chiefly the declared counts, and nothing else: the "
+            "matters are on the documents either way."
+        ),
+    )
     mortgages: list[MortgageEntry] = Field(default_factory=list)
     exceptions: list[ExceptionEntry] = Field(default_factory=list)
     judgments: list[JudgmentEntry] = Field(default_factory=list)
