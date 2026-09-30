@@ -354,16 +354,26 @@ class ExtractedRow(BaseModel):
 
 
 class ExtractedSubsequentInstrument(BaseModel):
-    """An assignment, modification or subordination recorded against a mortgage."""
+    """An instrument recorded against a mortgage or lien after it."""
 
     model_config = ConfigDict(str_strip_whitespace=True)
 
-    kind: str = Field(description="One of: assignment, modification, subordination.")
+    kind: str = Field(
+        description=(
+            "One of: assignment, modification, subordination, re_recording (the same "
+            "instrument recorded again, often to correct it), partial_release (a release "
+            "of part of the land or of one party only)."
+        )
+    )
     book: str | None = None
     page: str | None = None
     recorded_date: str | None = None
     party: str | None = Field(
-        default=None, description="For an assignment, who the mortgage was assigned to."
+        default=None,
+        description=(
+            "For an assignment, who the mortgage was assigned to. For a partial release, "
+            "who or what it releases."
+        ),
     )
 
 
@@ -381,10 +391,11 @@ class ExtractedMortgageRow(ExtractedRow):
     subsequent: list[ExtractedSubsequentInstrument] = Field(
         default_factory=list,
         description=(
-            "Assignments, modifications and subordinations of this mortgage, in recorded "
-            "order. These belong to the mortgage and are not separate encumbrances: an "
-            "abstractor lists them beneath it, often as bare references such as "
-            "'assign to ... 1927/1374' or 'Mod 2076/899'."
+            "Assignments, modifications, subordinations, re-recordings and partial releases "
+            "of this mortgage, in recorded order. These belong to the mortgage and are not "
+            "separate encumbrances: an abstractor lists them beneath it, often as bare "
+            "references such as 'assign to ... 1927/1374', 'Mod 2076/899' or 're-rec "
+            "323/677'."
         ),
     )
     notes: str | None = None
@@ -416,6 +427,14 @@ class ExtractedJudgmentRow(ExtractedRow):
     amount: str | None = None
     book: str | None = None
     page: str | None = None
+    subsequent: list[ExtractedSubsequentInstrument] = Field(
+        default_factory=list,
+        description=(
+            "Instruments recorded against this lien since, such as a partial release "
+            "noted beside it ('partial release at ...'). A full release means the lien is "
+            "not listed at all."
+        ),
+    )
 
 
 class ExtractedTaxRow(ExtractedRow):
@@ -1116,7 +1135,7 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
         """Keep only the ones that say what they are and where they are recorded.
 
         A reference with no book and page cannot be cited on a commitment, and a
-        kind that is not one of the three is not something this models.
+        kind that is not one of ``MortgageInstrumentKind`` is not something this models.
         """
 
         built: list[SubsequentInstrument] = []
@@ -1179,6 +1198,7 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
             court=raw.court,
             amount=parse_money(raw.amount),
             recording=recording,
+            subsequent=cls._build_subsequent(raw.subsequent),
             provenance=cls._provenance(ExamSheetKind.JUDGMENTS, page, raw),
         )
 
