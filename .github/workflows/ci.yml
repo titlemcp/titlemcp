@@ -1,0 +1,53 @@
+name: CI
+
+# Every push to main and every pull request, including from forks. Without this
+# a contributor opening a pull request gets no signal at all, and the maintainer
+# has to run the suite locally to find out whether it is green.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  # A new push to a branch makes the run already in flight pointless.
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The jurisdiction catalog is six figures of small files and no test
+          # reads its history.
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e packages/titlemcp
+          python -m pip install ruff
+
+      # Ruff is the project's linter, configured in pyproject: line length 100,
+      # target py312, rules E,F,I,UP,B.
+      - name: Lint
+        run: ruff check .
+
+      - name: Test
+        run: python -m unittest discover -s packages/titlemcp/tests -v
+
+      - name: Package builds and its metadata is valid
+        run: |
+          python -m pip install build twine
+          python -m build packages/titlemcp
+          python -m twine check packages/titlemcp/dist/*
