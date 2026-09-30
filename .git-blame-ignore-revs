@@ -1,0 +1,7 @@
+# Commits that only change layout, so `git blame` looks through them to whoever
+# last changed what a line says. GitHub reads this file on its own. Locally:
+#
+#     git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Format the repository with ruff, and keep it that way (#20)
+bc281f62ae0de44c25c9757569ed0edb46276ae9
