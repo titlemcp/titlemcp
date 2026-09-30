@@ -16,11 +16,16 @@ class PackagingTests(unittest.TestCase):
 
         self.assertEqual(metadata["project"]["name"], "titlemcp")
 
-    def test_version_matches_project_metadata(self) -> None:
+    def test_version_comes_from_the_release_tag(self) -> None:
         with (PACKAGE_ROOT / "pyproject.toml").open("rb") as pyproject:
             metadata = tomllib.load(pyproject)
 
-        self.assertEqual(title_mcp.__version__, metadata["project"]["version"])
+        # Nothing in the tree states a version: a release is a tag, and a number
+        # written here would have to be edited for every one of them.
+        self.assertNotIn("version", metadata["project"])
+        self.assertIn("version", metadata["project"]["dynamic"])
+        self.assertEqual(metadata["tool"]["hatch"]["version"]["source"], "vcs")
+        self.assertTrue(title_mcp.__version__)
 
     def test_jurisdiction_extra_points_to_package(self) -> None:
         with (PACKAGE_ROOT / "pyproject.toml").open("rb") as pyproject:

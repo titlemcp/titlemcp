@@ -1,6 +1,10 @@
 name: Publish Python Package
 
 on:
+  # Publishing a GitHub release publishes the core package at that tag. The
+  # manual run stays for the other packages, and for building without publishing.
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       package-path:
@@ -16,6 +20,10 @@ on:
 permissions:
   contents: read
 
+env:
+  PACKAGE_PATH: ${{ inputs.package-path || 'packages/titlemcp' }}
+  PUBLISH: ${{ github.event_name == 'release' || inputs.publish }}
+
 jobs:
   build:
     name: Build distributions
@@ -24,6 +32,9 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          # The version is read from the release tag, so the tags have to be here.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -35,46 +46,58 @@ jobs:
 
       - name: Audit jurisdiction readiness
         run: |
-          if [ -f "${{ inputs.package-path }}/titlemcp-capability.toml" ]; then
-            if [ "${{ inputs.publish }}" = "true" ]; then
+          if [ -f "$PACKAGE_PATH/titlemcp-capability.toml" ]; then
+            if [ "$PUBLISH" = "true" ]; then
               python scripts/audit_jurisdiction_package.py \
-                "${{ inputs.package-path }}" \
+                "$PACKAGE_PATH" \
                 --require-publish-ready
             else
-              python scripts/audit_jurisdiction_package.py "${{ inputs.package-path }}"
+              python scripts/audit_jurisdiction_package.py "$PACKAGE_PATH"
             fi
           fi
 
       - name: Install package for tests
         run: |
-          if [ "${{ inputs.package-path }}" != "packages/titlemcp" ]; then
+          if [ "$PACKAGE_PATH" != "packages/titlemcp" ]; then
             python -m pip install -e packages/titlemcp
           fi
-          python -m pip install -e "${{ inputs.package-path }}"
+          python -m pip install -e "$PACKAGE_PATH"
 
       - name: Run package tests
         run: |
-          if [ -d "${{ inputs.package-path }}/tests" ]; then
-            python -m unittest discover -s "${{ inputs.package-path }}/tests" -v
+          if [ -d "$PACKAGE_PATH/tests" ]; then
+            python -m unittest discover -s "$PACKAGE_PATH/tests" -v
           fi
 
       - name: Build package
-        working-directory: ${{ inputs.package-path }}
+        working-directory: ${{ env.PACKAGE_PATH }}
         run: python -m build
 
+      # A commit that is not a release tag builds as a development version. It is
+      # fine to build and test one; it must never be what gets published.
+      - name: Refuse to publish an untagged build
+        if: env.PUBLISH == 'true'
+        working-directory: ${{ env.PACKAGE_PATH }}
+        run: |
+          ls dist
+          if ls dist | grep -Eq '\.dev|\+'; then
+            echo "::error::This commit is not a release tag, so there is no release version to publish."
+            exit 1
+          fi
+
       - name: Check package metadata
-        working-directory: ${{ inputs.package-path }}
+        working-directory: ${{ env.PACKAGE_PATH }}
         run: python -m twine check dist/*
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
           name: python-distributions
-          path: ${{ inputs.package-path }}/dist/*
+          path: ${{ env.PACKAGE_PATH }}/dist/*
 
   publish:
     name: Publish to PyPI
-    if: inputs.publish
+    if: github.event_name == 'release' || inputs.publish
     needs: build
     runs-on: ubuntu-latest
     environment: pypi

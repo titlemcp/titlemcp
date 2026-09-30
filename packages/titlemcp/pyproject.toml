@@ -1,6 +1,9 @@
 [project]
 name = "titlemcp"
-version = "0.2.0"
+# The version is the release tag. Nothing in the tree states it, so cutting a
+# release is tagging a commit: `v0.3.0` builds as 0.3.0, and a commit after it
+# builds as a development version that PyPI will not accept.
+dynamic = ["version"]
 description = "Reusable MCP platform for title and real estate service operations."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -87,8 +90,13 @@ titlemcp-server = "title_mcp.mcp.server:main"
 titlemcp-ollama = "title_mcp.client.ollama_bridge:main"
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+# The package sits two directories below the repository root, where the tags are.
+raw-options = { root = "../..", version_scheme = "guess-next-dev", local_scheme = "node-and-date" }
 
 [tool.hatch.build]
 include = [
