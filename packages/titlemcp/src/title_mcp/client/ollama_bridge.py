@@ -21,14 +21,14 @@ def mcp_tool_to_ollama_tool(tool: Any) -> dict[str, Any]:
         "function": {
             "name": tool.name,
             "description": tool.description or "",
-            "parameters": tool.inputSchema,
+            "parameters": tool.input_schema,
         },
     }
 
 
 def tool_result_to_text(result: Any) -> str:
-    if result.structuredContent:
-        return json.dumps(result.structuredContent)
+    if result.structured_content:
+        return json.dumps(result.structured_content)
 
     parts = []
     for item in result.content:

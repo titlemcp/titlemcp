@@ -4,7 +4,7 @@ from importlib.metadata import entry_points
 from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
-    from mcp.server.fastmcp import FastMCP
+    from mcp.server.mcpserver import MCPServer
 
     from title_mcp.platform import TitleMCPPlatform
 
@@ -12,12 +12,12 @@ if TYPE_CHECKING:
 class TitleMCPToolset(Protocol):
     toolset_id: str
 
-    def register(self, mcp: FastMCP, platform: TitleMCPPlatform) -> None:
-        """Register MCP tools against a FastMCP server."""
+    def register(self, mcp: MCPServer, platform: TitleMCPPlatform) -> None:
+        """Register MCP tools against a MCPServer server."""
 
 
 def register_entry_point_toolsets(
-    mcp: FastMCP,
+    mcp: MCPServer,
     platform: TitleMCPPlatform,
     *,
     group: str = "title_mcp.toolsets",
