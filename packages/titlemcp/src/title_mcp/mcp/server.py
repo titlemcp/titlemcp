@@ -4,8 +4,8 @@ import json
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urljoin, urlsplit, urlunsplit
 
-from mcp.server.fastmcp import FastMCP
-from mcp.server.fastmcp.exceptions import ResourceError
+from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ResourceError
 from mcp.server.transport_security import TransportSecuritySettings
 from mcp.types import Prompt, Resource, ResourceTemplate, Tool
 from starlette.requests import Request
@@ -22,20 +22,17 @@ from title_mcp.settings import TitleMCPSettings, get_settings
 def create_mcp_server(
     settings: TitleMCPSettings | None = None,
     platform: TitleMCPPlatform | None = None,
-) -> FastMCP:
+) -> MCPServer:
     settings = settings or (platform.settings if platform else get_settings())
     configure_logging(settings.log_level, json_logs=settings.log_json)
     platform = platform or TitleMCPPlatform(settings=settings)
 
-    mcp = FastMCP(
+    mcp = MCPServer(
         settings.app_name,
         instructions=(
             "Tools coordinate title and real estate service workflows. "
             "They are review-first and do not make autonomous legal decisions."
         ),
-        host=settings.mcp_host,
-        port=settings.mcp_port,
-        transport_security=_transport_security_settings(settings),
     )
 
     register_core_tools(mcp, platform)
@@ -59,7 +56,7 @@ def _transport_security_settings(settings: TitleMCPSettings) -> TransportSecurit
 
 
 def register_tool_catalog_route(
-    mcp: FastMCP,
+    mcp: MCPServer,
     settings: TitleMCPSettings,
     mcp_platform: TitleMCPPlatform,
 ) -> None:
@@ -127,25 +124,25 @@ def register_tool_catalog_route(
         )
 
 
-async def _catalog_tools(mcp: FastMCP) -> list[dict[str, Any]]:
+async def _catalog_tools(mcp: MCPServer) -> list[dict[str, Any]]:
     tools = sorted(await mcp.list_tools(), key=lambda tool: tool.name)
     return [_tool_catalog_entry(tool) for tool in tools]
 
 
-async def _catalog_resources(mcp: FastMCP) -> list[dict[str, Any]]:
+async def _catalog_resources(mcp: MCPServer) -> list[dict[str, Any]]:
     resources = sorted(await mcp.list_resources(), key=lambda resource: str(resource.uri))
     return [_model_catalog_entry(resource) for resource in resources]
 
 
-async def _catalog_resource_templates(mcp: FastMCP) -> list[dict[str, Any]]:
+async def _catalog_resource_templates(mcp: MCPServer) -> list[dict[str, Any]]:
     templates = sorted(
         await mcp.list_resource_templates(),
-        key=lambda template: str(template.uriTemplate),
+        key=lambda template: str(template.uri_template),
     )
     return [_model_catalog_entry(template) for template in templates]
 
 
-async def _catalog_prompts(mcp: FastMCP) -> list[dict[str, Any]]:
+async def _catalog_prompts(mcp: MCPServer) -> list[dict[str, Any]]:
     prompts = sorted(await mcp.list_prompts(), key=lambda prompt: prompt.name)
     return [_model_catalog_entry(prompt) for prompt in prompts]
 
@@ -193,7 +190,7 @@ def _public_runtime_settings(settings: TitleMCPSettings) -> dict[str, Any]:
 
 
 def register_inspector_support(
-    mcp: FastMCP,
+    mcp: MCPServer,
     settings: TitleMCPSettings,
 ) -> None:
     """Expose MCP resources and prompts that make Inspector exploration useful."""
@@ -452,9 +449,13 @@ def register_inspector_support(
         return prompt
 
 
-def _mcp_endpoint(mcp: FastMCP) -> str:
-    endpoint = getattr(mcp.settings, "streamable_http_path", "/mcp")
-    return endpoint if endpoint.startswith("/") else f"/{endpoint}"
+# Where the streamable HTTP transport is mounted. The SDK's default, stated here
+# because the server object no longer carries its transport settings.
+MCP_ENDPOINT = "/mcp"
+
+
+def _mcp_endpoint(mcp: MCPServer) -> str:
+    return MCP_ENDPOINT
 
 
 def _request_mcp_url(request: Request, endpoint: str) -> str:
@@ -497,11 +498,11 @@ def _tool_catalog_entry(tool: Tool) -> dict[str, Any]:
         "title": tool.title or annotations.get("title") or _humanize_tool_name(tool.name),
         "description": _normalize_description(tool.description),
         "annotations": annotations,
-        "parameters": _parameter_summaries(tool.inputSchema),
-        "input_schema": tool.inputSchema,
+        "parameters": _parameter_summaries(tool.input_schema),
+        "input_schema": tool.input_schema,
     }
-    if tool.outputSchema:
-        entry["output_schema"] = tool.outputSchema
+    if tool.output_schema:
+        entry["output_schema"] = tool.output_schema
     return entry
 
 
@@ -547,10 +548,31 @@ def _humanize_tool_name(name: str) -> str:
     return name.replace("_", " ").title()
 
 
+def transport_options(settings: TitleMCPSettings) -> dict[str, Any]:
+    """What the chosen transport is run with.
+
+    The SDK takes the bind address and the transport security when the server is
+    run, not when it is built. They are gathered here so that an HTTP transport
+    is never started without the host and origin checks the settings ask for.
+    Stdio has no address and no peers to check, and takes nothing.
+    """
+
+    if settings.mcp_transport == "stdio":
+        return {}
+    options: dict[str, Any] = {
+        "host": settings.mcp_host,
+        "port": settings.mcp_port,
+        "transport_security": _transport_security_settings(settings),
+    }
+    if settings.mcp_transport == "streamable-http":
+        options["streamable_http_path"] = MCP_ENDPOINT
+    return options
+
+
 def main() -> None:
     settings = get_settings()
     server = create_mcp_server(settings)
-    server.run(transport=settings.mcp_transport)
+    server.run(transport=settings.mcp_transport, **transport_options(settings))
 
 
 if __name__ == "__main__":

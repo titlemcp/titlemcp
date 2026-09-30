@@ -27,9 +27,7 @@ class FranklinRecorderSourceConnector(SourceConnector):
     )
 
     def __init__(self, websocket_url: str | None = None) -> None:
-        self.websocket_url = websocket_url or os.getenv(
-            "TITLEMCP_US_OH_FRANKLIN_RECORDER_WS_URL"
-        )
+        self.websocket_url = websocket_url or os.getenv("TITLEMCP_US_OH_FRANKLIN_RECORDER_WS_URL")
 
     def supports(self, jurisdiction, kind=None) -> bool:
         kind_matches = kind is None or kind == self.descriptor.kind

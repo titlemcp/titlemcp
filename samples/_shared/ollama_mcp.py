@@ -56,13 +56,13 @@ def mcp_tool_to_ollama_tool(tool: Any) -> dict[str, Any]:
         "function": {
             "name": tool.name,
             "description": tool.description or "",
-            "parameters": tool.inputSchema,
+            "parameters": tool.input_schema,
         },
     }
 
 
 def tool_result_to_text(result: Any) -> str:
-    structured_content = getattr(result, "structuredContent", None)
+    structured_content = getattr(result, "structured_content", None)
     if structured_content:
         return json.dumps(structured_content, default=str)
 
@@ -113,8 +113,7 @@ def summarize_source_result(text: str) -> str:
             summary = first_record["summary"]
             if summary.get("title_officer_review_required") is not None:
                 parts.append(
-                    "title_officer_review_required="
-                    f"{summary['title_officer_review_required']!r}"
+                    f"title_officer_review_required={summary['title_officer_review_required']!r}"
                 )
     return ", ".join(parts)
 

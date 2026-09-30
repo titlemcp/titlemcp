@@ -43,10 +43,7 @@ FILE_NUMBER = "OH-00000-SAMPLE"
 FAKE_API_KEY = "sk-ant-test-DO-NOT-LEAK-0123456789"
 
 # Page images are opaque to these tests; only the page numbers matter.
-PAGES = [
-    SheetImage(page_number=n, data_base64="ZmFrZQ==")
-    for n in (1, 11, 13, 15, 16, 19)
-]
+PAGES = [SheetImage(page_number=n, data_base64="ZmFrZQ==") for n in (1, 11, 13, 15, 16, 19)]
 
 CLASSIFICATION = PageClassification(
     assignments=[
@@ -256,6 +253,29 @@ class NormalizationTests(unittest.TestCase):
         # A case number is not a book/page reference.
         self.assertIsNone(parse_recording_ref("18 JL 2207"))
 
+    def test_index_reference_written_without_a_slash(self) -> None:
+        # Abstractors also write the pair with labels, a hyphen or a comma. An entry
+        # that is not read as a reference is left out of the cross-check, so a matter
+        # on the index with no detail sheet would go unnoticed.
+        for text, book, page, series in (
+            ("plat bk 7 pg 48", "7", "48", "PLAT"),
+            ("Vol. 311, Page 415", "311", "415", None),
+            ("Book 311 Pg 415 (easement)", "311", "415", None),
+            ("311-415", "311", "415", None),
+            ("1222,906", "1222", "906", None),
+            (" 1222 , 906 ", "1222", "906", None),
+        ):
+            ref = parse_recording_ref(text)
+            assert ref is not None, text
+            self.assertEqual((ref.book, ref.page, ref.document_type), (book, page, series), text)
+
+    def test_a_hyphenated_instrument_number_is_not_a_book_and_page(self) -> None:
+        # Year and sequence: too long to be a page, and not a volume.
+        self.assertIsNone(parse_recording_ref("2000-0000001"))
+        # A bare pair is only read when it is the whole entry.
+        self.assertIsNone(parse_recording_ref("see 311-415 and others"))
+        self.assertIsNone(parse_recording_ref("00 JL 0000"))
+
     def test_state_names_normalize_to_codes(self) -> None:
         self.assertEqual(normalize_state("West Virginia"), "WV")
         self.assertEqual(normalize_state(" ohio "), "OH")
@@ -461,7 +481,8 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
             overrides={
                 "classification": PageClassification(
                     assignments=[
-                        a for a in CLASSIFICATION.assignments
+                        a
+                        for a in CLASSIFICATION.assignments
                         if a.sheet is not ExamSheetKind.INDEX_SUMMARY
                     ]
                 )
@@ -507,8 +528,11 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
                 "entries": [
                     *INDEX.entries,
                     ExtractedIndexEntry(
-                        column=IndexColumn.MORTGAGES, text="0198/220", struck=True,
-                        strike_evidence="hand-drawn line through the entry", annotation="rel",
+                        column=IndexColumn.MORTGAGES,
+                        text="0198/220",
+                        struck=True,
+                        strike_evidence="hand-drawn line through the entry",
+                        annotation="rel",
                     ),
                     ExtractedIndexEntry(column=E, text="0455/10", struck=True),
                 ]
@@ -574,8 +598,10 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
 
         assert result.package is not None and result.package.index is not None
         doubt = result.package.mortgages[0].provenance.uncertain[0]
-        self.assertEqual((doubt.field, doubt.read_as, doubt.alternatives, doubt.reason),
-                         ("amount", "$100,000.00", ["$160,000.00"], "smudge"))
+        self.assertEqual(
+            (doubt.field, doubt.read_as, doubt.alternatives, doubt.reason),
+            ("amount", "$100,000.00", ["$160,000.00"], "smudge"),
+        )
         self.assertEqual(result.package.index.provenance.uncertain[0].field, "entry 0461/212")
 
     async def test_a_ticked_entry_reported_struck_stays_live(self) -> None:
@@ -585,7 +611,10 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
                 "entries": [
                     ExtractedIndexEntry(column=IndexColumn.MORTGAGES, text="0311/415"),
                     ExtractedIndexEntry(
-                        column=E, text="DV 0461/212", struck=True, annotation="check mark",
+                        column=E,
+                        text="DV 0461/212",
+                        struck=True,
+                        annotation="check mark",
                         strike_evidence="stroke through the leading letters",
                     ),
                     ExtractedIndexEntry(column=E, text="0931/104", annotation="✓"),
@@ -605,7 +634,9 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
                 "entries": [
                     *INDEX.entries,
                     ExtractedIndexEntry(
-                        column=IndexColumn.MORTGAGES, text="0187/1265", annotation="R. 0290/752",
+                        column=IndexColumn.MORTGAGES,
+                        text="0187/1265",
+                        annotation="R. 0290/752",
                         released=True,
                     ),
                 ]

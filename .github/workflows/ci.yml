@@ -21,13 +21,13 @@ jobs:
     name: Lint and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # The jurisdiction catalog is six figures of small files and no test
           # reads its history.
           fetch-depth: 1
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -38,12 +38,18 @@ jobs:
           # With the test extra, so the optional paths are covered rather than
           # skipped: Pillow is optional at runtime and three image tests need it.
           python -m pip install -e "packages/titlemcp[test]"
-          python -m pip install ruff
+          # Held to one minor version. The formatter's output can change between
+          # them, and an unpinned install would fail a pull request over layout
+          # its author never touched.
+          python -m pip install "ruff>=0.16,<0.17"
 
-      # Ruff is the project's linter, configured in pyproject: line length 100,
-      # target py312, rules E,F,I,UP,B.
+      # Ruff is the project's linter and formatter, configured in pyproject:
+      # line length 100, target py312, rules E,F,I,UP,B.
       - name: Lint
         run: ruff check .
+
+      - name: Format
+        run: ruff format --check --diff .
 
       - name: Test
         run: python -m unittest discover -s packages/titlemcp/tests -v

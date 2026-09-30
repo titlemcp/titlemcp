@@ -31,9 +31,7 @@ from title_mcp.sources.base import (
 LOGGER = logging.getLogger(__name__)
 
 _EMAIL_RE = re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE)
-_PHONE_RE = re.compile(
-    r"(?:\+?1[\s.\-])?(?:\(\d{3}\)|\d{3})[\s.\-]\d{3}[\s.\-]\d{4}\b"
-)
+_PHONE_RE = re.compile(r"(?:\+?1[\s.\-])?(?:\(\d{3}\)|\d{3})[\s.\-]\d{3}[\s.\-]\d{4}\b")
 _SENSITIVE_QUERY_KEYS = {"api_key"}
 _CONTACT_PATH_TERMS = (
     "contact",
@@ -64,9 +62,7 @@ _PAGE_TEXT_CHAR_LIMIT = 20_000
 _PAGE_FETCH_USER_AGENT = (
     "Mozilla/5.0 (compatible; TitleMCP-HOA/1.0; +https://github.com/anthropics)"
 )
-_PAGE_FETCH_SKIP_TAGS = frozenset(
-    {"script", "style", "noscript", "template", "head", "svg"}
-)
+_PAGE_FETCH_SKIP_TAGS = frozenset({"script", "style", "noscript", "template", "head", "svg"})
 
 _STATE_NAMES = {
     "AL": "Alabama",
@@ -343,9 +339,7 @@ class HoaContactSerpApiSourceConnector(SourceConnector):
             return SourceResult(
                 source_id=self.source_id,
                 status=SourceResultStatus.REQUIRES_CONFIGURATION,
-                warnings=[
-                    "Set TITLE_MCP_SERPAPI_API_KEY in .env before querying HOA contacts."
-                ],
+                warnings=["Set TITLE_MCP_SERPAPI_API_KEY in .env before querying HOA contacts."],
                 metadata={"required_env_vars": ["TITLE_MCP_SERPAPI_API_KEY"]},
             )
 
@@ -360,9 +354,7 @@ class HoaContactSerpApiSourceConnector(SourceConnector):
             )
 
         status = (
-            SourceResultStatus.SUCCEEDED
-            if record.result_count
-            else SourceResultStatus.NO_RESULTS
+            SourceResultStatus.SUCCEEDED if record.result_count else SourceResultStatus.NO_RESULTS
         )
         metadata: dict[str, Any] = {
             "canonical_schema": record.schema_name,
@@ -520,19 +512,11 @@ def hoa_contact_record_from_serpapi_searches(
     email_addresses = _unique(
         email for candidate in candidates for email in candidate.email_addresses
     )
-    phone_numbers = _unique(
-        phone for candidate in candidates for phone in candidate.phone_numbers
-    )
-    addresses = _unique(
-        candidate.address for candidate in candidates if candidate.address
-    )
-    websites = _unique(
-        candidate.website for candidate in candidates if candidate.website
-    )
+    phone_numbers = _unique(phone for candidate in candidates for phone in candidate.phone_numbers)
+    addresses = _unique(candidate.address for candidate in candidates if candidate.address)
+    websites = _unique(candidate.website for candidate in candidates if candidate.website)
     search_summaries = _serpapi_search_summaries(searches)
-    primary_parameters = (
-        search_summaries[-1]["search_parameters"] if search_summaries else {}
-    )
+    primary_parameters = search_summaries[-1]["search_parameters"] if search_summaries else {}
     return HoaContactSearchRecord(
         source={
             "source_id": HoaContactSerpApiSourceConnector.source_id,
@@ -665,12 +649,8 @@ def _merge_candidates(
             "website": existing.website or incoming.website,
             "source_url": existing.source_url or incoming.source_url,
             "address": existing.address or incoming.address,
-            "phone_numbers": _unique(
-                [*existing.phone_numbers, *incoming.phone_numbers]
-            ),
-            "email_addresses": _unique(
-                [*existing.email_addresses, *incoming.email_addresses]
-            ),
+            "phone_numbers": _unique([*existing.phone_numbers, *incoming.phone_numbers]),
+            "email_addresses": _unique([*existing.email_addresses, *incoming.email_addresses]),
             "snippet": existing.snippet or incoming.snippet,
             "raw": raw,
         }
@@ -899,12 +879,8 @@ def _serpapi_search_summaries(searches: list[dict[str, Any]]) -> list[dict[str, 
         summaries.append(
             {
                 "stage": search.get("stage") or "contact_lookup",
-                "search_metadata": _redact_serpapi_payload(
-                    data.get("search_metadata") or {}
-                ),
-                "search_parameters": _redact_serpapi_payload(
-                    search.get("search_parameters") or {}
-                ),
+                "search_metadata": _redact_serpapi_payload(data.get("search_metadata") or {}),
+                "search_parameters": _redact_serpapi_payload(search.get("search_parameters") or {}),
                 "organic_result_count": len(data.get("organic_results") or []),
                 "local_result_count": len(_local_result_items(data.get("local_results"))),
                 "knowledge_graph_present": isinstance(data.get("knowledge_graph"), dict),

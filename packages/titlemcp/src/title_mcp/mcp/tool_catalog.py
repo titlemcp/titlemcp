@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
 from title_mcp.capabilities import CapabilityType
@@ -25,8 +25,8 @@ from title_mcp.sources import (
 from title_mcp.vendors import VendorKind
 
 
-def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
-    """Register the core TitleMCP tool surface on a FastMCP server."""
+def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
+    """Register the core TitleMCP tool surface on a MCPServer server."""
 
     async def ensure_ready() -> None:
         await platform.initialize()
@@ -521,11 +521,7 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
                     if capability_type in capability.capability_types
                 ]
 
-        return {
-            "capabilities": [
-                capability.model_dump(mode="json") for capability in capabilities
-            ]
-        }
+        return {"capabilities": [capability.model_dump(mode="json") for capability in capabilities]}
 
     @mcp.tool(
         title="List Source Connectors",
@@ -557,15 +553,11 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
         ]
         if source_kind and jurisdiction is None:
             connectors = [
-                connector
-                for connector in connectors
-                if connector.descriptor.kind == source_kind
+                connector for connector in connectors if connector.descriptor.kind == source_kind
             ]
 
         return {
-            "sources": [
-                connector.descriptor.model_dump(mode="json") for connector in connectors
-            ]
+            "sources": [connector.descriptor.model_dump(mode="json") for connector in connectors]
         }
 
     @mcp.tool(
@@ -598,15 +590,11 @@ def register_core_tools(mcp: FastMCP, platform: TitleMCPPlatform) -> None:
         ]
         if vendor_kind and jurisdiction is None:
             connectors = [
-                connector
-                for connector in connectors
-                if connector.descriptor.kind == vendor_kind
+                connector for connector in connectors if connector.descriptor.kind == vendor_kind
             ]
 
         return {
-            "vendors": [
-                connector.descriptor.model_dump(mode="json") for connector in connectors
-            ]
+            "vendors": [connector.descriptor.model_dump(mode="json") for connector in connectors]
         }
 
 
@@ -652,8 +640,10 @@ def _public_parcel_lookup_result(result: dict[str, Any]) -> dict[str, Any]:
 
 
 def _hide_parcel_provider_name(value: Any) -> str:
-    return str(value).replace("Regrid parcel lookup", "Parcel lookup").replace(
-        "Regrid Parcel Search", "Parcel Lookup"
+    return (
+        str(value)
+        .replace("Regrid parcel lookup", "Parcel lookup")
+        .replace("Regrid Parcel Search", "Parcel Lookup")
     )
 
 

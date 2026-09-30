@@ -19,9 +19,7 @@ def capability_manifest() -> CapabilityManifest:
         jurisdiction_scopes=[site.jurisdiction_scope for site in OH_IASWORLD_SITES],
         workflow_kinds=[WorkflowKind.TAX_CERTIFICATE],
         entry_points={
-            "title_mcp.adapters": (
-                "titlemcp_us_oh_auditor.adapters:OhioCountyAuditorAdapter"
-            ),
+            "title_mcp.adapters": ("titlemcp_us_oh_auditor.adapters:OhioCountyAuditorAdapter"),
             "title_mcp.plugins": "titlemcp_us_oh_auditor.plugin:OhioAuditorPlugin",
             "title_mcp.toolsets": "titlemcp_us_oh_auditor.toolsets:OhioAuditorToolset",
         },

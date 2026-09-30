@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
 from title_mcp.platform import TitleMCPPlatform
@@ -15,7 +15,7 @@ from titlemcp_platform_iasworld.factory import build_auditor_source_connector
 
 
 def register_auditor_tool(
-    mcp: FastMCP,
+    mcp: MCPServer,
     platform: TitleMCPPlatform,
     config: IasWorldSiteConfig,
 ) -> None:

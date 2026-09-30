@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 from title_mcp.platform import TitleMCPPlatform
 from titlemcp_platform_iasworld.tooling import register_auditor_tool
@@ -12,6 +12,6 @@ class OhioAuditorToolset:
 
     toolset_id = "us-oh-auditor"
 
-    def register(self, mcp: FastMCP, platform: TitleMCPPlatform) -> None:
+    def register(self, mcp: MCPServer, platform: TitleMCPPlatform) -> None:
         for site in OH_IASWORLD_SITES:
             register_auditor_tool(mcp, platform, site)
