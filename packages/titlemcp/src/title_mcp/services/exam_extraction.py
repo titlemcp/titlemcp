@@ -801,24 +801,53 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
 
         warnings: list[str] = []
         source_specific: dict[str, Any] = {}
+        # A package without a cover sheet is still a package. Some abstractors
+        # send a stack of recorded documents and nothing else, and the sheet is
+        # sometimes there but not recognised, which used to refuse the whole
+        # commitment over one page classification. What its absence costs is the
+        # checks that read it, and those are skipped by name below.
+        cover = None
         cover_pages = grouped.get(ExamSheetKind.SEARCH_COVER)
+        cover_from = "its own sheet"
         if not cover_pages:
-            return ExamExtractionResult(
-                file_number=request.file_number,
-                status=SourceResultStatus.PARTIAL,
-                warnings=["No search cover sheet was found; the package cannot be reconciled."],
-                page_assignments=classification.assignments,
+            # A cover sheet is a set of facts, not a page kind. Several
+            # abstractors put them on the same sheet as the first summary: a
+            # "TITLE REPORT, Page One" carries the file number, the property,
+            # who ordered it and the search period, and then runs straight into
+            # the mortgages. That sheet classifies as a summary, correctly, and
+            # the order details on it are worth reading anyway. Asking for them
+            # costs one call and returns nulls when they are not there.
+            cover_pages = grouped.get(ExamSheetKind.INDEX_SUMMARY)
+            cover_from = "the summary sheet"
+        if cover_pages:
+            cover_raw = client.extract(
+                instruction=(
+                    f"{preamble}Transcribe the order details from this sheet: the file "
+                    "number, the property, the county, who the search was for, the search "
+                    "period and dates, the declared counts, and any matters of concern. "
+                    "This may be a sheet that carries those details and then runs into the "
+                    "mortgages or other matters; read only the order details from it and "
+                    "leave anything not shown null."
+                ),
+                images=_with_reading_views(cover_pages),
+                schema=ExtractedCoverSheet,
             )
-
-        cover_raw = client.extract(
-            instruction=f"{preamble}Transcribe the search cover sheet.",
-            images=_with_reading_views(cover_pages),
-            schema=ExtractedCoverSheet,
-        )
-        cover = self._build_cover(cover_raw, cover_pages[0].page_number, request.file_number)
-        if cover_raw.state and cover.state is None:
+            cover = self._build_cover(cover_raw, cover_pages[0].page_number, request.file_number)
+            if cover_raw.state and cover.state is None:
+                warnings.append(
+                    f"Cover sheet state {cover_raw.state!r} is not a recognized US state; "
+                    "left blank."
+                )
+        else:
             warnings.append(
-                f"Cover sheet state {cover_raw.state!r} is not a recognized US state; left blank."
+                "No search cover sheet was found, and no summary sheet to read the order "
+                "details from. The declared counts could not be cross-checked, and the file "
+                "number, county and dates come from the documents instead."
+            )
+        if cover is not None and cover_from != "its own sheet":
+            warnings.append(
+                f"The package has no separate cover sheet; the order details were read from "
+                f"{cover_from}, which carries them on this abstractor's form."
             )
 
         mortgages: list[MortgageEntry] = []
@@ -875,6 +904,7 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
             file_number=request.file_number,
             source={"provider": "anthropic", "document_uri": request.document_uri},
             cover=cover,
+            county=cover.county if cover else None,
             mortgages=mortgages,
             exceptions=exceptions,
             judgments=judgments,
@@ -883,7 +913,12 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
         )
         return ExamExtractionResult(
             file_number=request.file_number,
-            status=SourceResultStatus.SUCCEEDED,
+            # Partial when the cover is missing: the package is usable and the
+            # declared counts were never cross-checked, and a caller deciding
+            # how much to trust it should be able to see the difference.
+            status=(
+                SourceResultStatus.SUCCEEDED if cover is not None else SourceResultStatus.PARTIAL
+            ),
             package=package,
             warnings=warnings,
             page_assignments=classification.assignments,

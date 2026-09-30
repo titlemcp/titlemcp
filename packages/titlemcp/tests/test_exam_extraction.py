@@ -359,7 +359,14 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn(FAKE_API_KEY, payload)
         self.assertNotIn("sk-ant", payload)
 
-    async def test_missing_cover_sheet_returns_partial(self) -> None:
+    async def test_a_package_with_no_cover_sheet_is_still_a_package(self) -> None:
+        """A missing cover costs the checks that read it, and nothing else.
+
+        Some abstractors send a stack of recorded documents with no cover at
+        all, and a cover that is there is sometimes not recognised. Refusing the
+        package put the whole commitment behind one page classification.
+        """
+
         service = self._service(
             overrides={
                 "classification": PageClassification(
@@ -372,8 +379,39 @@ class ExtractionServiceTests(unittest.IsolatedAsyncioTestCase):
         result = await service.extract_package(self._request())
 
         self.assertEqual(result.status, SourceResultStatus.PARTIAL)
-        self.assertIsNone(result.package)
-        self.assertIn("cover sheet", result.warnings[0])
+        self.assertIsNotNone(result.package)
+        assert result.package is not None
+        self.assertIsNone(result.package.cover)
+        self.assertTrue(result.package.mortgages, "the detail sheets were still read")
+        self.assertTrue(
+            any("cover sheet" in w for w in result.warnings),
+            "the reader is told the cross-check could not be done",
+        )
+
+    async def test_reconciling_a_package_with_no_cover_skips_the_declared_counts(self) -> None:
+        """The check is not run, which is not the same as the check passing."""
+
+        from title_mcp.services.exam import ExamReconciliationService
+
+        service = self._service(
+            overrides={
+                "classification": PageClassification(
+                    assignments=[
+                        PageAssignment(page_number=15, sheet=ExamSheetKind.MORTGAGES),
+                    ]
+                )
+            }
+        )
+        result = await service.extract_package(self._request())
+        assert result.package is not None
+
+        reconciliation = ExamReconciliationService().reconcile(result.package)
+        counts = [
+            d
+            for d in (*reconciliation.blocking, *reconciliation.advisory)
+            if "count" in d.code.value
+        ]
+        self.assertEqual(counts, [], "a missing cover cannot produce a count mismatch")
 
     async def test_canonical_mapping_produces_an_exam_package(self) -> None:
         service = self._service()
