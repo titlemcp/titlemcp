@@ -227,6 +227,26 @@ class NormalizationTests(unittest.TestCase):
         self.assertEqual(normalize_confidence("pretty sure"), ExtractionConfidence.LOW)
         self.assertEqual(normalize_confidence(None), ExtractionConfidence.LOW)
 
+    def test_a_note_beside_a_live_index_entry_is_kept(self) -> None:
+        # "out by time" in the easement column says the entry is not an easement.
+        # Dropping the note left nothing downstream able to tell.
+        from title_mcp.services.exam_extraction import ClaudeExamExtractionService
+
+        sheet = ExtractedIndexSheet(
+            confidence="high",
+            entries=[
+                ExtractedIndexEntry(
+                    column=IndexColumn.EASEMENTS_RIGHTS_OF_WAY,
+                    text="0161/769",
+                    annotation="out by time",
+                ),
+                ExtractedIndexEntry(column=IndexColumn.EASEMENTS_RIGHTS_OF_WAY, text="0461/212"),
+            ],
+        )
+        index, _, _ = ClaudeExamExtractionService._build_index(sheet, page=2)
+        self.assertEqual(index.notes, {"0161/769": "out by time"})
+        self.assertEqual(len(index.easements_rights_of_way), 2, "the entry itself stays")
+
     def test_index_reference_parsing(self) -> None:
         ref = parse_recording_ref(" 0311 / 415 ")
         assert ref is not None

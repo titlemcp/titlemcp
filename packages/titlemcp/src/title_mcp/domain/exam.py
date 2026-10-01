@@ -224,6 +224,14 @@ class IndexSummarySheet(BaseModel):
     leases_agreements: list[RecordingReference] = Field(default_factory=list)
     easements_rights_of_way: list[RecordingReference] = Field(default_factory=list)
     name_searches: list[str] = Field(default_factory=list)
+    notes: dict[str, str] = Field(
+        default_factory=dict,
+        description=(
+            "What the abstractor wrote beside a live entry, by its reference as displayed "
+            "(e.g. '733/19'): 'R/W', 'out by time', 'Modif of Mtg'. A note can say an entry "
+            "is not what its column suggests."
+        ),
+    )
     provenance: FieldProvenance
 
 
