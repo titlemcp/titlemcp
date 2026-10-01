@@ -1246,6 +1246,7 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
         """
 
         columns: dict[IndexColumn, list[RecordingReference]] = {c: [] for c in IndexColumn}
+        notes: dict[str, str] = {}
         warnings: list[str] = []
         struck: list[dict[str, Any]] = []
         for entry in raw.entries:
@@ -1291,12 +1292,17 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
                 )
                 continue
             columns[entry.column].append(reference)
+            # Kept, not dropped: "out by time" beside an entry in the easement column
+            # says it is not an easement, and nothing downstream could know otherwise.
+            if entry.annotation and entry.annotation.strip():
+                notes[reference.display] = entry.annotation.strip()
 
         index = IndexSummarySheet(
             mortgages=columns[IndexColumn.MORTGAGES],
             leases_agreements=columns[IndexColumn.LEASES_AGREEMENTS],
             easements_rights_of_way=columns[IndexColumn.EASEMENTS_RIGHTS_OF_WAY],
             name_searches=list(raw.name_searches),
+            notes=notes,
             provenance=cls._provenance(ExamSheetKind.INDEX_SUMMARY, page, raw),
         )
         entry_doubts = [
