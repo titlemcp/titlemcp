@@ -13,6 +13,8 @@ from title_mcp.sources.hoa_serpapi import (
     HoaPageFetch,
     SerpApiHoaContactClient,
 )
+from title_mcp.sources.ofac.models import OfacScreeningRecord, ScreeningParty
+from title_mcp.sources.ofac.source import OfacScreeningQuery, OfacScreeningSourceConnector
 from title_mcp.sources.pacer import (
     PacerBankruptcySearchQuery,
     PacerBankruptcySourceConnector,
@@ -37,6 +39,10 @@ __all__ = [
     "HoaContactSearchQuery",
     "HoaContactSerpApiSourceConnector",
     "HoaPageFetch",
+    "ScreeningParty",
+    "OfacScreeningQuery",
+    "OfacScreeningRecord",
+    "OfacScreeningSourceConnector",
     "PacerBankruptcySearchQuery",
     "PacerBankruptcySourceConnector",
     "PacerClient",

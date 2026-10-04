@@ -43,5 +43,8 @@ natural HOA contact lookup question and verifies it triggers
 
 ## PACER Bankruptcy Search with Ollama
 
+See [ofac_ollama](ofac_ollama/) for a sample that asks Ollama to run the sanctions
+check on a closing file's parties and verifies it triggers `ofac_screen_parties`.
+
 See [pacer_ollama](pacer_ollama/) for a sample that asks Ollama a natural
 bankruptcy search question and verifies it triggers `pacer_bankruptcy_search`.

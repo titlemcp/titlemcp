@@ -107,6 +107,20 @@ TITLE_MCP_PACER_TIMEOUT_SECONDS=30
 Use QA credentials and `TITLE_MCP_PACER_QA_MODE=true` for non-billable testing.
 Production PACER queries may be billable.
 
+## OFAC
+
+OFAC screening needs no credentials: the lists are public. They are downloaded from
+`sanctionslistservice.ofac.treas.gov` and cached.
+
+```env
+TITLE_MCP_OFAC_CACHE_DIR=~/.cache/titlemcp/ofac
+TITLE_MCP_OFAC_MAX_AGE_HOURS=24
+TITLE_MCP_OFAC_TIMEOUT_SECONDS=120
+```
+
+If a refresh fails, the cached copy is used and the result warns when it is more
+than two days old. With no cached copy and no network, screening returns `failed`.
+
 ## SerpAPI
 
 HOA contact lookup uses SerpAPI's Google Search API.

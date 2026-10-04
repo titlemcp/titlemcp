@@ -186,6 +186,17 @@ python samples/pacer_ollama/ollama_client.py \
 If credentials are missing, the tool should still be triggered and return
 `requires_configuration`.
 
+## OFAC Sanctions Screening
+
+```bash
+python samples/ofac_ollama/ollama_client.py --model qwen3
+python samples/ofac_ollama/ollama_client.py --seller "<a name copied from OFAC's SDN list>" --summarize-with-ollama
+```
+
+The first run downloads OFAC's lists (no credentials). The default parties are
+invented and come back as `no_match`; pass a name copied from OFAC's published list
+to see a `potential_match` with its reasons.
+
 ## How To Read The Logs
 
 Important log lines:

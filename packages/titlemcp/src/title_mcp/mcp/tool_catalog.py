@@ -17,6 +17,7 @@ from title_mcp.domain.responses import WorkflowListResponse
 from title_mcp.platform import TitleMCPPlatform
 from title_mcp.sources import (
     HoaContactSerpApiSourceConnector,
+    OfacScreeningSourceConnector,
     PacerBankruptcySourceConnector,
     RegridParcelSourceConnector,
     SourceKind,
@@ -149,6 +150,61 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
             )
         )
         return result.model_dump(mode="json")
+
+    @mcp.tool(
+        title="OFAC Sanctions Screening",
+        annotations=_read_only_open_world("OFAC Sanctions Screening"),
+    )
+    async def ofac_screen_parties(
+        parties: list[dict[str, Any]],
+        changes_only: bool = False,
+        requested_by: str = "mcp",
+    ) -> dict[str, Any]:
+        """
+        Screen people and companies against OFAC's sanctions lists (the PATRIOT search).
+
+        Each party is {"name", "party_type": "individual" | "entity" | "unknown",
+        "date_of_birth" (optional), "role" (optional), "reference" (optional)}. Returns a
+        title_mcp.ofac_screening record: for each party an outcome (potential_match,
+        likely_false_positive or no_match) and its candidates, each with the listed and
+        matched names, the score and the reasons for it, against the SDN and consolidated
+        lists as published on the dates cited. Nothing is cleared automatically: a
+        potential match needs a person's review. Set changes_only to re-screen parties
+        against only the entries added or changed in the latest list.
+        """
+        await ensure_ready()
+        connector = platform.sources.get(OfacScreeningSourceConnector.source_id)
+        if connector is None:
+            connector = OfacScreeningSourceConnector(settings=platform.settings)
+        result = await connector.query(
+            SourceQuery(
+                jurisdiction=Jurisdiction(country="US"),
+                kind=SourceKind.OFFICIAL_RECORDS,
+                criteria={"parties": parties, "changes_only": changes_only},
+                requested_by=requested_by,
+            )
+        )
+        return result.model_dump(mode="json")
+
+    @mcp.tool(
+        title="OFAC List Status",
+        annotations=_read_only_open_world("OFAC List Status"),
+    )
+    async def ofac_list_status(refresh: bool = False) -> dict[str, Any]:
+        """
+        Which publication of OFAC's SDN and consolidated lists screening uses: publish
+        date, entry count, file hash, when the copy was fetched, and how many entries
+        changed since the previous copy. Set refresh to fetch the latest lists now.
+        """
+        import asyncio
+
+        from title_mcp.sources.ofac.source import list_status
+
+        await ensure_ready()
+        connector = platform.sources.get(OfacScreeningSourceConnector.source_id)
+        if not isinstance(connector, OfacScreeningSourceConnector):
+            connector = OfacScreeningSourceConnector(settings=platform.settings)
+        return await asyncio.to_thread(list_status, connector, refresh=refresh)
 
     @mcp.tool(
         title="Start Title Workflow",
