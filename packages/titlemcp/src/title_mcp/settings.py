@@ -58,6 +58,10 @@ class TitleMCPSettings(BaseSettings):
     pacer_qa_mode: bool = False
     pacer_timeout_seconds: float = Field(default=30.0, ge=1.0, le=300.0)
 
+    ofac_cache_dir: str = "~/.cache/titlemcp/ofac"
+    ofac_max_age_hours: float = Field(default=24.0, ge=0.0, le=720.0)
+    ofac_timeout_seconds: float = Field(default=120.0, ge=5.0, le=600.0)
+
     smart_proxy: str | None = None
     regrid_proxy_port_start: int = Field(default=10001, ge=1, le=65535)
     regrid_proxy_port_end: int = Field(default=10999, ge=1, le=65535)

@@ -90,6 +90,70 @@ Configuration:
 Production PACER searches may be billable. Use QA credentials and
 `TITLE_MCP_PACER_QA_MODE=true` for non-billable testing.
 
+### `ofac_screen_parties`
+
+Screens people and companies against OFAC's sanctions lists (the PATRIOT/OFAC
+search a title file needs): the Specially Designated Nationals list and the
+consolidated non-SDN lists, downloaded from Treasury's Sanctions List Service.
+
+Input:
+
+```json
+{
+  "parties": [
+    {"name": "Jane Buyer", "party_type": "individual", "role": "buyer"},
+    {"name": "Example Holdings LLC", "party_type": "entity", "role": "seller"}
+  ],
+  "changes_only": false
+}
+```
+
+`party_type` is `individual`, `entity` or `unknown`; `date_of_birth` is optional and
+is used to corroborate or discount a candidate (only its year is echoed back).
+
+Returns a `title_mcp.ofac_screening` record: for each party an outcome
+(`potential_match`, `likely_false_positive` or `no_match`) and its candidates, each
+with the listed and matched names, the score and the reasons for it. Citations name
+each list's publication date, entry count and file hash. Nothing is cleared
+automatically: a potential match needs a person's review.
+
+How matching keeps false alarms down without missing real matches:
+
+- every listed name and alias is indexed by its words, their sounds-alike keys and
+  character trigrams, with transliteration variants unified (MOHAMED and MUHAMMAD);
+- words are aligned to words, tolerating reordering, initials, missing middle names
+  and joined names;
+- each word is weighted by how common it is in the United States (U.S. Census name
+  frequencies), so "John Smith" partly matching a listed name stays quiet while a
+  rare surname matching counts;
+- an alias OFAC flags as weak cannot be a potential match by itself;
+- a person never matches a vessel, aircraft or company, and generic company words
+  ("Global", "Trading", "Holdings") weigh little; a company name made only of such
+  words, or with one distinctive word that matches loosely, is not an alert;
+- typos are expected: a swap of two letters costs one edit, and a mistyped
+  transliteration (MOAHMED) or legal form (LIMITDE) is still recognised;
+- matching only part of a longer listed name needs an exact, rare word;
+- a date of birth that agrees corroborates; one that differs discounts.
+
+Every party also carries a `receipt`, for clears as much as for alerts: the words
+it was searched as, spellings unified (MOHAMED->MUHAMMAD), the sound keys looked up,
+how many listed names each index proposed, how many were compared out of the list's
+total, the nearest listings that fell short of review with their scores and
+reasons, and a one-paragraph summary naming the lists' publication dates. It is the
+evidence that a "no match" was searched for properly.
+
+Set `changes_only` to re-screen parties against only the entries added or changed
+since the previous copy of the list: run it daily on open files.
+
+### `ofac_list_status`
+
+Which publication of each list screening uses: publish date, entry count, file
+hash, when the copy was fetched, and how many entries changed since the previous
+copy. `refresh=true` fetches the latest lists now.
+
+Configuration: none required; see [Configuration](CONFIGURATION.md#ofac) for the
+cache folder and refresh interval.
+
 ### `franklin_county_auditor_search`
 
 Provided by the Ohio auditor jurisdiction package (`titlemcp-us-oh-auditor`),
