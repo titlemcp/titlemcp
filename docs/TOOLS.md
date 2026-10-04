@@ -135,6 +135,13 @@ How matching keeps false alarms down without missing real matches:
 - matching only part of a longer listed name needs an exact, rare word;
 - a date of birth that agrees corroborates; one that differs discounts.
 
+Every party also carries a `receipt`, for clears as much as for alerts: the words
+it was searched as, spellings unified (MOHAMED->MUHAMMAD), the sound keys looked up,
+how many listed names each index proposed, how many were compared out of the list's
+total, the nearest listings that fell short of review with their scores and
+reasons, and a one-paragraph summary naming the lists' publication dates. It is the
+evidence that a "no match" was searched for properly.
+
 Set `changes_only` to re-screen parties against only the entries added or changed
 since the previous copy of the list: run it daily on open files.
 

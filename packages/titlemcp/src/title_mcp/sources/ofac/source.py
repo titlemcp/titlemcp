@@ -112,7 +112,10 @@ class OfacScreeningSourceConnector(SourceConnector):
         if screener is None:
             screener = Screener(entries, self.thresholds)
             self._screeners = {key: screener}  # keep only the current lists' index
-        parties = [_redacted(screener.screen(p)) for p in query.parties]
+        parties = [
+            _receipted(_redacted(screener.screen(p)), versions, self.thresholds)
+            for p in query.parties
+        ]
         outcome = (
             Outcome.POTENTIAL_MATCH
             if any(p.outcome is Outcome.POTENTIAL_MATCH for p in parties)
@@ -190,6 +193,53 @@ class OfacScreeningSourceConnector(SourceConnector):
             requires_human_review=True,
             metadata={"outcome": record.outcome.value},
         )
+
+
+def _receipted(
+    screening: PartyScreening, versions: list[ListVersion], thresholds: Thresholds
+) -> PartyScreening:
+    """The receipt's plain-language summary: what was searched, against what, and why."""
+
+    r = screening.receipt
+    lists = " and ".join(
+        f"the {v.sanctions_list.value.upper()} list published {v.publish_date}" for v in versions
+    )
+    searched = (
+        f'Searched "{screening.party.name}" as {" ".join(r.searched_as) or "(no words)"} '
+        f"({r.treated_as}"
+        + (f"; spellings unified: {', '.join(r.variants_applied)}" if r.variants_applied else "")
+        + f"), comparing {r.listed_names_compared:,} of {r.listed_names_total:,} listed names "
+        f"and aliases on {lists}."
+    )
+    if screening.outcome is Outcome.POTENTIAL_MATCH:
+        top = next(c for c in screening.candidates if c.outcome is Outcome.POTENTIAL_MATCH)
+        n = sum(c.outcome is Outcome.POTENTIAL_MATCH for c in screening.candidates)
+        decision = (
+            f' {n} potential match{"es" if n != 1 else ""}; the strongest is "{top.matched_name}" '
+            f"({top.score}). A person must review it."
+        )
+    elif screening.outcome is Outcome.LIKELY_FALSE_POSITIVE:
+        top = screening.candidates[0]
+        held = [r for r in top.reasons[1:] if "informational" not in r]
+        why = (
+            held[-1]
+            if held
+            else f"it scored below the {thresholds.potential_match} potential-match threshold."
+        )
+        decision = (
+            f" {len(screening.candidates)} listed name(s) resembled it but none was a potential "
+            f'match; the closest, "{top.matched_name}" ({top.score}), was held back: {why}'
+        )
+    else:
+        nearest = r.nearest_below_review[0] if r.nearest_below_review else None
+        decision = f" No listed name scored {thresholds.likely_false_positive} or higher" + (
+            f'; the closest was "{nearest.listed_name}" at {nearest.score}.'
+            if nearest
+            else "; none came close."
+        )
+    return screening.model_copy(
+        update={"receipt": r.model_copy(update={"summary": searched + decision})}
+    )
 
 
 def _redacted(screening: PartyScreening) -> PartyScreening:

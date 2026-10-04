@@ -121,10 +121,39 @@ class Candidate(BaseModel):
     address_countries: list[str] = Field(default_factory=list)
 
 
+class NearMiss(BaseModel):
+    """A listed name that was compared and fell short of review, and why."""
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    listed_name: str
+    sanctions_list: SanctionsList
+    score: float
+    reason: str
+
+
+class ScreeningReceipt(BaseModel):
+    """What was searched and compared for one party: the proof behind any outcome."""
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    searched_as: list[str] = Field(default_factory=list)
+    treated_as: str = ""
+    variants_applied: list[str] = Field(default_factory=list)
+    sound_keys: list[str] = Field(default_factory=list)
+    #: Listed names each index proposed (words, sounds, trigrams, letters, AL-/EL- forms).
+    index_hits: dict[str, int] = Field(default_factory=dict)
+    listed_names_compared: int = 0
+    listed_names_total: int = 0
+    nearest_below_review: list[NearMiss] = Field(default_factory=list)
+    summary: str = ""
+
+
 class PartyScreening(BaseModel):
     party: ScreeningParty
     outcome: Outcome
     candidates: list[Candidate] = Field(default_factory=list)
+    receipt: ScreeningReceipt = Field(default_factory=ScreeningReceipt)
 
 
 class OfacScreeningRecord(BaseModel):

@@ -549,6 +549,31 @@ class OfacConnectorTests(unittest.IsolatedAsyncioTestCase):
         online = OfacScreeningSourceConnector(settings=self.settings, fetcher=self.fetcher)
         self.assertEqual(list_status(online)["status"], "succeeded")
 
+    async def test_every_outcome_carries_a_receipt_of_what_was_searched(self) -> None:
+        connector = OfacScreeningSourceConnector(settings=self.settings, fetcher=self.fetcher)
+
+        record = (
+            await self._query(
+                connector,
+                parties=[
+                    {"name": "Mary Johnson"},
+                    {"name": "Mohamed Zuhrany", "party_type": "individual"},
+                    {"name": "BEDN", "party_type": "entity"},
+                ],
+            )
+        ).records[0]
+        clear, match, held = (p["receipt"] for p in record["parties"])
+
+        self.assertEqual(clear["searched_as"], ["MARY", "JOHNSON"])
+        self.assertEqual(clear["listed_names_total"], 11)  # 7 entries and 4 aliases
+        self.assertIn("published 10/02/2026", clear["summary"])
+        self.assertIn("No listed name scored 0.72 or higher", clear["summary"])
+        self.assertIn("MOHAMED->MUHAMMAD", match["variants_applied"])
+        self.assertIn("A person must review it.", match["summary"])
+        self.assertGreater(match["listed_names_compared"], 0)
+        self.assertIn("weak alias", held["summary"])
+        self.assertNotIn("informational", held["summary"])
+
     async def test_an_invalid_request_is_a_reported_failure(self) -> None:
         connector = OfacScreeningSourceConnector(settings=self.settings, fetcher=self.fetcher)
 

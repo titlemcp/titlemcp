@@ -20,13 +20,15 @@ from title_mcp.sources.ofac.models import (
     AliasQuality,
     Candidate,
     EntryType,
+    NearMiss,
     Outcome,
     PartyScreening,
     PartyType,
     SanctionsEntry,
     ScreeningParty,
+    ScreeningReceipt,
 )
-from title_mcp.sources.ofac.normalize import ENTITY_SUFFIXES, fold, tokens, unprefixed
+from title_mcp.sources.ofac.normalize import ENTITY_SUFFIXES, canonical, fold, tokens, unprefixed
 
 #: Marks a word made by joining two (ABDUL+RAHMAN): compared by edit distance only.
 JOIN = "+"
@@ -286,20 +288,27 @@ class Screener:
                         for g in phonetic.trigrams(t):
                             self._by_trigram[g].add(f_i)
 
-    def _candidates(self, words: list[str]) -> set[int]:
+    def _candidates(self, words: list[str]) -> tuple[set[int], dict[str, int]]:
         found: set[int] = set()
+        hits = {
+            "words": set(),
+            "sounds": set(),
+            "trigrams": set(),
+            "letters": set(),
+            "al_el": set(),
+        }
         for t in words:
             if len(t) == 1:
                 continue
-            found |= self._by_token.get(t, set())
+            hits["words"] |= self._by_token.get(t, set())
             bare = unprefixed(t)
             if bare:
-                found |= self._by_token.get(bare, set())
+                hits["al_el"] |= self._by_token.get(bare, set())
             if len(t) >= 5:
-                found |= self._by_letters.get(phonetic.letters(t), set())
+                hits["letters"] |= self._by_letters.get(phonetic.letters(t), set())
             k = phonetic.key(t)
             if len(k) >= 2:
-                found |= self._by_key.get(k, set())
+                hits["sounds"] |= self._by_key.get(k, set())
             if len(t) >= 4:
                 grams = phonetic.trigrams(t)
                 counts: dict[int, int] = defaultdict(int)
@@ -307,10 +316,11 @@ class Screener:
                     for f_i in self._by_trigram.get(g, ()):
                         counts[f_i] += 1
                 need = max(3, math.ceil(len(grams) * 0.6))
-                found |= {f_i for f_i, c in counts.items() if c >= need}
-        for whole in ("".join(words),):  # a party name written as one word
-            found |= self._by_token.get(whole, set())
-        return found
+                hits["trigrams"] |= {f_i for f_i, c in counts.items() if c >= need}
+        hits["words"] |= self._by_token.get("".join(words), set())  # written as one word
+        for found_here in hits.values():
+            found |= found_here
+        return found, {name: len(ids) for name, ids in hits.items()}
 
     def screen(self, party: ScreeningParty) -> PartyScreening:
         entity_party = party.party_type is PartyType.ENTITY or (
@@ -318,10 +328,12 @@ class Screener:
         )
         words = tokens(party.name, entity=entity_party)
         best: dict[int, Candidate] = {}
-        for f_i in self._candidates(words):
+        near: dict[int, NearMiss] = {}
+        compared, index_hits = self._candidates(words)
+        for f_i in compared:
             form = self.forms[f_i]
             entry = self.entries[form.entry]
-            candidate = self._score(party, words, entity_party, entry, form)
+            candidate = self._score(party, words, entity_party, entry, form, near_misses=near)
             if candidate is None:
                 continue
             if form.entry not in best or candidate.score > best[form.entry].score:
@@ -334,7 +346,26 @@ class Screener:
             if ranked
             else Outcome.NO_MATCH
         )
-        return PartyScreening(party=party, outcome=outcome, candidates=ranked)
+        raw = [t for t in fold(party.name).split() if t]
+        receipt = ScreeningReceipt(
+            searched_as=words,
+            treated_as="entity"
+            if entity_party
+            else "individual"
+            if party.party_type is PartyType.INDIVIDUAL
+            else "person (type not given)",
+            variants_applied=sorted(
+                {f"{r}->{canonical(r)}" for r in raw if canonical(r) != r and len(r) > 1}
+            ),
+            sound_keys=[phonetic.key(t) for t in words if len(t) > 1],
+            index_hits=index_hits,
+            listed_names_compared=len(compared),
+            listed_names_total=len(self.forms),
+            nearest_below_review=sorted(
+                (n for e_i, n in near.items() if e_i not in best), key=lambda n: -n.score
+            )[:3],
+        )
+        return PartyScreening(party=party, outcome=outcome, candidates=ranked, receipt=receipt)
 
     def _score(
         self,
@@ -343,6 +374,7 @@ class Screener:
         entity_party: bool,
         entry: SanctionsEntry,
         form: _Form,
+        near_misses: dict[int, NearMiss] | None = None,
     ) -> Candidate | None:
         reasons: list[str] = []
         listed_entity = _is_entity(entry.entry_type)
@@ -398,6 +430,16 @@ class Screener:
             else None
         )
         if outcome is None:
+            if near_misses is not None and score > 0:
+                key = form.entry
+                if key not in near_misses or score > near_misses[key].score:
+                    reason = reasons[-1] if len(reasons) > 1 else reasons[0]
+                    near_misses[key] = NearMiss(
+                        listed_name=listed.full_name,
+                        sanctions_list=entry.sanctions_list,
+                        score=round(min(score, 1.0), 3),
+                        reason=f"Below the {t.likely_false_positive} review threshold. {reason}",
+                    )
             return None
         if (
             outcome is Outcome.POTENTIAL_MATCH
