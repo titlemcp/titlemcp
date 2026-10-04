@@ -20,6 +20,7 @@ from title_mcp.sources import (
     OfacScreeningSourceConnector,
     PacerBankruptcySourceConnector,
     RegridParcelSourceConnector,
+    ScreeningParty,
     SourceKind,
     SourceQuery,
 )
@@ -156,7 +157,7 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
         annotations=_read_only_open_world("OFAC Sanctions Screening"),
     )
     async def ofac_screen_parties(
-        parties: list[dict[str, Any]],
+        parties: list[ScreeningParty],
         changes_only: bool = False,
         requested_by: str = "mcp",
     ) -> dict[str, Any]:
@@ -180,7 +181,10 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
             SourceQuery(
                 jurisdiction=Jurisdiction(country="US"),
                 kind=SourceKind.OFFICIAL_RECORDS,
-                criteria={"parties": parties, "changes_only": changes_only},
+                criteria={
+                    "parties": [p.model_dump(mode="json") for p in parties],
+                    "changes_only": changes_only,
+                },
                 requested_by=requested_by,
             )
         )

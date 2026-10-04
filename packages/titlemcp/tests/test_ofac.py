@@ -135,6 +135,13 @@ class OfacListTests(unittest.TestCase):
         self.assertEqual((qarsani.dates_of_birth, qarsani.programs), (["10 Dec 1948"], ["SDGT"]))
         self.assertEqual(bank.address_countries, ["Spain"])
 
+    def test_entries_tagged_sanctions_entry_are_parsed_too(self) -> None:
+        data = _xml(ENTRIES[:2]).replace(b"sdnEntry>", b"sanctionsEntry>")
+
+        entries, _, _ = parse(data, SanctionsList.CONSOLIDATED)
+
+        self.assertEqual([e.uid for e in entries], ["1", "2"])
+
     def test_changed_entries_are_the_new_and_the_edited(self) -> None:
         old, _, _ = parse(_xml(ENTRIES[:3]), SanctionsList.SDN)
         edited = _entry("3", "SMITH", "Individual", first="John", dob="1970")
@@ -508,6 +515,39 @@ class OfacConnectorTests(unittest.IsolatedAsyncioTestCase):
         echoed = result.records[0]["parties"][0]["party"]["date_of_birth"]
         self.assertEqual(echoed, "1948")
         self.assertNotIn("1948-12-10", str(result.model_dump(mode="json")))
+
+    async def test_a_corrupt_download_never_replaces_a_good_copy(self) -> None:
+        connector = OfacScreeningSourceConnector(settings=self.settings, fetcher=self.fetcher)
+        await self._query(connector, parties=[{"name": "Abu Qarsani"}])
+        self.fetcher.data["SDN.XML"] = b"<html>Service temporarily unavailable</html>"
+
+        result = await self._query(connector, parties=[{"name": "Abu Qarsani"}], refresh=True)
+
+        self.assertEqual(result.status, SourceResultStatus.SUCCEEDED)
+        self.assertEqual(result.records[0]["parties"][0]["outcome"], "potential_match")
+        self.assertIn(b"<sdnList", (Path(self.tmp.name) / "SDN.XML").read_bytes())
+
+    async def test_the_record_carries_its_source(self) -> None:
+        connector = OfacScreeningSourceConnector(settings=self.settings, fetcher=self.fetcher)
+
+        record = (await self._query(connector, parties=[{"name": "Mary Johnson"}])).records[0]
+
+        self.assertEqual(record["source"]["source_id"], "us-federal-ofac-sanctions")
+        self.assertEqual(record["source"]["list_publish_dates"]["sdn"], "10/02/2026")
+
+    async def test_list_status_reports_unavailable_lists_without_raising(self) -> None:
+        from title_mcp.sources.ofac.source import list_status
+
+        offline = OfacScreeningSourceConnector(
+            settings=self.settings, fetcher=_FakeFetcher(fail=True)
+        )
+        status = list_status(offline)
+
+        self.assertEqual((status["status"], status["lists"]), ("failed", []))
+        self.assertEqual(len(status["warnings"]), 2)
+
+        online = OfacScreeningSourceConnector(settings=self.settings, fetcher=self.fetcher)
+        self.assertEqual(list_status(online)["status"], "succeeded")
 
     async def test_an_invalid_request_is_a_reported_failure(self) -> None:
         connector = OfacScreeningSourceConnector(settings=self.settings, fetcher=self.fetcher)

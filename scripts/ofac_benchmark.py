@@ -150,11 +150,15 @@ def _screen_one(item: tuple[str, str]) -> tuple[str, dict[str, str]]:
     return found.outcome.value, {c.uid: c.outcome.value for c in found.candidates}
 
 
-def _baseline_one(item: tuple[str, float]) -> dict[str, float]:
-    """Best whole-name score per listing at or above the lowest threshold."""
+def _baseline_one(item: tuple[str, str, float]) -> dict[str, float]:
+    """Best whole-name score per listing at or above the lowest threshold.
 
-    name, floor = item
-    folded = " ".join(tokens(name))
+    The name is normalized as the listings are (legal forms dropped for companies),
+    so the baseline is judged on names, not on suffixes.
+    """
+
+    name, party_type, floor = item
+    folded = " ".join(tokens(name, entity=party_type == PartyType.ENTITY.value))
     best: dict[str, float] = {}
     for uid, listed in _FORMS:
         score = phonetic.jaro_winkler(folded, listed)
@@ -255,7 +259,9 @@ def main() -> None:
             return
         thresholds = [float(t) for t in args.baseline_thresholds.split(",")]
         started = time.time()
-        best = list(pool.map(_baseline_one, [(n, min(thresholds)) for n, _ in items], chunksize=4))
+        best = list(
+            pool.map(_baseline_one, [(n, pt, min(thresholds)) for n, pt in items], chunksize=4)
+        )
         print(
             "\nBaseline: whole-name Jaro-Winkler against every name and alias "
             f"({time.time() - started:.0f}s)"

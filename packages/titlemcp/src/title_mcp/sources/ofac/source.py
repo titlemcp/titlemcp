@@ -120,8 +120,17 @@ class OfacScreeningSourceConnector(SourceConnector):
             if any(p.outcome is Outcome.LIKELY_FALSE_POSITIVE for p in parties)
             else Outcome.NO_MATCH
         )
+        screened_at = datetime.now(UTC).isoformat()
         return OfacScreeningRecord(
-            screened_at=datetime.now(UTC).isoformat(),
+            screened_at=screened_at,
+            source={
+                "source_id": self.source_id,
+                "source_name": self.descriptor.name,
+                "owner": self.descriptor.owner,
+                "base_url": self.descriptor.base_url,
+                "retrieved_at": screened_at,
+                "list_publish_dates": {v.sanctions_list.value: v.publish_date for v in versions},
+            },
             lists=versions,
             thresholds=self.thresholds.as_dict(),
             outcome=outcome,
@@ -205,18 +214,41 @@ def _age_days(iso: str) -> float | None:
 def list_status(
     connector: OfacScreeningSourceConnector, *, refresh: bool = False
 ) -> dict[str, Any]:
-    """Which publication of each list is in use, and how fresh the copy is."""
+    """Which publication of each list is in use, and how fresh the copy is.
 
-    status = []
+    Never raises: a list that cannot be fetched or read is reported with a warning,
+    as screening reports it.
+    """
+
+    status: list[dict[str, Any]] = []
+    warnings: list[str] = []
     for sanctions_list in (SanctionsList.SDN, SanctionsList.CONSOLIDATED):
-        entries, version = connector.store.load(sanctions_list, refresh=refresh)
-        changes = changed(connector.store.previous(sanctions_list), entries)
+        try:
+            entries, version = connector.store.load(sanctions_list, refresh=refresh)
+            previous = connector.store.previous(sanctions_list)
+        except Exception as exc:  # noqa: BLE001  (reported, never raised to the tool)
+            warnings.append(
+                f"The {sanctions_list.value} list is unavailable: {exc}. It downloads from "
+                "sanctionslistservice.ofac.treas.gov; check network access or "
+                "TITLE_MCP_OFAC_CACHE_DIR."
+            )
+            continue
         status.append(
             {
                 **version.model_dump(mode="json"),
-                "changed_since_previous_copy": len(changes)
-                if connector.store.previous(sanctions_list)
+                "changed_since_previous_copy": len(changed(previous, entries))
+                if previous
                 else None,
             }
         )
-    return {"lists": status}
+    return {
+        "status": (
+            SourceResultStatus.FAILED.value
+            if not status
+            else SourceResultStatus.PARTIAL.value
+            if warnings
+            else SourceResultStatus.SUCCEEDED.value
+        ),
+        "lists": status,
+        "warnings": warnings,
+    }

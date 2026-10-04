@@ -67,6 +67,8 @@ def parse(data: bytes, sanctions_list: SanctionsList) -> tuple[list[SanctionsEnt
     """Entries, publish date and record count from an OFAC XML list (SDN.XML format)."""
 
     root = ET.fromstring(data)
+    if _local(root.tag) != "sdnList":
+        raise ValueError(f"Not an OFAC list export (root element {_local(root.tag)!r}).")
     publish_date, count = "", 0
     entries: list[SanctionsEntry] = []
     for node in root:
@@ -75,7 +77,7 @@ def parse(data: bytes, sanctions_list: SanctionsList) -> tuple[list[SanctionsEnt
             publish_date = _text(node, "Publish_Date")
             count = int(_text(node, "Record_Count") or 0)
             continue
-        if tag != "sdnEntry":
+        if tag not in ("sdnEntry", "sanctionsEntry"):  # both spellings appear in OFAC exports
             continue
         names = [ListName(full_name=_full(_text(node, "firstName"), _text(node, "lastName")))]
         for aka in _children(node, "akaList"):
@@ -109,6 +111,8 @@ def parse(data: bytes, sanctions_list: SanctionsList) -> tuple[list[SanctionsEnt
                 remarks=_text(node, "remarks"),
             )
         )
+    if not publish_date:
+        raise ValueError("The OFAC list export has no publish date.")
     return entries, publish_date, count or len(entries)
 
 
@@ -143,6 +147,7 @@ class ListStore:
         if refresh or stale:
             try:
                 data = self.fetcher.fetch(url, self.timeout)
+                parse(data, sanctions_list)  # a corrupt download never replaces a good copy
                 self.cache_dir.mkdir(parents=True, exist_ok=True)
                 previous = path.read_bytes() if path.exists() else None
                 if previous is not None and previous != data:

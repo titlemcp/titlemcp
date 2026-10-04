@@ -136,6 +136,8 @@ class OfacScreeningRecord(BaseModel):
     schema_version: str = "1"
     record_type: str = "ofac_screening"
     screened_at: str
+    #: Where the record came from, as other canonical records carry it.
+    source: dict[str, Any] = Field(default_factory=dict)
     lists: list[ListVersion]
     thresholds: dict[str, float]
     outcome: Outcome

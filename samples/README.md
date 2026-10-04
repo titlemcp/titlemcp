@@ -41,10 +41,12 @@ See [hoa_serpapi_ollama](hoa_serpapi_ollama/) for a sample that asks Ollama a
 natural HOA contact lookup question and verifies it triggers
 `hoa_contact_search`.
 
-## PACER Bankruptcy Search with Ollama
+## OFAC Sanctions Screening with Ollama
 
 See [ofac_ollama](ofac_ollama/) for a sample that asks Ollama to run the sanctions
 check on a closing file's parties and verifies it triggers `ofac_screen_parties`.
+
+## PACER Bankruptcy Search with Ollama
 
 See [pacer_ollama](pacer_ollama/) for a sample that asks Ollama a natural
 bankruptcy search question and verifies it triggers `pacer_bankruptcy_search`.
