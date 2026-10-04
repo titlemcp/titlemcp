@@ -29,7 +29,8 @@ _TYPES = {
 
 
 class ListFetcher(Protocol):
-    def fetch(self, url: str, timeout: float) -> bytes: ...
+    def fetch(self, url: str, timeout: float) -> bytes:
+        """Return the file at ``url`` (an OFAC list export) as bytes."""
 
 
 class HttpFetcher:
