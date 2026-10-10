@@ -32,41 +32,98 @@ class InstrumentKind(StrEnum):
     OTHER = "other"
 
 
-#: Releases that discharge something other than a mortgage. Each contains a word
-#: the release rule below would otherwise match.
-NOT_A_MORTGAGE_RELEASE = (
-    "ASSIGNMENT OF RENTS",
-    "RELEASE ASSIGNMENT",
-    "LIS PENDENS",
-    "COURT ENTRY",
-    "UCC",
-    "MECHANIC",
-    "FINANCING STATEMENT",
+#: Abbreviations county indexes use, by the word they stand for.
+_TYPE_WORDS = {
+    "REL": "RELEASE",
+    "RL": "RELEASE",
+    "RELEA": "RELEASE",
+    "RELEAS": "RELEASE",
+    "PT": "PARTIAL",
+    "PART": "PARTIAL",
+    "ASSIGN": "ASSIGNMENT",
+    "ASSIGNMT": "ASSIGNMENT",
+    "ASSN": "ASSIGNMENT",
+    "ASN": "ASSIGNMENT",
+    "ASMT": "ASSIGNMENT",
+    "ASGN": "ASSIGNMENT",
+    "MTG": "MORTGAGE",
+    "MTGE": "MORTGAGE",
+    "MORT": "MORTGAGE",
+    "MORTG": "MORTGAGE",
+    "MODIF": "MODIFICATION",
+    "MODIFIC": "MODIFICATION",
+}
+
+#: The only words a release of a mortgage is described with, besides the
+#: release itself. A release naming anything else (a lease, a tax lien, a right
+#: of way, an assignment) releases something else.
+_MORTGAGE_RELEASE_WORDS = frozenset(
+    {
+        "RELEASE",
+        "PARTIAL",
+        "MORTGAGE",
+        "OF",
+        "THE",
+        "AND",
+        "N",
+        "C",
+        "NC",
+        "NO",
+        "CHARGE",
+        "COURT",
+        "JOURNAL",
+        "AMEND",
+        "AMENDED",
+        "AMENDMENT",
+        "INDENTURE",
+        "INDENTR",
+        "INDE",
+        "TORRENS",
+        "FULL",
+    }
 )
+
+#: The words a mortgage assignment is described with, besides the assignment.
+_MORTGAGE_ASSIGNMENT_WORDS = frozenset({"ASSIGNMENT", "MORTGAGE", "PARTIAL", "OF", "N", "C"})
 
 
 def classify_instrument(document_type: str) -> InstrumentKind:
     """What a county's document type description means.
 
-    Order matters. ``MODIFICATION OF MORTGAGE`` contains ``MORTGAGE`` and
-    ``MORTGAGE RELEASE`` contains both words, so modifications and releases are
-    recognized before mortgages are.
+    Counties describe the same instrument many ways: ``RELS - RELEASE
+    SATISFACTION``, ``MORTGAGE RELEASE``, ``RELEASE MORTGAGE``, and in
+    abbreviation ``PT REL MORTGAGE``. The description is read as words, with
+    the county's code prefix set aside and abbreviations expanded, so order
+    and abbreviation don't matter. A release is a mortgage's only when every
+    other word in it could describe one: county indexes also hold releases of
+    leases, tax liens, rights of way and assignments, which say so.
     """
-    upper = (document_type or "").upper()
-    releases = "RELEASE" in upper or "SATISF" in upper or "DISCHARGE" in upper
-    if releases and "PARTIAL" in upper:
-        return InstrumentKind.PARTIAL_RELEASE
-    if any(phrase in upper for phrase in NOT_A_MORTGAGE_RELEASE):
+    description = (document_type or "").upper()
+    if " - " in description:
+        description = description.split(" - ", 1)[1]
+    words = {_TYPE_WORDS.get(word, word) for word in re.findall(r"[A-Z]+", description)}
+    if words & {"RESCISSION", "REVOKE", "RVK"}:
         return InstrumentKind.OTHER
-    if releases or "CANCELLATION OF MORTGAGE" in upper:
-        return InstrumentKind.RELEASE
-    if "MODIF" in upper or "SUBORDINAT" in upper:
+    releasing = {
+        word
+        for word in words
+        if word == "RELEASE" or word.startswith(("SATISF", "DISCHARG", "CANCEL"))
+    }
+    if releasing and (releasing != {"CANCELLATION"} or "MORTGAGE" in words):
+        if not words - releasing - _MORTGAGE_RELEASE_WORDS:
+            return InstrumentKind.PARTIAL_RELEASE if "PARTIAL" in words else InstrumentKind.RELEASE
+        if "MODIFICATION" in words or "SUBORDINATION" in words:
+            return InstrumentKind.MODIFICATION
+        return InstrumentKind.OTHER
+    if "MODIFICATION" in words or any(word.startswith("SUBORDINAT") for word in words):
         return InstrumentKind.MODIFICATION
-    if "ASSIGN" in upper:
-        return InstrumentKind.ASSIGNMENT
-    if "MORTG" in upper or "MTG" in upper:
+    if "ASSIGNMENT" in words:
+        if words <= _MORTGAGE_ASSIGNMENT_WORDS:
+            return InstrumentKind.ASSIGNMENT
+        return InstrumentKind.OTHER
+    if "MORTGAGE" in words:
         return InstrumentKind.MORTGAGE
-    if "DEED" in upper:
+    if "DEED" in words:
         return InstrumentKind.DEED
     return InstrumentKind.OTHER
 

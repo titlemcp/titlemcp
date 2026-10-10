@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from titlemcp_platform_publicsearch.client import (
     PublicSearchClient,
     PublicSearchProtocolError,
