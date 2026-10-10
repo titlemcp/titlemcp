@@ -66,6 +66,10 @@ class PublicSearchIndex:
             )
         )
 
+    async def with_links(self, document: RecordedInstrument) -> RecordedInstrument:
+        # Every PublicSearch result carries its marginal references already.
+        return document
+
     async def _search(
         self, query: PublicSearchQuery, *, excerpt_for: str | None = None
     ) -> list[RecordedInstrument]:

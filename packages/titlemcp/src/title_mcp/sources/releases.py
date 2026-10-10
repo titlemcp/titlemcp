@@ -88,6 +88,14 @@ class RecorderIndex(Protocol):
         """Documents naming this party, recorded on or after a date."""
         ...
 
+    async def with_links(self, document: RecordedInstrument) -> RecordedInstrument:
+        """The document with its index links filled in.
+
+        Some platforms return links with every search; others only on a
+        document's own page, so a search result arrives without them.
+        """
+        ...
+
 
 @runtime_checkable
 class MortgageReleaseSource(Protocol):
@@ -266,7 +274,9 @@ async def _find_mortgage(
         return None, None
     if not hits:
         return None, None
-    mortgage = next((d for d in hits if d.kind is InstrumentKind.MORTGAGE), hits[0])
+    mortgage = await index.with_links(
+        next((d for d in hits if d.kind is InstrumentKind.MORTGAGE), hits[0])
+    )
     if mortgage.kind is not InstrumentKind.MORTGAGE:
         notes.append(
             f"Instrument {mortgage.instrument_number} is indexed as "
@@ -312,6 +322,7 @@ async def _borrower_mortgages(
     ]
     owed: list[BorrowerMortgage] = []
     for mortgage in checked:
+        mortgage = await index.with_links(mortgage)
         linked = await _referenced_releases(index, mortgage)
         released_before = [
             match

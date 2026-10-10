@@ -97,6 +97,9 @@ class _FakeIndex:
             if d.cites(instrument_number) or instrument_number in d.text_excerpt
         ]
 
+    async def with_links(self, document: RecordedInstrument) -> RecordedInstrument:
+        return document
+
     async def by_party(
         self, name: str, *, recorded_from: date | None = None
     ) -> list[RecordedInstrument]:
