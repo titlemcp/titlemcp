@@ -197,6 +197,17 @@ The first run downloads OFAC's lists (no credentials). The default parties are
 invented and come back as `no_match`; pass a name copied from OFAC's published list
 to see a `potential_match` with its reasons.
 
+## Mortgage Release Search
+
+```bash
+python samples/mortgage_release_ollama/ollama_client.py --model qwen3
+python samples/mortgage_release_ollama/ollama_client.py --county Stark --instrument "<the mortgage's instrument number>" --summarize-with-ollama
+```
+
+No credentials are needed. Without the Ohio recorder package installed, the tool
+should still be triggered and return `requires_configuration`. The default
+instrument number is invented and comes back `mortgage_not_found`.
+
 ## How To Read The Logs
 
 Important log lines:

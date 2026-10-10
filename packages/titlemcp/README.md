@@ -305,6 +305,7 @@ The server exposes a generic `start_title_workflow` tool plus convenience tools:
 - `request_municipal_lien_search`
 - `request_tax_certificate`
 - `track_release`
+- `mortgage_release_search`
 - `parse_payoff_letter`
 - `generate_checklist_packet`
 - `get_workflow_status`

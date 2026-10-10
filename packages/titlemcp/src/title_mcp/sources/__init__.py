@@ -26,6 +26,13 @@ from title_mcp.sources.regrid import (
     RegridParcelQueryService,
     RegridParcelSourceConnector,
 )
+from title_mcp.sources.releases import (
+    MortgageReleaseSource,
+    RecorderIndex,
+    ReleaseFinding,
+    find_mortgage_release,
+    release_source_result,
+)
 
 __all__ = [
     "SourceCitation",
@@ -36,6 +43,11 @@ __all__ = [
     "SourceQuery",
     "SourceResult",
     "SourceResultStatus",
+    "MortgageReleaseSource",
+    "RecorderIndex",
+    "ReleaseFinding",
+    "find_mortgage_release",
+    "release_source_result",
     "HoaContactSearchQuery",
     "HoaContactSerpApiSourceConnector",
     "HoaPageFetch",

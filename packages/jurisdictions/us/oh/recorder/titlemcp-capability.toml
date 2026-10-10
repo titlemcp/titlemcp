@@ -1,0 +1,32 @@
+[capability]
+capability_id = "us-oh-recorder"
+package_name = "titlemcp-us-oh-recorder"
+version = "0.1.0"
+
+[jurisdiction]
+# Multi-county package. The covered counties are enumerated in
+# src/titlemcp_us_oh_recorder/sites.py.
+country = "US"
+state = "OH"
+
+[workflows.release_tracking]
+status = "draft"
+adapter = "implemented"
+source_connector = "implemented"
+human_review_required = true
+
+[readiness]
+docs = true
+unit_tests = true
+# Fixtures are shaped like the counties' responses with invented parties; the
+# platform package's tests drive them.
+fixtures = true
+# Checked by hand against live releases in both counties; no live test is in
+# the default suite.
+integration_tests = false
+no_live_credentials = true
+pypi_metadata = true
+reviewer_approved = false
+
+[release]
+publish = false

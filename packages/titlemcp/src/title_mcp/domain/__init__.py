@@ -70,6 +70,24 @@ from title_mcp.domain.parcel import (
     ParcelSite,
     ParcelValuation,
 )
+from title_mcp.domain.recorder import (
+    BorrowerMortgage,
+    InstrumentKind,
+    InstrumentReference,
+    MortgageIdentifiedBy,
+    MortgageReleaseQuery,
+    MortgageReleaseRecord,
+    RecordedInstrument,
+    RecorderSource,
+    ReleaseFindingStatus,
+    ReleaseMatch,
+    ReleaseMatchBasis,
+    classify_instrument,
+    index_search_name,
+    normalize_instrument_number,
+    party_key,
+    same_party,
+)
 from title_mcp.domain.title import (
     ContactPoint,
     DocumentReference,
@@ -85,6 +103,22 @@ from title_mcp.domain.title import (
 )
 
 __all__ = [
+    "MortgageIdentifiedBy",
+    "BorrowerMortgage",
+    "InstrumentKind",
+    "InstrumentReference",
+    "MortgageReleaseQuery",
+    "MortgageReleaseRecord",
+    "RecordedInstrument",
+    "RecorderSource",
+    "ReleaseFindingStatus",
+    "ReleaseMatch",
+    "ReleaseMatchBasis",
+    "classify_instrument",
+    "index_search_name",
+    "normalize_instrument_number",
+    "party_key",
+    "same_party",
     "Address",
     "AuditActor",
     "AuditEvent",
