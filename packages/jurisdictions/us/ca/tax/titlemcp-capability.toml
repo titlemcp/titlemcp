@@ -1,0 +1,29 @@
+[capability]
+capability_id = "us-ca-tax"
+package_name = "titlemcp-us-ca-tax"
+version = "0.1.0"
+
+[jurisdiction]
+# Contra Costa County today; more California counties can join this package.
+country = "US"
+state = "CA"
+
+[workflows.tax_certificate]
+status = "draft"
+adapter = "implemented"
+source_connector = "implemented"
+human_review_required = true
+
+[readiness]
+docs = true
+unit_tests = true
+# Fixtures are invented and shaped like the lookup's answers.
+fixtures = true
+# Checked by hand against the live lookup; no live test is in the default suite.
+integration_tests = false
+no_live_credentials = true
+pypi_metadata = true
+reviewer_approved = false
+
+[release]
+publish = false

@@ -259,6 +259,13 @@ county, it returns `requires_configuration`. Connectors today:
   Montgomery, Clermont, Lucas, Lake and Butler. Each year's tax and payments come
   from the auditor's site, plus the half-by-half Tax Summary where the county's
   page has one.
+- **Contra Costa County, California** (`titlemcp-us-ca-tax`): the
+  Treasurer-Tax Collector's tax lookup. It has each installment of the current
+  and prior years with the county's delinquency dates, plus supplemental and
+  redemption bills.
+- **Shelby County, Tennessee** (`titlemcp-us-tn-tax`): the Trustee's Tax Query.
+  It has each year's county bill with interest and fees, and tax sale flags.
+  City tax, such as Memphis's, isn't in it.
 
 ## Workflow Tools
 
