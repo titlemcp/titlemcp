@@ -1,0 +1,78 @@
+{
+  "_comment": "Shaped like the FETCH_DOCUMENTS_FULFILLED payloads Cuyahoga and Stark return. Every party, number and legal is invented.",
+  "mortgage_lookup": {
+    "meta": {"numRecords": 1, "statistics": {"docTypes": [{"label": "MORT", "hits": 1}]}},
+    "data": {
+      "byHash": {
+        "a1": {
+          "id": 900000101,
+          "instrumentNumber": "201904150101",
+          "docNumber": "201904150101",
+          "recordedDate": "4/15/2019",
+          "docType": "MORT - MORTGAGE",
+          "docTypeCode": "MORT",
+          "grantor": ["<em>SAMPLETON</em> JANE Q", "SAMPLETON JOHN R"],
+          "grantee": ["MORTGAGE ELECTRONIC REGISTRATION SYSTEMS INC", "EXAMPLE HOME LOANS LLC"],
+          "bookVolumePage": "--/--/--",
+          "legals": [{"legalType": "Subdivision", "description": "Subdivision-  Name: EXAMPLE ACRES SUBD Lot: 12"}],
+          "marginalReferences": [
+            {"text": "202101050202", "link": "doc/900000202", "docTypeDesc": "ASGN - ASSIGNMENT"},
+            {"text": "202605180303", "link": "doc/900000303", "docTypeDesc": "RELS - RELEASE SATISFACTION"}
+          ],
+          "ocrText": "Doc # 201904150101 MORTGAGE ... invented image text ...",
+          "thumbnail": "/files/documents/900000101/images/1_r-300.png?exp=1&sig=abc",
+          "images": [{"id": 1}],
+          "downloadLink": "/files/documents/900000101"
+        }
+      }
+    }
+  },
+  "release_lookup": {
+    "meta": {"numRecords": 1},
+    "data": {
+      "byHash": {
+        "b1": {
+          "id": 900000303,
+          "instrumentNumber": "202605180303",
+          "recordedDate": "5/18/2026",
+          "docType": "RELS - RELEASE SATISFACTION",
+          "docTypeCode": "RELS",
+          "grantor": ["EXAMPLE HOME LOANS LLC"],
+          "grantee": ["SAMPLETON JANE Q", "SAMPLETON JOHN R"],
+          "bookVolumePage": "--/--/--",
+          "marginalReferences": [{"text": "201904150101", "link": "doc/900000101", "docTypeDesc": "MORT - MORTGAGE"}]
+        }
+      }
+    }
+  },
+  "stark_style_release": {
+    "meta": {"numRecords": 2},
+    "data": {
+      "byHash": {
+        "c1": {
+          "id": 900000404,
+          "instrumentNumber": "202606020000404",
+          "recordedDate": "6/2/2026",
+          "docType": "MORTGAGE RELEASE",
+          "docTypeCode": "R/M",
+          "grantor": ["EXAMPLE SAVINGS BANK"],
+          "grantee": ["DOE JANE"],
+          "book": "1234",
+          "page": "56",
+          "legalDescription": ["LOT 7 EXAMPLE ALLOTMENT"],
+          "marginalReferences": [{"text": "201508080000505", "link": "doc/900000505", "docTypeDesc": "MORTGAGE"}],
+          "ocrText": "THIS RELEASE discharges the mortgage recorded as Instrument No. 201508080000505 in the records of Example County"
+        },
+        "c2": {
+          "id": 900000606,
+          "instrumentNumber": "202606020000606",
+          "recordedDate": "6/2/2026",
+          "docType": "MODIFICATION OF MORTGAGE",
+          "docTypeCode": "MD/M",
+          "grantor": ["DOE JANE"],
+          "grantee": ["EXAMPLE SAVINGS BANK"]
+        }
+      }
+    }
+  }
+}

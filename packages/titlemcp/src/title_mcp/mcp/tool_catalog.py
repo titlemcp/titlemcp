@@ -4,6 +4,7 @@ from typing import Any
 
 from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
+from pydantic import ValidationError
 
 from title_mcp.capabilities import CapabilityType
 from title_mcp.domain.models import (
@@ -13,16 +14,20 @@ from title_mcp.domain.models import (
     WorkflowKind,
     WorkflowStatus,
 )
+from title_mcp.domain.recorder import MortgageReleaseQuery
 from title_mcp.domain.responses import WorkflowListResponse
 from title_mcp.platform import TitleMCPPlatform
 from title_mcp.sources import (
     HoaContactSerpApiSourceConnector,
+    MortgageReleaseSource,
     OfacScreeningSourceConnector,
     PacerBankruptcySourceConnector,
     RegridParcelSourceConnector,
     ScreeningParty,
     SourceKind,
     SourceQuery,
+    SourceResult,
+    SourceResultStatus,
 )
 from title_mcp.vendors import VendorKind
 
@@ -434,6 +439,66 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
         )
 
     @mcp.tool(
+        title="Mortgage Release Search",
+        annotations=_read_only_open_world("Mortgage Release Search"),
+    )
+    async def mortgage_release_search(
+        state: str,
+        county: str,
+        mortgage_instrument_number: str | None = None,
+        mortgage_book: str | None = None,
+        mortgage_page: str | None = None,
+        borrower_names: list[str] | None = None,
+        lender_names: list[str] | None = None,
+        paid_off_on: str | None = None,
+        country: str = "US",
+        requested_by: str = "mcp",
+    ) -> dict[str, Any]:
+        """
+        Check a county recorder's index for the release of one mortgage.
+
+        Pass the mortgage's instrument number, or its book and page, as the title
+        commitment lists it; borrower and lender names are a fallback, and
+        paid_off_on (YYYY-MM-DD) flags a release recorded before the payoff.
+        Returns a title_mcp.mortgage_release_search record under records[0].
+        Its status is released, partially_released, candidates_only,
+        not_released or mortgage_not_found, and each release carries the basis
+        for the match: the county's own index linking it to the mortgage, its
+        text citing the mortgage, or only the same parties. A status of
+        requires_configuration means no installed recorder connector covers
+        the county, or nothing was given to search for.
+        """
+        await ensure_ready()
+        jurisdiction = Jurisdiction(country=country, state=state, county=_county_name(county))
+        connector = _release_source(platform, jurisdiction)
+        if connector is None:
+            return SourceResult(
+                source_id="mortgage-release-search",
+                status=SourceResultStatus.REQUIRES_CONFIGURATION,
+                warnings=[
+                    f"No installed recorder connector checks releases for "
+                    f"{jurisdiction.county}, {jurisdiction.state}."
+                ],
+            ).model_dump(mode="json")
+        try:
+            query = MortgageReleaseQuery(
+                mortgage_instrument_number=mortgage_instrument_number,
+                mortgage_book=mortgage_book,
+                mortgage_page=mortgage_page,
+                borrower_names=borrower_names or [],
+                lender_names=lender_names or [],
+                paid_off_on=paid_off_on,
+            )
+        except ValidationError as exc:
+            return SourceResult(
+                source_id=connector.source_id,
+                status=SourceResultStatus.REQUIRES_CONFIGURATION,
+                warnings=[error["msg"] for error in exc.errors()],
+            ).model_dump(mode="json")
+        result = await connector.find_release(jurisdiction, query)
+        return result.model_dump(mode="json")
+
+    @mcp.tool(
         title="Parse Payoff Letter",
         annotations=_state_changing("Parse Payoff Letter"),
     )
@@ -656,6 +721,25 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
         return {
             "vendors": [connector.descriptor.model_dump(mode="json") for connector in connectors]
         }
+
+
+def _county_name(county: str) -> str:
+    """Recorder connectors are scoped to "Cuyahoga County"; callers often say "Cuyahoga"."""
+    name = " ".join(county.split())
+    if name.lower().endswith((" county", " parish", " borough")):
+        return name
+    return f"{name} County"
+
+
+def _release_source(
+    platform: TitleMCPPlatform, jurisdiction: Jurisdiction
+) -> MortgageReleaseSource | None:
+    for connector in platform.sources.all():
+        if isinstance(connector, MortgageReleaseSource) and connector.supports(
+            jurisdiction, SourceKind.COUNTY_RECORDER
+        ):
+            return connector
+    return None
 
 
 def _read_only_open_world(title: str) -> ToolAnnotations:

@@ -174,6 +174,44 @@ Parcel input:
 Returns canonical `title_mcp.property_assessment_record` records with the raw
 auditor detail preserved under `source_specific.iasworld_auditor`.
 
+### `mortgage_release_search`
+
+Checks a county recorder's index for the release of one mortgage: the question
+behind every payoff, and what Ohio gives a lender 90 days to answer.
+
+Input:
+
+```json
+{
+  "state": "OH",
+  "county": "Cuyahoga",
+  "mortgage_instrument_number": "202001150101",
+  "paid_off_on": "2026-05-01"
+}
+```
+
+Give the mortgage's instrument number, or its book and page, as the commitment
+lists it. Without either, give `borrower_names` and `paid_off_on`: of the
+borrower's mortgages, the one paid off is the one open on the payoff date and
+released since. `lender_names` helps choose between several.
+
+Returns a `title_mcp.mortgage_release_search` record whose `status` is
+`released`, `partially_released`, `candidates_only`, `not_released` or
+`mortgage_not_found`. Each release carries the basis for the match, strongest
+first:
+
+- `index_reference`: the county's index links the release to the mortgage;
+- `text_reference`: the release's text cites the mortgage's number;
+- `party_match`: only the same borrower and lender, reported as a candidate.
+
+`mortgage_identified_by` says whether the mortgage was found by its number or
+picked out from the borrower's mortgages, and `borrower_mortgages` lists the ones
+considered. Every result is marked for review.
+
+The tool routes by county to any installed recorder connector that can check
+releases; with none for the county it returns `requires_configuration`. Ohio's
+are in `titlemcp-us-oh-recorder`.
+
 ## Workflow Tools
 
 These tools create durable workflow records. They do not complete vendor work or

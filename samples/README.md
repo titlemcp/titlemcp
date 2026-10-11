@@ -46,6 +46,12 @@ natural HOA contact lookup question and verifies it triggers
 See [ofac_ollama](ofac_ollama/) for a sample that asks Ollama to run the sanctions
 check on a closing file's parties and verifies it triggers `ofac_screen_parties`.
 
+## Mortgage Release Search with Ollama
+
+See [mortgage_release_ollama](mortgage_release_ollama/) for a sample that asks
+Ollama whether a paid-off mortgage was released and verifies it triggers
+`mortgage_release_search`.
+
 ## PACER Bankruptcy Search with Ollama
 
 See [pacer_ollama](pacer_ollama/) for a sample that asks Ollama a natural
