@@ -1,0 +1,29 @@
+[capability]
+capability_id = "us-fl-municipal"
+package_name = "titlemcp-us-fl-municipal"
+version = "0.1.0"
+
+[jurisdiction]
+# Florida's 67 counties and its cities of 20,000 people or more.
+country = "US"
+state = "FL"
+
+[workflows.municipal_lien_search]
+status = "draft"
+adapter = "implemented"
+source_connector = "implemented"
+human_review_required = true
+
+[readiness]
+docs = true
+unit_tests = true
+# The directory is packaged data; the tests read it.
+fixtures = true
+# The directory makes no network calls.
+integration_tests = false
+no_live_credentials = true
+pypi_metadata = true
+reviewer_approved = false
+
+[release]
+publish = false

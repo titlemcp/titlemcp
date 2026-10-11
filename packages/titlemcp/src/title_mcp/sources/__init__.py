@@ -13,6 +13,7 @@ from title_mcp.sources.hoa_serpapi import (
     HoaPageFetch,
     SerpApiHoaContactClient,
 )
+from title_mcp.sources.municipal import MunicipalDirectory, municipal_directory_result
 from title_mcp.sources.ofac.models import OfacScreeningRecord, ScreeningParty
 from title_mcp.sources.ofac.source import OfacScreeningQuery, OfacScreeningSourceConnector
 from title_mcp.sources.pacer import (
@@ -51,6 +52,8 @@ __all__ = [
     "release_source_result",
     "PropertyTaxSource",
     "tax_source_result",
+    "MunicipalDirectory",
+    "municipal_directory_result",
     "HoaContactSearchQuery",
     "HoaContactSerpApiSourceConnector",
     "HoaPageFetch",

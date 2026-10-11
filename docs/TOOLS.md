@@ -321,6 +321,48 @@ county, it returns `requires_configuration`. Connectors today:
   It has each year's county bill with interest and fees, and tax sale flags.
   City tax, such as Memphis's, isn't in it.
 
+### `municipal_lien_directory`
+
+Finds who to ask about a parcel's municipal liens, open permits and code cases,
+before ordering a municipal lien search.
+
+Input:
+
+```json
+{
+  "state": "FL",
+  "county": "Broward",
+  "municipality": "Fort Lauderdale"
+}
+```
+
+Give the county, and the city when the parcel is inside one. Leave the city out,
+or pass `Unincorporated`, for a parcel in the county's unincorporated area.
+
+Returns a `title_mcp.municipal_lien_directory` record with an entry for the city
+and one for the county. Each entry has:
+- `lien_letter`: who issues it, how to order it (`online_portal`,
+  `records_portal`, `email`, `form_email`, `mail`, `fax`, `phone`, `in_person` or
+  `none_found`), the request page or address, the vendor that takes the orders
+  where there is one, the fee, turnaround, and what it covers and excludes;
+- `permits` and `code_enforcement`: the public searches and their software;
+- `utilities`: who provides water, sewer, solid waste and stormwater, and how a
+  title agent asks for a balance;
+- `special_assessments`: whether they are on the county tax bill or billed
+  directly;
+- `confidence` and `checked_on`, the day the government's pages were read.
+
+A city missing from the directory is `partial`: the county's entry comes back,
+with a note on what the directory covers. Every answer notes that the postal
+city isn't always the municipality, and is marked for review.
+
+The tool routes by state and county to any installed directory. With none, it
+returns `requires_configuration`. Directories today:
+- **Florida** (`titlemcp-us-fl-municipal`): the 67 counties and the 120 cities
+  of 20,000 people or more. With it installed, `request_municipal_lien_search`
+  plans a Florida search from the entry: the first step names who issues the
+  lien letter, how to order it, the fee and the turnaround.
+
 ## Workflow Tools
 
 These tools create durable workflow records. They do not complete vendor work or
