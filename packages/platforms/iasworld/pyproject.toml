@@ -1,11 +1,11 @@
 [project]
 name = "titlemcp-platform-iasworld"
-version = "0.1.0"
+version = "0.2.0"
 description = "Shared Tyler iasWorld county auditor/property-search scraper for TitleMCP."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "titlemcp>=0.2.0",
+    "titlemcp>=0.3.6",
 ]
 
 [build-system]

@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "titlemcp>=0.2.0",
-    "titlemcp-platform-iasworld>=0.1.0",
+    "titlemcp-platform-iasworld>=0.2.0",
 ]
 
 [project.entry-points."title_mcp.adapters"]

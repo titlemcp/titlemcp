@@ -88,6 +88,16 @@ from title_mcp.domain.recorder import (
     party_key,
     same_party,
 )
+from title_mcp.domain.tax import (
+    PropertyTaxQuery,
+    PropertyTaxStatusRecord,
+    TaxCharge,
+    TaxInstallment,
+    TaxParcel,
+    TaxSource,
+    TaxStatus,
+    TaxYear,
+)
 from title_mcp.domain.title import (
     ContactPoint,
     DocumentReference,
@@ -109,6 +119,14 @@ __all__ = [
     "InstrumentReference",
     "MortgageReleaseQuery",
     "MortgageReleaseRecord",
+    "PropertyTaxQuery",
+    "PropertyTaxStatusRecord",
+    "TaxCharge",
+    "TaxInstallment",
+    "TaxParcel",
+    "TaxSource",
+    "TaxStatus",
+    "TaxYear",
     "RecordedInstrument",
     "RecorderSource",
     "ReleaseFindingStatus",

@@ -46,6 +46,18 @@ Jurisdiction packages (e.g. `titlemcp-us-oh-auditor`) supply a table of these
 configs and register one connector + MCP tool per county. This package is
 state-agnostic — any iasWorld county, in any state, is just another config.
 
+## Tax status
+
+Each connector also answers `property_tax_status_search`. It reads the parcel's
+page and turns its tax tables into a `title_mcp.property_tax_status` record.
+- **Every layout:** the Annual Taxes table gives each year's net tax and total
+  paid.
+- **Pages with a Tax Summary by half** (Montgomery's, for one): each half's
+  amount and payments, and what's still owed from prior years.
+
+The auditor's CDQ and Tax Lien flags become notes. The page shows no due dates,
+so a balance on the latest year is reported as owed, not past due.
+
 ## When a detail page cannot be trusted
 
 Two failures look identical to a healthy parse, because both come back as HTTP

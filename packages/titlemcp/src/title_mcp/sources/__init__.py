@@ -33,6 +33,7 @@ from title_mcp.sources.releases import (
     find_mortgage_release,
     release_source_result,
 )
+from title_mcp.sources.tax import PropertyTaxSource, tax_source_result
 
 __all__ = [
     "SourceCitation",
@@ -48,6 +49,8 @@ __all__ = [
     "ReleaseFinding",
     "find_mortgage_release",
     "release_source_result",
+    "PropertyTaxSource",
+    "tax_source_result",
     "HoaContactSearchQuery",
     "HoaContactSerpApiSourceConnector",
     "HoaPageFetch",
