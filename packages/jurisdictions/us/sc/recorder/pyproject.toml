@@ -1,0 +1,35 @@
+[project]
+name = "titlemcp-us-sc-recorder"
+version = "0.1.0"
+description = "South Carolina county recorder sources for TitleMCP, including mortgage release lookups."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "titlemcp>=0.3.5",
+    "titlemcp-platform-publicsearch>=0.1.0",
+]
+
+[project.entry-points."title_mcp.adapters"]
+us_sc_recorder = "titlemcp_us_sc_recorder.adapters:SouthCarolinaReleaseTrackingAdapter"
+
+[project.entry-points."title_mcp.plugins"]
+us_sc_recorder = "titlemcp_us_sc_recorder.plugin:SouthCarolinaRecorderPlugin"
+
+[project.entry-points."title_mcp.capabilities"]
+us_sc_recorder = "titlemcp_us_sc_recorder.manifest:capability_manifest"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/pyproject.toml",
+    "/titlemcp-capability.toml",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/titlemcp_us_sc_recorder"]

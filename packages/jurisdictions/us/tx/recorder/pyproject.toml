@@ -1,0 +1,35 @@
+[project]
+name = "titlemcp-us-tx-recorder"
+version = "0.1.0"
+description = "Texas county recorder sources for TitleMCP, including mortgage release lookups."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "titlemcp>=0.3.5",
+    "titlemcp-platform-publicsearch>=0.1.0",
+]
+
+[project.entry-points."title_mcp.adapters"]
+us_tx_recorder = "titlemcp_us_tx_recorder.adapters:TexasReleaseTrackingAdapter"
+
+[project.entry-points."title_mcp.plugins"]
+us_tx_recorder = "titlemcp_us_tx_recorder.plugin:TexasRecorderPlugin"
+
+[project.entry-points."title_mcp.capabilities"]
+us_tx_recorder = "titlemcp_us_tx_recorder.manifest:capability_manifest"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/pyproject.toml",
+    "/titlemcp-capability.toml",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/titlemcp_us_tx_recorder"]
