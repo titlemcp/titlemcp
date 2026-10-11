@@ -165,8 +165,13 @@ async def find_mortgage_release(
             if entry.open_at_payoff and entry.released
             for match in entry.releases
         ]
-    elif not releases and not borrower_mortgages and query.borrower_names:
-        candidates = await _party_candidates(index, query, mortgage, notes)
+    if not releases and not candidates and query.borrower_names:
+        # Once the borrower's mortgages have been read, only a release the index
+        # ties to nothing is left to be the one: in a county that doesn't link
+        # documents, that is every release.
+        candidates = await _party_candidates(
+            index, query, mortgage, notes, unlinked_only=bool(borrower_mortgages)
+        )
 
     status = _status(mortgage, releases, candidates, borrower_mortgages)
     notes.extend(_status_notes(status, query, mortgage, releases, borrower_mortgages))
@@ -323,7 +328,11 @@ async def _borrower_mortgages(
     owed: list[BorrowerMortgage] = []
     for mortgage in checked:
         mortgage = await index.with_links(mortgage)
-        linked = await _referenced_releases(index, mortgage)
+        # Where the county doesn't link a release to its mortgage, the release's
+        # text usually cites the mortgage's number.
+        linked = await _referenced_releases(index, mortgage) or await _citing_releases(
+            index, mortgage.instrument_number
+        )
         released_before = [
             match
             for match in linked
@@ -453,19 +462,23 @@ async def _party_candidates(
     query: MortgageReleaseQuery,
     mortgage: RecordedInstrument | None,
     notes: list[str],
+    *,
+    unlinked_only: bool = False,
 ) -> list[ReleaseMatch]:
     lenders = list(query.lender_names) + (mortgage.grantees if mortgage else [])
     floor = query.paid_off_on or (mortgage.recorded_on if mortgage else None)
     if not lenders:
         notes.append(
-            "No lender was given and no mortgage was found, so candidates are any release "
-            "naming the borrower."
+            "No lender was given and no single mortgage was identified, so candidates are any "
+            "release naming the borrower."
         )
     seen: set[str] = set()
     candidates: list[ReleaseMatch] = []
     for borrower in query.borrower_names:
         for document in await index.by_party(borrower, recorded_from=floor):
             if document.kind not in RELEASE_KINDS or document.number in seen:
+                continue
+            if unlinked_only and document.references:
                 continue
             parties = document.grantors + document.grantees
             if not any(same_party(borrower, party) for party in parties):

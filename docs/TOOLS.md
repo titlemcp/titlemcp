@@ -177,7 +177,9 @@ auditor detail preserved under `source_specific.iasworld_auditor`.
 ### `mortgage_release_search`
 
 Checks a county recorder's index for the release of one mortgage: the question
-behind every payoff, and what Ohio gives a lender 90 days to answer.
+behind every payoff, which each state gives the lender a deadline to answer. A
+deed of trust counts as the mortgage, and its release or reconveyance as the
+release.
 
 Input:
 
@@ -193,7 +195,10 @@ Input:
 Give the mortgage's instrument number, or its book and page, as the commitment
 lists it. Without either, give `borrower_names` and `paid_off_on`: of the
 borrower's mortgages, the one paid off is the one open on the payoff date and
-released since. `lender_names` helps choose between several.
+released since. `lender_names` helps choose between several. Where the county's
+index doesn't link releases to their mortgages, a release whose text cites one of
+the borrower's mortgages picks it out; failing that, releases naming the borrower
+since the payoff, linked to nothing, come back as candidates.
 
 Returns a `title_mcp.mortgage_release_search` record whose `status` is
 `released`, `partially_released`, `candidates_only`, `not_released` or
@@ -210,7 +215,8 @@ considered. Every result is marked for review.
 
 The tool routes by county to any installed recorder connector that can check
 releases; with none for the county it returns `requires_configuration`. Ohio's
-are in `titlemcp-us-oh-recorder`.
+are in `titlemcp-us-oh-recorder`, and Texas, Colorado, Illinois, Pennsylvania and
+South Carolina counties are in `titlemcp-us-<state>-recorder`.
 
 ## Workflow Tools
 

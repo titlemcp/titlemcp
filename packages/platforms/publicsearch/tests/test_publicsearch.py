@@ -139,6 +139,18 @@ class MappingTests(unittest.TestCase):
         modification = next(d for d in documents if d.document_type_code == "MD/M")
         self.assertIs(modification.kind, InstrumentKind.OTHER)
 
+    def test_a_link_by_the_sites_own_document_id_is_skipped(self) -> None:
+        row = {
+            "id": 900000909,
+            "docType": "RELEASE",
+            "instrumentNumber": "202607010909",
+            "marginalReferences": [900000101, {"text": "201904150101", "docTypeDesc": "MORTGAGE"}],
+        }
+
+        release = _client().to_instrument(row)
+
+        self.assertEqual([r.instrument_number for r in release.references], ["201904150101"])
+
 
 class _Socket:
     def __init__(self, replies: list[dict]) -> None:
