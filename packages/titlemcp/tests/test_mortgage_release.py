@@ -151,6 +151,10 @@ class InstrumentClassificationTests(unittest.TestCase):
             "REL ASSN MORTGAGE",
             "RESCISSION OF REL OF MTG",
             "UCC PARTIAL RELEASE",
+            # Texas counties whose plain RELEASE OF LIEN is a deed of trust's
+            # release say so in their site config; elsewhere it is not.
+            "RELEASE OF LIEN",
+            "RECONVEYANCE OF EASEMENT",
         ):
             with self.subTest(description=description):
                 self.assertIs(classify_instrument(description), InstrumentKind.OTHER)
@@ -163,6 +167,49 @@ class InstrumentClassificationTests(unittest.TestCase):
             "ASSIGNMENT OF RENTS RELEASE": InstrumentKind.OTHER,
             "COURT ENTRY/LIS PENDENS RELEASE": InstrumentKind.OTHER,
             "UCC TERMINATION": InstrumentKind.OTHER,
+            "CHATTEL MORTGAGE/FINANCING STATEMENT": InstrumentKind.OTHER,
+        }
+        for description, kind in cases.items():
+            with self.subTest(description=description):
+                self.assertIs(classify_instrument(description), kind)
+
+    def test_a_deed_of_trust_reads_as_the_mortgage(self) -> None:
+        cases = {
+            "DEED OF TRUST": InstrumentKind.MORTGAGE,
+            "DT - DEED OF TRUST": InstrumentKind.MORTGAGE,
+            "CORRECTION DEED OF TRUST": InstrumentKind.MORTGAGE,
+            "DEED OF TRUST & SECURITY AGREEMENT": InstrumentKind.MORTGAGE,
+            "TRUST DEED/OF (MTG)": InstrumentKind.MORTGAGE,
+            "RELEASE OF DEED OF TRUST": InstrumentKind.RELEASE,
+            "PARTIAL RELEASE OF DEED OF TRUST": InstrumentKind.PARTIAL_RELEASE,
+            "REL D/T": InstrumentKind.RELEASE,
+            "REL DOT": InstrumentKind.RELEASE,
+            "ASSIGNMENT OF DEED OF TRUST": InstrumentKind.ASSIGNMENT,
+            "MODIFICATION OF DEED OF TRUST": InstrumentKind.MODIFICATION,
+        }
+        for description, kind in cases.items():
+            with self.subTest(description=description):
+                self.assertIs(classify_instrument(description), kind)
+
+    def test_conveyances_in_trust_are_not_deeds_of_trust(self) -> None:
+        cases = {
+            "DEED-IN TRUST": InstrumentKind.DEED,
+            "TRUSTEE'S/SUBSTITUTE TRUSTEE'S DEED": InstrumentKind.DEED,
+            "PUBLIC TRUSTEE'S DEED": InstrumentKind.DEED,
+            "DECLARATION OF TRUST": InstrumentKind.OTHER,
+            "APPOINTMENT OF TRUSTEE/SUBSTITUTE TRUSTEE": InstrumentKind.OTHER,
+        }
+        for description, kind in cases.items():
+            with self.subTest(description=description):
+                self.assertIs(classify_instrument(description), kind)
+
+    def test_a_reconveyance_releases_the_deed_of_trust(self) -> None:
+        cases = {
+            "FULL RECONVEYANCE": InstrumentKind.RELEASE,
+            "DEED OF RECONVEYANCE": InstrumentKind.RELEASE,
+            "SUBSTITUTION OF TRUSTEE AND FULL RECONVEYANCE": InstrumentKind.RELEASE,
+            "PARTIAL RECONVEYANCE": InstrumentKind.PARTIAL_RELEASE,
+            "SATISFACTION OF MORTGAGE BY AFFIDAVIT": InstrumentKind.RELEASE,
         }
         for description, kind in cases.items():
             with self.subTest(description=description):
@@ -234,6 +281,33 @@ class FindReleaseTests(unittest.IsolatedAsyncioTestCase):
         # The release was looked up, so its recorded date is known.
         self.assertEqual(match.release.recorded_on, date(2026, 5, 20))
         self.assertNotIn(("by_party", "DOE JANE"), index.calls)
+
+    async def test_a_deed_of_trust_is_released_like_a_mortgage(self) -> None:
+        deed_of_trust = RecordedInstrument(
+            instrument_number=MORTGAGE,
+            recorded_on=date(2020, 1, 15),
+            document_type="DEED OF TRUST",
+            kind=classify_instrument("DEED OF TRUST"),
+            grantors=["DOE JANE"],
+            grantees=["SAMPLE SAVINGS BANK"],
+            references=[
+                InstrumentReference(
+                    instrument_number=RELEASE,
+                    document_type="RELEASE OF DEED OF TRUST",
+                    kind=classify_instrument("RELEASE OF DEED OF TRUST"),
+                )
+            ],
+        )
+        release = _release(document_type="RELEASE OF DEED OF TRUST", references=[MORTGAGE])
+        index = _FakeIndex([deed_of_trust, release])
+
+        finding = await find_mortgage_release(
+            index, MortgageReleaseQuery(mortgage_instrument_number=MORTGAGE)
+        )
+
+        self.assertIs(finding.status, ReleaseFindingStatus.RELEASED)
+        [match] = finding.releases
+        self.assertIs(match.basis, ReleaseMatchBasis.INDEX_REFERENCE)
 
     async def test_a_reference_of_another_kind_is_not_mistaken_for_a_release(self) -> None:
         mortgage = _mortgage(
@@ -455,6 +529,49 @@ class BorrowerMortgageTests(unittest.IsolatedAsyncioTestCase):
         self.assertIs(finding.status, ReleaseFindingStatus.NOT_RELEASED)
         self.assertIsNone(finding.mortgage)
         self.assertIn("None of them shows a release since the payoff", " ".join(finding.notes))
+
+    async def test_without_links_the_release_citing_a_mortgage_picks_it_out(self) -> None:
+        # A county that links nothing: the release says which deed of trust it
+        # releases only in its text.
+        index = _FakeIndex(
+            _linked("199805050505", date(1998, 5, 5))
+            + _linked("202104040404", date(2021, 4, 4))
+            + [_release(text="releases the deed of trust recorded as 202104040404")]
+        )
+
+        finding = await find_mortgage_release(index, self._query())
+
+        self.assertIs(finding.status, ReleaseFindingStatus.RELEASED)
+        self.assertEqual(finding.mortgage.instrument_number, "202104040404")
+        [match] = finding.releases
+        self.assertIs(match.basis, ReleaseMatchBasis.TEXT_REFERENCE)
+
+    async def test_without_links_or_text_an_unlinked_release_is_a_candidate(self) -> None:
+        index = _FakeIndex(
+            _linked("199805050505", date(1998, 5, 5))
+            + _linked("202104040404", date(2021, 4, 4))
+            + [_release()]
+        )
+
+        finding = await find_mortgage_release(index, self._query())
+
+        self.assertIs(finding.status, ReleaseFindingStatus.CANDIDATES_ONLY)
+        self.assertEqual([c.release.instrument_number for c in finding.candidates], [RELEASE])
+        self.assertIs(finding.candidates[0].basis, ReleaseMatchBasis.PARTY_MATCH)
+
+    async def test_a_release_the_index_ties_to_another_document_is_not_a_candidate(
+        self,
+    ) -> None:
+        index = _FakeIndex(
+            _linked("199805050505", date(1998, 5, 5))
+            + _linked("202104040404", date(2021, 4, 4))
+            + [_release(references=["201707070707"])]
+        )
+
+        finding = await find_mortgage_release(index, self._query())
+
+        self.assertIs(finding.status, ReleaseFindingStatus.NOT_RELEASED)
+        self.assertEqual(finding.candidates, [])
 
     async def test_two_released_since_are_candidates_not_a_guess(self) -> None:
         index = _FakeIndex(

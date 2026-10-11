@@ -24,6 +24,7 @@ from title_mcp.domain.models import Jurisdiction
 
 class InstrumentKind(StrEnum):
     DEED = "deed"
+    #: The instrument securing the loan: a mortgage, or a deed of trust.
     MORTGAGE = "mortgage"
     RELEASE = "release"
     PARTIAL_RELEASE = "partial_release"
@@ -80,11 +81,25 @@ _MORTGAGE_RELEASE_WORDS = frozenset(
         "INDE",
         "TORRENS",
         "FULL",
+        "BY",
+        "AFFIDAVIT",
     }
 )
 
+#: A reconveyance is the trustee's release of a deed of trust, often recorded
+#: together with the substitution of the trustee who signs it.
+_RECONVEYANCE_WORDS = frozenset({"DEED", "SUBSTITUTION", "SUBSTITUTE", "TRUSTEE"})
+
 #: The words a mortgage assignment is described with, besides the assignment.
 _MORTGAGE_ASSIGNMENT_WORDS = frozenset({"ASSIGNMENT", "MORTGAGE", "PARTIAL", "OF", "N", "C"})
+
+#: Where a deed of trust secures the loan, it is the mortgage: its release,
+#: assignment and modification read as a mortgage's. A deed *in* trust and a
+#: trustee's deed are conveyances, and don't match.
+_DEED_OF_TRUST = re.compile(r"\bDEED\s+OF\s+TRUST\b|\bTRUST\s+DEED\b|\bD\s*/\s*T\b|\bDOT\b")
+
+#: Liens on personal property, which county indexes record beside the land's.
+_PERSONAL_PROPERTY_WORDS = frozenset({"CHATTEL", "UCC", "FINANCING"})
 
 
 def classify_instrument(document_type: str) -> InstrumentKind:
@@ -97,20 +112,27 @@ def classify_instrument(document_type: str) -> InstrumentKind:
     and abbreviation don't matter. A release is a mortgage's only when every
     other word in it could describe one: county indexes also hold releases of
     leases, tax liens, rights of way and assignments, which say so.
+
+    A deed of trust reads as a mortgage, so ``RELEASE OF DEED OF TRUST`` is a
+    release; a reconveyance is a release too.
     """
     description = (document_type or "").upper()
     if " - " in description:
         description = description.split(" - ", 1)[1]
+    description = _DEED_OF_TRUST.sub(" MORTGAGE ", description)
     words = {_TYPE_WORDS.get(word, word) for word in re.findall(r"[A-Z]+", description)}
-    if words & {"RESCISSION", "REVOKE", "RVK"}:
+    if words & {"RESCISSION", "REVOKE", "RVK"} or words & _PERSONAL_PROPERTY_WORDS:
         return InstrumentKind.OTHER
     releasing = {
         word
         for word in words
-        if word == "RELEASE" or word.startswith(("SATISF", "DISCHARG", "CANCEL"))
+        if word == "RELEASE" or word.startswith(("SATISF", "DISCHARG", "CANCEL", "RECONVEY"))
     }
     if releasing and (releasing != {"CANCELLATION"} or "MORTGAGE" in words):
-        if not words - releasing - _MORTGAGE_RELEASE_WORDS:
+        allowed = _MORTGAGE_RELEASE_WORDS
+        if any(word.startswith("RECONVEY") for word in releasing):
+            allowed = allowed | _RECONVEYANCE_WORDS
+        if not words - releasing - allowed:
             return InstrumentKind.PARTIAL_RELEASE if "PARTIAL" in words else InstrumentKind.RELEASE
         if "MODIFICATION" in words or "SUBORDINATION" in words:
             return InstrumentKind.MODIFICATION
