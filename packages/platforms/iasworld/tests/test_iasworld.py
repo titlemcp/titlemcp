@@ -3,9 +3,17 @@ from __future__ import annotations
 # ruff: noqa: E501
 import asyncio
 import unittest
+from datetime import date
+from decimal import Decimal
 
+from title_mcp.domain.auditor import (
+    PropertyAssessmentParcel,
+    PropertyAssessmentRecord,
+    PropertyAssessmentSource,
+)
 from title_mcp.domain.models import Jurisdiction
-from title_mcp.sources import SourceKind, SourceQuery, SourceResultStatus
+from title_mcp.domain.tax import PropertyTaxQuery, TaxStatus, tax_status
+from title_mcp.sources import PropertyTaxSource, SourceKind, SourceQuery, SourceResultStatus
 from titlemcp_platform_iasworld import (
     AuditorSearchMode,
     DetailProfile,
@@ -16,6 +24,7 @@ from titlemcp_platform_iasworld import (
     build_auditor_source_connector,
     is_datalet_shaped,
 )
+from titlemcp_platform_iasworld.tax import tax_parcel_from_assessment, taxed_record
 
 FRANKLIN = IasWorldSiteConfig(
     source_id="us-oh-franklin-auditor",
@@ -479,6 +488,147 @@ class _FakeClient:
             results=[hit],
             details=[detail],
         )
+
+
+DELINQUENT_DETAIL_HTML = DETAIL_HTML.replace(
+    "<tr><td>Land Use</td><td>510 - ONE-FAM DWLG ON PLATTED LOT</td></tr>",
+    "<tr><td>Land Use</td><td>510 - ONE-FAM DWLG ON PLATTED LOT</td></tr>"
+    "<tr><td>CDQ</td><td>Yes</td></tr><tr><td>Tax Lien</td><td>Yes</td></tr>",
+).replace(
+    "<tr><td>2025</td><td>5,000.00</td><td>2,500.00</td></tr>",
+    "<tr><td>2025</td><td>5,000.00</td><td>0.00</td></tr>"
+    "<tr><td>2024</td><td>4,800.00</td><td>1,200.00</td></tr>",
+)
+
+
+class _DelinquentFakeClient(_FakeClient):
+    def search(self, query: IasWorldAuditorSearchQuery) -> IasWorldAuditorSearchResponse:
+        response = super().search(query)
+        client = IasWorldAuditorClient(FRANKLIN)
+        detail = client.parse_detail(DELINQUENT_DETAIL_HTML, source_url="https://example.test/d")
+        return response.model_copy(update={"details": [detail]})
+
+
+class _NothingFoundClient:
+    def search(self, query: IasWorldAuditorSearchQuery) -> IasWorldAuditorSearchResponse:
+        return IasWorldAuditorSearchResponse(
+            query=query,
+            search_url="https://example.test/search",
+            search_mode=AuditorSearchMode.PARCEL_ID,
+            result_count=0,
+        )
+
+
+class IasWorldTaxStatusTests(unittest.TestCase):
+    FRANKLIN_COUNTY = Jurisdiction(country="US", state="OH", county="Franklin County")
+
+    def _status(self, client) -> dict:
+        connector = build_auditor_source_connector(FRANKLIN, client=client)
+        result = asyncio.run(
+            connector.find_tax_status(
+                self.FRANKLIN_COUNTY, PropertyTaxQuery(parcel_id="010-000123-00")
+            )
+        )
+        return result
+
+    def test_an_auditor_connector_reads_tax_status(self) -> None:
+        connector = build_auditor_source_connector(FRANKLIN, client=_FakeClient())
+
+        self.assertIsInstance(connector, PropertyTaxSource)
+
+    def test_a_years_tax_less_what_is_paid_is_owed(self) -> None:
+        result = self._status(_FakeClient())
+
+        self.assertIs(result.status, SourceResultStatus.SUCCEEDED)
+        [record] = result.records
+        self.assertEqual(record["schema_name"], "title_mcp.property_tax_status")
+        self.assertEqual(record["parcel_id"], "010-000123-00")
+        self.assertEqual(record["taxpayer_name"], "DOE JANE A")
+        [year] = record["years"]
+        self.assertEqual(
+            (year["tax_year"], year["billed"], year["paid"], year["balance"]),
+            (2025, "5000.00", "2500.00", "2500.00"),
+        )
+        # No due dates on the auditor's page, so owed is not called past due.
+        self.assertEqual(record["status"], "due")
+        self.assertIn("not due dates", " ".join(record["notes"]))
+
+    def test_an_unpaid_earlier_year_and_the_auditors_flags_are_past_due(self) -> None:
+        record = self._status(_DelinquentFakeClient()).records[0]
+
+        self.assertEqual(record["status"], "past_due")
+        self.assertEqual(record["total_balance"], "8600.00")
+        self.assertEqual([y["tax_year"] for y in record["years"]], [2025, 2024])
+        self.assertTrue(all(y["delinquent"] for y in record["years"]))
+        notes = " ".join(record["notes"])
+        self.assertIn("certified delinquent", notes)
+        self.assertIn("tax lien", notes)
+
+    def test_a_tax_summary_by_half_becomes_installments(self) -> None:
+        record = PropertyAssessmentRecord(
+            source=PropertyAssessmentSource(source_id="us-oh-sample-auditor"),
+            jurisdiction=self.FRANKLIN_COUNTY,
+            parcel=PropertyAssessmentParcel(parcel_id="X01 00001 0001"),
+        )
+        summary = [
+            [
+                "Year",
+                "Prior Year",
+                "Prior Year Payments",
+                "1st Half",
+                "1st Half Payments",
+                "2nd Half",
+                "2nd Half Payments",
+                "Total Currently Due",
+            ],
+            [
+                "2026",
+                "$310.00",
+                "$0.00",
+                "$1,200.00",
+                "$1,200.00",
+                "$1,200.00",
+                "$0.00",
+                "$1,510.00",
+            ],
+        ]
+
+        parcel = tax_parcel_from_assessment(record, read_on=date(2026, 10, 10), tax_summary=summary)
+
+        current, prior = parcel.years
+        self.assertEqual(
+            [(i.label, i.billed, i.paid, i.balance) for i in current.installments],
+            [
+                ("1st half", Decimal("1200.00"), Decimal("1200.00"), Decimal("0.00")),
+                ("2nd half", Decimal("1200.00"), Decimal("0.00"), Decimal("1200.00")),
+            ],
+        )
+        self.assertEqual((prior.tax_year, prior.balance), (2025, Decimal("310.00")))
+        self.assertIs(tax_status(parcel, date(2026, 10, 10)), TaxStatus.PAST_DUE)
+        self.assertIn("shows $1,510.00 currently due", " ".join(parcel.notes))
+
+    def test_the_record_read_from_the_parcels_page_is_the_one_used(self) -> None:
+        hit_only = PropertyAssessmentRecord(
+            source=PropertyAssessmentSource(source_id="x"), jurisdiction=self.FRANKLIN_COUNTY
+        )
+        from_page = asyncio.run(
+            build_auditor_source_connector(FRANKLIN, client=_FakeClient()).query(
+                SourceQuery(
+                    jurisdiction=self.FRANKLIN_COUNTY,
+                    kind=SourceKind.TAX_AUTHORITY,
+                    criteria={"mode": "parid", "parcel_id": "010-000123-00"},
+                )
+            )
+        ).records[0]
+        taxed = PropertyAssessmentRecord.model_validate(from_page)
+
+        self.assertIs(taxed_record([hit_only, taxed]), taxed)
+
+    def test_a_parcel_the_auditor_does_not_have_is_no_results(self) -> None:
+        result = self._status(_NothingFoundClient())
+
+        self.assertIs(result.status, SourceResultStatus.NO_RESULTS)
+        self.assertEqual(result.records[0]["status"], "parcel_not_found")
 
 
 class IasWorldAlphanumericParcelTests(unittest.TestCase):

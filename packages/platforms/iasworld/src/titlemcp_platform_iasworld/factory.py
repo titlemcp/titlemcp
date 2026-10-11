@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import date
 
+from title_mcp.domain.tax import PropertyTaxQuery
 from title_mcp.sources import (
     SourceCitation,
     SourceDescriptor,
@@ -9,16 +11,19 @@ from title_mcp.sources import (
     SourceQuery,
     SourceResult,
     SourceResultStatus,
+    tax_source_result,
 )
 from titlemcp_platform_iasworld.canonical import (
     canonical_property_assessments_from_iasworld_response,
 )
 from titlemcp_platform_iasworld.client import IasWorldAuditorClient
 from titlemcp_platform_iasworld.config import (
+    AuditorSearchMode,
     IasWorldSiteConfig,
     resolve_auditor_search_mode,
 )
 from titlemcp_platform_iasworld.models import IasWorldAuditorSearchQuery
+from titlemcp_platform_iasworld.tax import tax_parcel_from_assessment, taxed_record
 
 
 class IasWorldAuditorSourceConnector:
@@ -103,6 +108,54 @@ class IasWorldAuditorSourceConnector:
                 "record_count": len(records),
                 "search_mode": response.search_mode.value,
             },
+        )
+
+    async def find_tax_status(self, jurisdiction, query: PropertyTaxQuery) -> SourceResult:
+        """The parcel's yearly tax and payments, read from its page on the auditor's site."""
+        try:
+            response = await asyncio.to_thread(
+                self._client.search,
+                IasWorldAuditorSearchQuery(
+                    mode=AuditorSearchMode.PARCEL_ID,
+                    parcel_id=query.parcel_id,
+                    include_details=True,
+                    max_results=1,
+                    max_detail_records=1,
+                ),
+            )
+        except Exception as exc:
+            return SourceResult(
+                source_id=self.source_id,
+                status=SourceResultStatus.FAILED,
+                warnings=[f"{self.config.name} search failed: {exc}"],
+            )
+        records = canonical_property_assessments_from_iasworld_response(
+            response,
+            source_id=self.source_id,
+            source_name=self.config.name,
+            jurisdiction=jurisdiction,
+        )
+        record = taxed_record(records)
+        summary = next(
+            (
+                detail.raw_section_rows.get("Tax Summary")
+                for detail in response.details
+                if detail.raw_section_rows.get("Tax Summary")
+            ),
+            None,
+        )
+        today = date.today()
+        return tax_source_result(
+            descriptor=self.descriptor,
+            jurisdiction=jurisdiction,
+            query=query,
+            parcel=(
+                tax_parcel_from_assessment(record, read_on=today, tax_summary=summary)
+                if record
+                else None
+            ),
+            refreshed="read live from the auditor's site",
+            today=today,
         )
 
 
