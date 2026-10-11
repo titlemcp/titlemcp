@@ -52,6 +52,12 @@ See [mortgage_release_ollama](mortgage_release_ollama/) for a sample that asks
 Ollama whether a paid-off mortgage was released and verifies it triggers
 `mortgage_release_search`.
 
+## Release Tracking Status with Ollama
+
+See [release_tracking_ollama](release_tracking_ollama/) for a sample that asks
+Ollama whether a lender is late recording a paid-off mortgage's release and
+verifies it triggers `release_tracking_status`.
+
 ## Property Tax Status Search with Ollama
 
 See [property_tax_ollama](property_tax_ollama/) for a sample that asks Ollama

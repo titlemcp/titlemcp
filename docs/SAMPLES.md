@@ -208,6 +208,18 @@ No credentials are needed. Without the Ohio recorder package installed, the tool
 should still be triggered and return `requires_configuration`. The default
 instrument number is invented and comes back `mortgage_not_found`.
 
+## Release Tracking Status
+
+```bash
+python samples/release_tracking_ollama/ollama_client.py --model qwen3
+python samples/release_tracking_ollama/ollama_client.py --county Stark --instrument "<the mortgage's instrument number>" --paid-off-on 2026-05-01 --summarize-with-ollama
+```
+
+No credentials are needed. Without the Ohio recorder package installed, the tool
+should still be triggered and return `partial`, with Ohio's deadline and a record
+whose status is `not_checked`. The default instrument number is invented and
+comes back `needs_review`.
+
 ## Property Tax Status Search
 
 ```bash

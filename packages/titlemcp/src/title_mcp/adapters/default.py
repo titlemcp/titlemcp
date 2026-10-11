@@ -47,7 +47,10 @@ _GENERIC_STEPS: dict[WorkflowKind, list[tuple[str, str]]] = {
     ],
     WorkflowKind.RELEASE_TRACKING: [
         ("Capture paid lien", "Record lender, recording data, payoff, and expected release date."),
-        ("Schedule follow-up", "Create follow-up milestones until release is recorded."),
+        (
+            "Schedule follow-up",
+            "Run release_tracking_status on each recheck date until the release is recorded.",
+        ),
         ("Verify recording", "Reviewer confirms release document matches the satisfied lien."),
     ],
     WorkflowKind.PAYOFF_PARSING: [
