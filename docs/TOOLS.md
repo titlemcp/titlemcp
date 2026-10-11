@@ -270,6 +270,13 @@ county, it returns `requires_configuration`. Connectors today:
 
   Their connectors register through `title_mcp.plugins`, so a server loads them
   only with `TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true`, as for the Ohio counties.
+- **Contra Costa County, California** (`titlemcp-us-ca-tax`): the
+  Treasurer-Tax Collector's tax lookup. It has each installment of the current
+  and prior years with the county's delinquency dates, plus supplemental and
+  redemption bills.
+- **Shelby County, Tennessee** (`titlemcp-us-tn-tax`): the Trustee's Tax Query.
+  It has each year's county bill with interest and fees, and tax sale flags.
+  City tax, such as Memphis's, isn't in it.
 
 ## Workflow Tools
 

@@ -1,0 +1,29 @@
+[capability]
+capability_id = "us-tn-tax"
+package_name = "titlemcp-us-tn-tax"
+version = "0.1.0"
+
+[jurisdiction]
+# Shelby County today; more Tennessee counties can join this package.
+country = "US"
+state = "TN"
+
+[workflows.tax_certificate]
+status = "draft"
+adapter = "implemented"
+source_connector = "implemented"
+human_review_required = true
+
+[readiness]
+docs = true
+unit_tests = true
+# Fixtures are invented and shaped like the Tax Query's answers.
+fixtures = true
+# Checked by hand against the live Tax Query; no live test is in the default suite.
+integration_tests = false
+no_live_credentials = true
+pypi_metadata = true
+reviewer_approved = false
+
+[release]
+publish = false
