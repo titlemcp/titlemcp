@@ -1,0 +1,35 @@
+[project]
+name = "titlemcp-us-va-tax"
+version = "0.1.0"
+description = "Fairfax County, Virginia real estate tax status for TitleMCP, read from the county's iasWorld site."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "titlemcp>=0.3.6",
+    "titlemcp-platform-iasworld>=0.3.0",
+]
+
+[project.entry-points."title_mcp.adapters"]
+us_va_tax = "titlemcp_us_va_tax.adapters:VirginiaTaxCertificateAdapter"
+
+[project.entry-points."title_mcp.plugins"]
+us_va_tax = "titlemcp_us_va_tax.plugin:VirginiaTaxPlugin"
+
+[project.entry-points."title_mcp.capabilities"]
+us_va_tax = "titlemcp_us_va_tax.manifest:capability_manifest"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/pyproject.toml",
+    "/titlemcp-capability.toml",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/titlemcp_us_va_tax"]

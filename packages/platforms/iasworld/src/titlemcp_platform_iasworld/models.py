@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -72,6 +72,12 @@ class IasWorldAuditorParcelDetail(BaseModel):
     site_data: dict[str, Any] = Field(default_factory=dict)
     sections: dict[str, Any] = Field(default_factory=dict)
     raw_section_rows: dict[str, list[list[str]]] = Field(default_factory=dict)
+    # The parcel number as the site writes it in its own links, spaces included
+    # (Fairfax's have a double space, "0000 00  0000A"). The page's other tabs
+    # need it verbatim.
+    site_pin: str | None = None
+    # The "Last Updated" date the site prints at the foot of the page.
+    last_updated: date | None = None
     # Non-fatal notes about the parse itself, e.g. a datalet whose tables none of
     # the profile's expected sections matched. Merged into the search response so
     # a caller sees them without inspecting the raw sections.
@@ -95,3 +101,33 @@ class IasWorldAuditorSearchResponse(BaseModel):
     retrieved_at: str = Field(
         default_factory=lambda: datetime.now(UTC).isoformat(timespec="seconds")
     )
+
+
+class IasWorldTaxPages(BaseModel):
+    """What a tax lookup read for one parcel: the search hit, its page and its tax tabs."""
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    hit: IasWorldAuditorSearchHit | None = None
+    parcel_page: IasWorldAuditorParcelDetail | None = None
+    # Keyed by the datalet mode each tab was read with.
+    tabs: dict[str, IasWorldAuditorParcelDetail] = Field(default_factory=dict)
+    warnings: list[str] = Field(default_factory=list)
+
+    def section(self, name: str) -> list[list[str]] | None:
+        """A table's rows by its title, from the tabs first and then the parcel's page."""
+        pages = [*self.tabs.values(), *([self.parcel_page] if self.parcel_page else [])]
+        for page in pages:
+            for title, rows in page.raw_section_rows.items():
+                if title.strip().lower() == name.lower():
+                    return rows
+        return None
+
+    @property
+    def last_updated(self) -> date | None:
+        dates = [
+            page.last_updated
+            for page in [*self.tabs.values(), self.parcel_page]
+            if page and page.last_updated
+        ]
+        return min(dates) if dates else None

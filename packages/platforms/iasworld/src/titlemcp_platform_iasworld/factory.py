@@ -16,14 +16,20 @@ from title_mcp.sources import (
 from titlemcp_platform_iasworld.canonical import (
     canonical_property_assessments_from_iasworld_response,
 )
-from titlemcp_platform_iasworld.client import IasWorldAuditorClient
+from titlemcp_platform_iasworld.client import IasWorldAuditorClient, same_parcel
 from titlemcp_platform_iasworld.config import (
     AuditorSearchMode,
     IasWorldSiteConfig,
+    TaxPage,
     resolve_auditor_search_mode,
 )
 from titlemcp_platform_iasworld.models import IasWorldAuditorSearchQuery
-from titlemcp_platform_iasworld.tax import tax_parcel_from_assessment, taxed_record
+from titlemcp_platform_iasworld.tax import (
+    TAX_TABS,
+    tax_parcel_from_assessment,
+    tax_parcel_from_pages,
+    taxed_record,
+)
 
 
 class IasWorldAuditorSourceConnector:
@@ -111,7 +117,9 @@ class IasWorldAuditorSourceConnector:
         )
 
     async def find_tax_status(self, jurisdiction, query: PropertyTaxQuery) -> SourceResult:
-        """The parcel's yearly tax and payments, read from its page on the auditor's site."""
+        """The parcel's tax and payments, read live from the county's site."""
+        if self.config.tax_page != TaxPage.AUDITOR:
+            return await self._find_tax_status_on_tabs(jurisdiction, query)
         try:
             response = await asyncio.to_thread(
                 self._client.search,
@@ -129,6 +137,10 @@ class IasWorldAuditorSourceConnector:
                 status=SourceResultStatus.FAILED,
                 warnings=[f"{self.config.name} search failed: {exc}"],
             )
+        if not any(same_parcel(query.parcel_id, hit.parcel_number) for hit in response.results):
+            # A numeric search with no exact match falls back to wildcards, which
+            # can find a neighbouring parcel.
+            response = response.model_copy(update={"results": [], "details": []})
         records = canonical_property_assessments_from_iasworld_response(
             response,
             source_id=self.source_id,
@@ -155,6 +167,27 @@ class IasWorldAuditorSourceConnector:
                 else None
             ),
             refreshed="read live from the auditor's site",
+            today=today,
+        )
+
+    async def _find_tax_status_on_tabs(self, jurisdiction, query: PropertyTaxQuery) -> SourceResult:
+        try:
+            pages = await asyncio.to_thread(
+                self._client.tax_pages, query.parcel_id, TAX_TABS[self.config.tax_page]
+            )
+        except Exception as exc:
+            return SourceResult(
+                source_id=self.source_id,
+                status=SourceResultStatus.FAILED,
+                warnings=[f"{self.config.name} search failed: {exc}"],
+            )
+        today = date.today()
+        return tax_source_result(
+            descriptor=self.descriptor,
+            jurisdiction=jurisdiction,
+            query=query,
+            parcel=tax_parcel_from_pages(self.config, pages, read_on=today) if pages.hit else None,
+            refreshed="read live from the county's site",
             today=today,
         )
 

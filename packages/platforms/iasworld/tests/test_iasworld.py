@@ -630,6 +630,17 @@ class IasWorldTaxStatusTests(unittest.TestCase):
         self.assertIs(result.status, SourceResultStatus.NO_RESULTS)
         self.assertEqual(result.records[0]["status"], "parcel_not_found")
 
+    def test_a_different_parcel_from_the_search_is_not_reported(self) -> None:
+        connector = build_auditor_source_connector(FRANKLIN, client=_FakeClient())
+
+        result = asyncio.run(
+            connector.find_tax_status(
+                self.FRANKLIN_COUNTY, PropertyTaxQuery(parcel_id="010-000999-00")
+            )
+        )
+
+        self.assertIs(result.status, SourceResultStatus.NO_RESULTS)
+
 
 class IasWorldAlphanumericParcelTests(unittest.TestCase):
     """A second county (Clermont) reuses the whole scraper; only one knob differs."""

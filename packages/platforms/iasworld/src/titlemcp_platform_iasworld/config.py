@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from datetime import date, timedelta
 from enum import StrEnum
 from typing import Any
 
@@ -56,6 +57,49 @@ class DetailProfile(StrEnum):
     PUBLIC_ACCESS_KEYED = "public_access_keyed"
     SUMMARY_SECTIONS = "summary_sections"
     LAKE = "lake"
+
+
+class TaxPage(StrEnum):
+    """Where a county's iasWorld site shows a parcel's tax, and how it is laid out.
+
+    - ``AUDITOR`` (the Ohio auditors): the Annual Taxes table on the parcel's
+      page, with a Tax Summary by half on some.
+    - ``CURRENT_YEAR_SUMMARY`` (Fairfax): a ``tax_details`` tab whose Summary of
+      Current Year Taxes lists each half's charges, payments and balance.
+    - ``BILLED_AND_PAYMENTS`` (DuPage): Taxes Billed on the ``tax_all`` tab,
+      each payment on ``tax_collection``, and sold or forfeited taxes on the
+      ``redemption`` and ``tax_status`` tabs.
+    - ``BALANCE_DUE`` (Bernalillo): a ``tax_hist`` tab with each year's tax,
+      payments and amount due, and the current year's halves.
+    - ``COUNTY_RECEIVABLE`` (Delaware County, PA): the County Tax Receivable and
+      Delinquent Tax tables on the parcel's page.
+    """
+
+    AUDITOR = "auditor"
+    CURRENT_YEAR_SUMMARY = "current_year_summary"
+    BILLED_AND_PAYMENTS = "billed_and_payments"
+    BALANCE_DUE = "balance_due"
+    COUNTY_RECEIVABLE = "county_receivable"
+
+
+class TaxDueDate(BaseModel):
+    """When one installment of a tax year's bill is due."""
+
+    model_config = ConfigDict(str_strip_whitespace=True, frozen=True)
+
+    label: str
+    month: int = Field(ge=1, le=12)
+    day: int = Field(ge=1, le=31)
+    # 1 where the installment falls in the year after the tax year, as Illinois
+    # bills are paid, and New Mexico's second half.
+    years_after_tax_year: int = Field(default=0, ge=0, le=2)
+
+    def on(self, tax_year: int) -> date:
+        """The due date for ``tax_year``; one on a weekend moves to the Monday."""
+        due = date(tax_year + self.years_after_tax_year, self.month, self.day)
+        while due.weekday() >= 5:
+            due += timedelta(days=1)
+        return due
 
 
 def _normalize_mode(value: str | AuditorSearchMode) -> AuditorSearchMode:
@@ -145,6 +189,15 @@ class IasWorldSiteConfig(BaseModel):
     # whitespace when compacting. Set True to preserve spaces in alphanumeric
     # parcels. Only meaningful when numeric_parcel_ids=False.
     preserve_parcel_whitespace: bool = False
+    # Where the site shows a parcel's tax (see TaxPage), and when its
+    # installments are due. Dates the page prints itself aren't needed here.
+    tax_page: TaxPage = TaxPage.AUDITOR
+    tax_due_dates: list[TaxDueDate] = Field(default_factory=list)
+    # For bills due a set number of months after the billing date the page
+    # shows: Delaware County's face amount is due four months after the bill.
+    tax_due_months_after_billing: int | None = Field(default=None, ge=1, le=12)
+    # What a reader should know about the county's tax page, added to each answer.
+    tax_notes: list[str] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
 
     @field_validator("country", "state", mode="before")

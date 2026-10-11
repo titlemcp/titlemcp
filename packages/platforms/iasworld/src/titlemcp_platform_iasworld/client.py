@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from enum import StrEnum
+from html import unescape
 from html.parser import HTMLParser
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import parse_qs, urlencode, urlparse
 from urllib.request import HTTPCookieProcessor, Request, build_opener
 
 from titlemcp_platform_iasworld.config import (
@@ -20,6 +22,7 @@ from titlemcp_platform_iasworld.models import (
     IasWorldAuditorSearchHit,
     IasWorldAuditorSearchQuery,
     IasWorldAuditorSearchResponse,
+    IasWorldTaxPages,
 )
 
 
@@ -397,6 +400,73 @@ class IasWorldAuditorClient:
             tax_year=tax_year or site_year,
         )
 
+    def tab_url(
+        self,
+        mode: str,
+        *,
+        pin: str,
+        jurisdiction: str | None = None,
+        tax_year: str | int | None = None,
+    ) -> str:
+        """A datalet tab for one parcel, with the parcel number exactly as given."""
+        params: dict[str, str] = {
+            "mode": mode,
+            "UseSearch": "no",
+            "pin": pin,
+            "jur": jurisdiction or self.config.district_code,
+        }
+        if tax_year:
+            params["taxyr"] = str(tax_year)
+        return f"{self.config.base_url}Datalets/Datalet.aspx?{urlencode(params)}"
+
+    def tax_pages(self, parcel_id: str, modes: tuple[str, ...]) -> IasWorldTaxPages:
+        """Finds the parcel by number, then reads its page and the named tax tabs.
+
+        Only a hit for the parcel asked about is kept. A numeric search that
+        finds nothing exact falls back to wildcards, which can find a neighbour.
+        """
+        response = self.search(
+            IasWorldAuditorSearchQuery(
+                mode=AuditorSearchMode.PARCEL_ID,
+                parcel_id=parcel_id,
+                include_details=True,
+                max_results=1,
+                max_detail_records=1,
+            )
+        )
+        hit = next(
+            (hit for hit in response.results if same_parcel(parcel_id, hit.parcel_number)), None
+        )
+        if hit is None:
+            return IasWorldTaxPages(warnings=response.warnings)
+        parcel_page = next(
+            (
+                detail
+                for detail in response.details
+                if same_parcel(parcel_id, detail.site_pin or detail.parcel_number)
+            ),
+            None,
+        )
+        linked = _query_params(hit.detail_url)
+        pin = (parcel_page.site_pin if parcel_page else None) or linked.get("pin")
+        pin = pin or hit.parcel_number or parcel_id
+        jurisdiction = (
+            (parcel_page.jurisdiction if parcel_page else None)
+            or hit.jurisdiction
+            or linked.get("jur")
+        )
+        tax_year = (
+            (parcel_page.tax_year if parcel_page else None) or hit.tax_year or linked.get("taxyr")
+        )
+        tabs: dict[str, IasWorldAuditorParcelDetail] = {}
+        for mode in modes:
+            url = self.tab_url(mode, pin=pin, jurisdiction=jurisdiction, tax_year=tax_year)
+            html, final_url = self._get(url)
+            tabs[mode] = self.parse_detail(html, source_url=final_url)
+        return IasWorldTaxPages(
+            hit=hit, parcel_page=parcel_page, tabs=tabs, warnings=response.warnings
+        )
+
     def parse_detail(
         self,
         html: str,
@@ -456,6 +526,8 @@ class IasWorldAuditorClient:
             site_address=header_data.get("address"),
             sections=sections,
             raw_section_rows=raw_section_rows,
+            site_pin=_hidden_input_value(html, "hdPin"),
+            last_updated=_last_updated(html),
             warnings=_profile_mismatch_warnings(
                 raw_section_rows,
                 profile_fields,
@@ -518,6 +590,28 @@ class IasWorldAuditorClient:
         return self._request(url, data=encoded, referer=referer)
 
     def _request(
+        self,
+        url: str,
+        *,
+        data: bytes | None = None,
+        referer: str | None = None,
+    ) -> tuple[str, str]:
+        body, final_url = self._open(url, data=data, referer=referer)
+        if _is_disclaimer(final_url) and not _is_disclaimer(url):
+            # Some sites send a first visit to a click-through disclaimer. Agree
+            # once for the session, then ask again for the page that was wanted.
+            form = _FormParser()
+            form.feed(body)
+            agree = {**form.form_data, "btAgree": ""}
+            self._open(final_url, data=urlencode(agree).encode(), referer=final_url)
+            body, final_url = self._open(url, data=data, referer=referer)
+            if _is_disclaimer(final_url):
+                raise IasWorldAuditorClientError(
+                    f"{self.config.name} kept showing its disclaimer at {final_url}."
+                )
+        return body, final_url
+
+    def _open(
         self,
         url: str,
         *,
@@ -1806,10 +1900,45 @@ def _hidden_input_value(html: str, input_id: str) -> str | None:
     )
     match = re.search(pattern, html, flags=re.IGNORECASE)
     if match:
-        return match.group(1) or None
+        return unescape(match.group(1)) or None
     pattern = (
         rf'<input[^>]+value=["\']([^"\']*)["\'][^>]*'
         rf'id=["\']{re.escape(input_id)}["\']'
     )
     match = re.search(pattern, html, flags=re.IGNORECASE)
-    return match.group(1) if match else None
+    return unescape(match.group(1)) if match else None
+
+
+def same_parcel(asked: str | None, found: str | None) -> bool:
+    """Whether two parcel numbers are the same once punctuation and leading zeros go."""
+
+    def key(value: str | None) -> str:
+        return re.sub(r"[^0-9A-Za-z]", "", unescape(value or "")).upper().lstrip("0")
+
+    return bool(key(asked)) and key(asked) == key(found)
+
+
+def _is_disclaimer(url: str) -> bool:
+    return "disclaimer.aspx" in url.lower()
+
+
+def _query_params(url: str | None) -> dict[str, str]:
+    if not url:
+        return {}
+    return {key: values[0] for key, values in parse_qs(urlparse(url).query).items() if values}
+
+
+def _last_updated(html: str) -> date | None:
+    """The date in the page's "Last Updated" footer or "Data last refreshed" note."""
+    text = _clean_text(unescape(re.sub(r"<[^>]+>", " ", html)))
+    match = re.search(
+        r"(?:Last Updated|Data last refreshed):?\s*([A-Z][a-z]+ \d{1,2}, \d{4})",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if not match:
+        return None
+    try:
+        return datetime.strptime(match.group(1), "%B %d, %Y").date()
+    except ValueError:
+        return None

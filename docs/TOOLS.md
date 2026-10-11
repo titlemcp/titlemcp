@@ -259,6 +259,17 @@ county, it returns `requires_configuration`. Connectors today:
   Montgomery, Clermont, Lucas, Lake and Butler. Each year's tax and payments come
   from the auditor's site, plus the half-by-half Tax Summary where the county's
   page has one.
+- **Other iasWorld tax collectors**, read live from the county's site:
+  - Fairfax County, VA (`titlemcp-us-va-tax`): the current year by half.
+  - DuPage County, IL (`titlemcp-us-il-tax`): the bill and each payment, and
+    any taxes sold at tax sale.
+  - Bernalillo County, NM (`titlemcp-us-nm-tax`): each year's balance and the
+    current halves.
+  - Delaware County, PA (`titlemcp-us-pa-tax`): county tax only; school district
+    and municipal taxes are billed locally.
+
+  Their connectors register through `title_mcp.plugins`, so a server loads them
+  only with `TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true`, as for the Ohio counties.
 
 ## Workflow Tools
 

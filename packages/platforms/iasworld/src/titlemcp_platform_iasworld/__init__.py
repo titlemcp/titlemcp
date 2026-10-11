@@ -7,11 +7,14 @@ from titlemcp_platform_iasworld.client import (
     IasWorldAuditorClient,
     IasWorldAuditorClientError,
     is_datalet_shaped,
+    same_parcel,
 )
 from titlemcp_platform_iasworld.config import (
     AuditorSearchMode,
     DetailProfile,
     IasWorldSiteConfig,
+    TaxDueDate,
+    TaxPage,
     resolve_auditor_search_mode,
 )
 from titlemcp_platform_iasworld.factory import (
@@ -23,6 +26,7 @@ from titlemcp_platform_iasworld.models import (
     IasWorldAuditorSearchHit,
     IasWorldAuditorSearchQuery,
     IasWorldAuditorSearchResponse,
+    IasWorldTaxPages,
 )
 
 __all__ = [
@@ -36,8 +40,12 @@ __all__ = [
     "IasWorldAuditorSearchResponse",
     "IasWorldAuditorSourceConnector",
     "IasWorldSiteConfig",
+    "IasWorldTaxPages",
+    "TaxDueDate",
+    "TaxPage",
     "build_auditor_source_connector",
     "canonical_property_assessments_from_iasworld_response",
     "is_datalet_shaped",
     "resolve_auditor_search_mode",
+    "same_parcel",
 ]
