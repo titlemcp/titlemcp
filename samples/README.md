@@ -52,6 +52,12 @@ See [mortgage_release_ollama](mortgage_release_ollama/) for a sample that asks
 Ollama whether a paid-off mortgage was released and verifies it triggers
 `mortgage_release_search`.
 
+## Property Tax Status Search with Ollama
+
+See [property_tax_ollama](property_tax_ollama/) for a sample that asks Ollama
+whether a parcel's property taxes are paid and verifies it triggers
+`property_tax_status_search`.
+
 ## PACER Bankruptcy Search with Ollama
 
 See [pacer_ollama](pacer_ollama/) for a sample that asks Ollama a natural

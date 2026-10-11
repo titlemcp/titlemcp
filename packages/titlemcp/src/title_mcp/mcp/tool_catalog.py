@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 from title_mcp.capabilities import CapabilityType
 from title_mcp.domain.models import (
+    US_STATE_NAMES,
     Address,
     Jurisdiction,
     ReviewDecision,
@@ -16,12 +17,14 @@ from title_mcp.domain.models import (
 )
 from title_mcp.domain.recorder import MortgageReleaseQuery
 from title_mcp.domain.responses import WorkflowListResponse
+from title_mcp.domain.tax import PropertyTaxQuery
 from title_mcp.platform import TitleMCPPlatform
 from title_mcp.sources import (
     HoaContactSerpApiSourceConnector,
     MortgageReleaseSource,
     OfacScreeningSourceConnector,
     PacerBankruptcySourceConnector,
+    PropertyTaxSource,
     RegridParcelSourceConnector,
     ScreeningParty,
     SourceKind,
@@ -469,7 +472,12 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
         the county, or nothing was given to search for.
         """
         await ensure_ready()
-        jurisdiction = Jurisdiction(country=country, state=state, county=_county_name(county))
+        try:
+            jurisdiction = Jurisdiction(
+                country=country, state=_state_code(state), county=_county_name(county)
+            )
+        except ValidationError:
+            return _unreadable_state("mortgage-release-search", state)
         connector = _release_source(platform, jurisdiction)
         if connector is None:
             return SourceResult(
@@ -496,6 +504,53 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
                 warnings=[error["msg"] for error in exc.errors()],
             ).model_dump(mode="json")
         result = await connector.find_release(jurisdiction, query)
+        return result.model_dump(mode="json")
+
+    @mcp.tool(
+        title="Property Tax Status Search",
+        annotations=_read_only_open_world("Property Tax Status Search"),
+    )
+    async def property_tax_status_search(
+        state: str,
+        county: str,
+        parcel_id: str,
+        country: str = "US",
+        requested_by: str = "mcp",
+    ) -> dict[str, Any]:
+        """
+        Read one parcel's current property tax status from the collector's record.
+
+        Pass the parcel or account number the way the county's collector writes
+        it. Returns a title_mcp.property_tax_status record under records[0]:
+        each tax year's billed, paid and balance amounts, with installments and
+        due dates where the collector gives them. Its status is paid, due,
+        past_due, unknown or parcel_not_found, and source.data_as_of says how
+        current the collector's data is. A status of requires_configuration
+        means no installed tax connector covers the county.
+        """
+        await ensure_ready()
+        try:
+            connector, jurisdiction = _tax_source(platform, country, state, county)
+        except ValidationError:
+            return _unreadable_state("property-tax-status-search", state)
+        if connector is None:
+            return SourceResult(
+                source_id="property-tax-status-search",
+                status=SourceResultStatus.REQUIRES_CONFIGURATION,
+                warnings=[
+                    f"No installed tax connector reads property tax status for "
+                    f"{jurisdiction.county}, {jurisdiction.state}."
+                ],
+            ).model_dump(mode="json")
+        try:
+            query = PropertyTaxQuery(parcel_id=parcel_id)
+        except ValidationError as exc:
+            return SourceResult(
+                source_id=connector.source_id,
+                status=SourceResultStatus.REQUIRES_CONFIGURATION,
+                warnings=[error["msg"] for error in exc.errors()],
+            ).model_dump(mode="json")
+        result = await connector.find_tax_status(jurisdiction, query)
         return result.model_dump(mode="json")
 
     @mcp.tool(
@@ -740,6 +795,41 @@ def _release_source(
         ):
             return connector
     return None
+
+
+def _unreadable_state(source_id: str, state: str) -> dict[str, Any]:
+    return SourceResult(
+        source_id=source_id,
+        status=SourceResultStatus.REQUIRES_CONFIGURATION,
+        warnings=[f"{state!r} isn't a state; give its two-letter code, such as OH or DC."],
+    ).model_dump(mode="json")
+
+
+def _state_code(state: str) -> str:
+    """A state's two-letter code, given the code or the name ("Ohio")."""
+    name = " ".join(state.split())
+    for code, full_name in US_STATE_NAMES.items():
+        if name.lower() == full_name.lower():
+            return code
+    return name
+
+
+def _tax_source(
+    platform: TitleMCPPlatform, country: str, state: str, county: str
+) -> tuple[PropertyTaxSource | None, Jurisdiction]:
+    """The tax connector for a county, named either way ("Hennepin" or "District of Columbia")."""
+    as_given = " ".join(county.split())
+    candidates = [
+        Jurisdiction(country=country, state=_state_code(state), county=name)
+        for name in dict.fromkeys([_county_name(county), as_given])
+    ]
+    for jurisdiction in candidates:
+        for connector in platform.sources.all():
+            if isinstance(connector, PropertyTaxSource) and connector.supports(
+                jurisdiction, SourceKind.TAX_AUTHORITY
+            ):
+                return connector, jurisdiction
+    return None, candidates[0]
 
 
 def _read_only_open_world(title: str) -> ToolAnnotations:

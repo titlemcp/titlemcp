@@ -218,6 +218,48 @@ releases; with none for the county it returns `requires_configuration`. Ohio's
 are in `titlemcp-us-oh-recorder`, and Texas, Colorado, Illinois, Pennsylvania and
 South Carolina counties are in `titlemcp-us-<state>-recorder`.
 
+### `property_tax_status_search`
+
+Reads one parcel's current property tax status from the collector's own record:
+what was billed, what's paid, and what's still owed, before a commitment or a
+closing.
+
+Input:
+
+```json
+{
+  "state": "DC",
+  "county": "District of Columbia",
+  "parcel_id": "4559 0063"
+}
+```
+
+Give the parcel or account number the way the county's collector writes it. The
+state may be its code or its name, and the county may leave off "County".
+
+Returns a `title_mcp.property_tax_status` record. Each tax year has billed,
+paid, penalties and balance, and its installments with due dates where the
+collector shows them. `status` is one of:
+- `paid`: nothing owed on any year shown;
+- `due`: owed, but none of it past due;
+- `past_due`: owed after a due date, or on an earlier year;
+- `unknown`: no balances shown;
+- `parcel_not_found`.
+
+`source.data_as_of` is the date of the collector's data, and an answer older
+than a week says so. `total_balance` adds up what's owed. Every result is marked
+for review: it's a reading of the collector's record, not a tax certificate.
+
+The tool routes by county to any installed tax connector. With none for the
+county, it returns `requires_configuration`. Connectors today:
+- **District of Columbia** (`titlemcp-us-dc-tax`): the District's open data
+  extract, refreshed every weekday. It has both halves with their statutory due
+  dates, ten prior years, tax sale flags and special assessments.
+- **Ohio's iasWorld auditor counties** (`titlemcp-us-oh-auditor`): Franklin,
+  Montgomery, Clermont, Lucas, Lake and Butler. Each year's tax and payments come
+  from the auditor's site, plus the half-by-half Tax Summary where the county's
+  page has one.
+
 ## Workflow Tools
 
 These tools create durable workflow records. They do not complete vendor work or

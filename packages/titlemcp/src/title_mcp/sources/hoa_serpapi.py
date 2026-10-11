@@ -16,6 +16,7 @@ import requests
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from title_mcp.adapters.base import JurisdictionScope
+from title_mcp.domain.models import US_STATE_NAMES as _STATE_NAMES
 from title_mcp.domain.models import Jurisdiction
 from title_mcp.settings import TitleMCPSettings, get_settings
 from title_mcp.sources.base import (
@@ -63,60 +64,6 @@ _PAGE_FETCH_USER_AGENT = (
     "Mozilla/5.0 (compatible; TitleMCP-HOA/1.0; +https://github.com/anthropics)"
 )
 _PAGE_FETCH_SKIP_TAGS = frozenset({"script", "style", "noscript", "template", "head", "svg"})
-
-_STATE_NAMES = {
-    "AL": "Alabama",
-    "AK": "Alaska",
-    "AZ": "Arizona",
-    "AR": "Arkansas",
-    "CA": "California",
-    "CO": "Colorado",
-    "CT": "Connecticut",
-    "DE": "Delaware",
-    "FL": "Florida",
-    "GA": "Georgia",
-    "HI": "Hawaii",
-    "ID": "Idaho",
-    "IL": "Illinois",
-    "IN": "Indiana",
-    "IA": "Iowa",
-    "KS": "Kansas",
-    "KY": "Kentucky",
-    "LA": "Louisiana",
-    "ME": "Maine",
-    "MD": "Maryland",
-    "MA": "Massachusetts",
-    "MI": "Michigan",
-    "MN": "Minnesota",
-    "MS": "Mississippi",
-    "MO": "Missouri",
-    "MT": "Montana",
-    "NE": "Nebraska",
-    "NV": "Nevada",
-    "NH": "New Hampshire",
-    "NJ": "New Jersey",
-    "NM": "New Mexico",
-    "NY": "New York",
-    "NC": "North Carolina",
-    "ND": "North Dakota",
-    "OH": "Ohio",
-    "OK": "Oklahoma",
-    "OR": "Oregon",
-    "PA": "Pennsylvania",
-    "RI": "Rhode Island",
-    "SC": "South Carolina",
-    "SD": "South Dakota",
-    "TN": "Tennessee",
-    "TX": "Texas",
-    "UT": "Utah",
-    "VT": "Vermont",
-    "VA": "Virginia",
-    "WA": "Washington",
-    "WV": "West Virginia",
-    "WI": "Wisconsin",
-    "WY": "Wyoming",
-    "DC": "District of Columbia",
-}
 
 
 class SerpApiClientError(RuntimeError):

@@ -208,6 +208,17 @@ No credentials are needed. Without the Ohio recorder package installed, the tool
 should still be triggered and return `requires_configuration`. The default
 instrument number is invented and comes back `mortgage_not_found`.
 
+## Property Tax Status Search
+
+```bash
+python samples/property_tax_ollama/ollama_client.py --model qwen3
+python samples/property_tax_ollama/ollama_client.py --parcel "<square and lot>" --summarize-with-ollama
+```
+
+No credentials are needed. Without a tax package for the county installed, the
+tool should still be triggered and return `requires_configuration`. The default
+parcel is invented and comes back `parcel_not_found`.
+
 ## How To Read The Logs
 
 Important log lines:
