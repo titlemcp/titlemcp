@@ -1,0 +1,28 @@
+[capability]
+capability_id = "us-dc-tax"
+package_name = "titlemcp-us-dc-tax"
+version = "0.1.0"
+
+[jurisdiction]
+country = "US"
+state = "DC"
+
+[workflows.tax_certificate]
+status = "draft"
+adapter = "implemented"
+source_connector = "implemented"
+human_review_required = true
+
+[readiness]
+docs = true
+unit_tests = true
+# Fixtures are invented and shaped like the extract's rows.
+fixtures = true
+# Checked by hand against the live extract; no live test is in the default suite.
+integration_tests = false
+no_live_credentials = true
+pypi_metadata = true
+reviewer_approved = false
+
+[release]
+publish = false
