@@ -214,7 +214,9 @@ class PublicSearchClient:
                     ),
                 )
                 for reference in row.get("marginalReferences") or []
-                if _text(reference.get("text"))
+                # Some counties link by the site's own document id, a bare number
+                # that names no instrument; those links are not followed.
+                if isinstance(reference, dict) and _text(reference.get("text"))
             ],
             detail_url=f"{self.base_url}/doc/{row['id']}" if row.get("id") else None,
             text_excerpt=_excerpt(_text(row.get("ocrText")), excerpt_for),

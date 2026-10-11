@@ -42,15 +42,22 @@ There is no documented API. The site talks to its own page over a websocket:
 
 Searches are spaced at least half a second apart (`min_interval_seconds`).
 
-## Releases are linked to their mortgages
+## Releases and their mortgages
 
-Each document carries `marginalReferences`: the instruments the county's
-indexers linked it to, with their types. A mortgage lists the releases and
-assignments recorded against it, and a release lists the mortgage it discharges.
-That is what makes `mortgage_release_search` exact here: look the mortgage up,
-follow its links, and a release among them is the answer. Where no link exists,
-the site's search of the text read off each image finds releases that cite the
-mortgage's number.
+Each document can carry `marginalReferences`: the instruments the county's
+indexers linked it to, with their types. Where a county links them, a mortgage
+lists the releases and assignments recorded against it, and a release lists the
+mortgage it discharges. That makes `mortgage_release_search` exact: look the
+mortgage up, follow its links, and a release among them is the answer. Where no
+link exists, the site's search of the text read off each image finds releases
+that cite the mortgage's number.
+
+Counties differ. Cuyahoga, Stark, Bexar, Arapahoe and Lake (Illinois) link
+releases to their mortgages. In samples of recent releases, Dallas, Tarrant,
+Collin, Denton, Hidalgo, Montgomery (Texas), Delaware (Pennsylvania) and
+Greenville returned no links, so there the text search, or the borrower's name
+and the payoff date, does the work. Some counties link by the site's own document
+id, a bare number that names no instrument; those links are not followed.
 
 The text read off images and the signed image links are not passed on; a match
 on text keeps only a short excerpt around the number that matched.
@@ -64,13 +71,25 @@ than by name alone.
 
 ## Counties known to run PublicSearch
 
-| County | Address |
-| --- | --- |
-| Cuyahoga, OH | `https://cuyahoga.oh.publicsearch.us` |
-| Franklin, OH | `https://franklin.oh.publicsearch.us` |
-| Stark, OH | `https://stark.oh.publicsearch.us` |
+| County | Address | Package |
+| --- | --- | --- |
+| Cuyahoga, OH | `https://cuyahoga.oh.publicsearch.us` | `titlemcp-us-oh-recorder` |
+| Franklin, OH | `https://franklin.oh.publicsearch.us` | `titlemcp-us-oh-franklin-recorder` |
+| Stark, OH | `https://stark.oh.publicsearch.us` | `titlemcp-us-oh-recorder` |
+| Dallas, TX | `https://dallas.tx.publicsearch.us` | `titlemcp-us-tx-recorder` |
+| Tarrant, TX | `https://tarrant.tx.publicsearch.us` | `titlemcp-us-tx-recorder` |
+| Bexar, TX | `https://bexar.tx.publicsearch.us` | `titlemcp-us-tx-recorder` |
+| Collin, TX | `https://collin.tx.publicsearch.us` | `titlemcp-us-tx-recorder` |
+| Denton, TX | `https://denton.tx.publicsearch.us` | `titlemcp-us-tx-recorder` |
+| Hidalgo, TX | `https://hidalgo.tx.publicsearch.us` | `titlemcp-us-tx-recorder` |
+| Montgomery, TX | `https://montgomery.tx.publicsearch.us` | `titlemcp-us-tx-recorder` |
+| Arapahoe, CO | `https://arapahoe.co.publicsearch.us` | `titlemcp-us-co-recorder` |
+| Lake, IL | `https://lake.il.publicsearch.us` | `titlemcp-us-il-recorder` |
+| Delaware, PA | `https://delaware.pa.publicsearch.us` | `titlemcp-us-pa-recorder` |
+| Greenville, SC | `https://greenville.sc.publicsearch.us` | `titlemcp-us-sc-recorder` |
 
 Each county writes its own document types (Cuyahoga's `RELS - RELEASE
-SATISFACTION` is Stark's `MORTGAGE RELEASE`); the core classifier reads both, and
-`document_type_kinds` corrects it by type code where a county's wording misleads
-it.
+SATISFACTION` is Stark's `MORTGAGE RELEASE`, and Arapahoe's `RELEASE OF DEED OF
+TRUST`); the core classifier reads them all, and `document_type_kinds` corrects it
+by type code where a county's wording misleads it, as Dallas's `RELEASE OF LIEN`
+does.
