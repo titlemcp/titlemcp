@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from titlemcp_platform_publicsearch import build_recorder_source_connector
+from titlemcp_platform_countyfusion import build_recorder_source_connector as countyfusion
+from titlemcp_platform_publicsearch import build_recorder_source_connector as publicsearch
 
 from title_mcp.plugins import PluginContext
-from titlemcp_us_oh_recorder.sites import OH_PUBLICSEARCH_SITES
+from titlemcp_us_oh_recorder.sites import OH_COUNTYFUSION_SITES, OH_PUBLICSEARCH_SITES
 
 
 class OhioRecorderPlugin:
@@ -16,6 +17,9 @@ class OhioRecorderPlugin:
     name = "us-oh-recorder"
 
     def register(self, context: PluginContext) -> None:
-        for site in OH_PUBLICSEARCH_SITES:
-            if context.sources.get(site.source_id) is None:
-                context.sources.register(build_recorder_source_connector(site))
+        connectors = [publicsearch(site) for site in OH_PUBLICSEARCH_SITES] + [
+            countyfusion(site) for site in OH_COUNTYFUSION_SITES
+        ]
+        for connector in connectors:
+            if context.sources.get(connector.source_id) is None:
+                context.sources.register(connector)

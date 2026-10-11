@@ -128,6 +128,33 @@ class InstrumentClassificationTests(unittest.TestCase):
             with self.subTest(description=description):
                 self.assertIs(classify_instrument(description), kind)
 
+    def test_abbreviated_and_reordered_descriptions_read_the_same(self) -> None:
+        cases = {
+            "RELEASE MORTGAGE": InstrumentKind.RELEASE,
+            "MORTGAGE RELEASE N/C": InstrumentKind.RELEASE,
+            "PT REL MORTGAGE": InstrumentKind.PARTIAL_RELEASE,
+            "REL AMEND MORTGAGE": InstrumentKind.RELEASE,
+            "ASSN MORTGAGE": InstrumentKind.ASSIGNMENT,
+            "COURT RELEASE": InstrumentKind.RELEASE,
+            "RELEASE": InstrumentKind.RELEASE,
+        }
+        for description, kind in cases.items():
+            with self.subTest(description=description):
+                self.assertIs(classify_instrument(description), kind)
+
+    def test_releases_of_other_things_are_not_mortgage_releases(self) -> None:
+        for description in (
+            "LEASE RELEASE",
+            "FEDERAL TAX LIEN RELEASE",
+            "RIGHT OF WAY RELEASE",
+            "LRLS - LIEN RELEASE",
+            "REL ASSN MORTGAGE",
+            "RESCISSION OF REL OF MTG",
+            "UCC PARTIAL RELEASE",
+        ):
+            with self.subTest(description=description):
+                self.assertIs(classify_instrument(description), InstrumentKind.OTHER)
+
     def test_documents_that_only_contain_the_words_are_not_mortgage_releases(self) -> None:
         # Each of these contains MORTGAGE or RELEASE without being either.
         cases = {

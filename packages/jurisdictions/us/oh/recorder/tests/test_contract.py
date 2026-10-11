@@ -7,7 +7,15 @@ from pathlib import Path
 from titlemcp_us_oh_recorder.adapters import OhioReleaseTrackingAdapter
 from titlemcp_us_oh_recorder.manifest import capability_manifest
 from titlemcp_us_oh_recorder.plugin import OhioRecorderPlugin
-from titlemcp_us_oh_recorder.sites import CUYAHOGA, OH_PUBLICSEARCH_SITES, STARK
+from titlemcp_us_oh_recorder.sites import (
+    ASHLAND,
+    CUYAHOGA,
+    OH_COUNTYFUSION_SITES,
+    OH_PUBLICSEARCH_SITES,
+    OH_RECORDER_SITES,
+    STARK,
+    WAYNE,
+)
 
 from title_mcp.adapters.registry import AdapterRegistry
 from title_mcp.capabilities.registry import CapabilityRegistry
@@ -48,17 +56,25 @@ class OhioRecorderContractTests(unittest.TestCase):
         self.assertEqual(STARK.base_url, "https://stark.oh.publicsearch.us")
         self.assertEqual({site.state for site in OH_PUBLICSEARCH_SITES}, {"OH"})
 
+    def test_sites_are_the_counties_on_countyfusion(self) -> None:
+        self.assertEqual(OH_COUNTYFUSION_SITES, (WAYNE, ASHLAND))
+        self.assertEqual(WAYNE.base_url, "https://countyfusion8.kofiletech.us/countyweb")
+        self.assertEqual((WAYNE.county_key, ASHLAND.county_key), ("WayneOH", "AshlandOH"))
+
     def test_the_plugin_registers_a_release_source_per_county(self) -> None:
         context = _context()
 
         OhioRecorderPlugin().register(context)
 
-        for site in OH_PUBLICSEARCH_SITES:
+        for site in OH_RECORDER_SITES:
             connector = context.sources.get(site.source_id)
             self.assertIsInstance(connector, MortgageReleaseSource)
         cuyahoga = Jurisdiction(state="OH", county="Cuyahoga County")
         resolved = context.sources.resolve(cuyahoga, SourceKind.COUNTY_RECORDER)
         self.assertEqual(resolved.source_id, "us-oh-cuyahoga-recorder")
+        wayne = Jurisdiction(state="OH", county="Wayne County")
+        resolved = context.sources.resolve(wayne, SourceKind.COUNTY_RECORDER)
+        self.assertEqual(resolved.descriptor.metadata["platform"], "kofile-countyfusion")
 
     def test_a_connector_already_registered_is_kept(self) -> None:
         context = _context()

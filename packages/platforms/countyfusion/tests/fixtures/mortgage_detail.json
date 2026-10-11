@@ -1,0 +1,19 @@
+{"_comment": "Shaped like getSearchResultsDetails.do with displayMode=QUICK_VIEW. Every party, number and legal is invented.",
+ "activeTab": "",
+ "tabs": [{"label": "Instrument Info", "dataFields": [
+  {"dataType": "STARTVPANEL", "label": "Instrument Information"},
+  {"dataType": "INSTTYPE", "label": "Instrument Type", "value": "MORTGAGE"},
+  {"dataType": "INSTNUM_ITERATE", "label": "Instrument Number", "value": "201904150101"},
+  {"dataType": "BOOK_PAGE", "label": "Book / Page", "value": "912  /  3344"},
+  {"dataType": "DATE", "label": "Recorded Date", "value": "04/15/2019 10:35:26 AM"},
+  {"dataType": "DATE", "label": "Instrument Date", "value": "04/10/2019"},
+  {"dataType": "DOCLINK", "docFromList": {"label": "", "value": [
+    {"date": "05/18/2026", "vbp": "OR&nbsp;001007&nbsp;1946", "addlField": "", "description": "(MORTGAGE RELEASE)",
+     "docValue": {"instId": 7000303, "instNum": "202605180303", "desc": "MORTGAGE RELEASE"}, "value": "202605180303"},
+    {"date": "01/05/2021", "vbp": "OR&nbsp;000950&nbsp;0012", "addlField": "", "description": "(MORTGAGE ASSIGNMENT)",
+     "docValue": {"instId": 7000202, "instNum": "202101050202", "desc": "MORTGAGE ASSIGNMENT"}, "value": "202101050202"}
+  ]}, "docToList": {}},
+  {"dataType": "LOCATION", "legalList": {"value": [{"value": "SDIV: EXAMPLE ACRES"}, {"value": "Lot 12"}]}},
+  {"dataType": "NAME", "nameList": {"label": "Grantor", "value": [{"value": "SAMPLETON JANE Q"}, {"value": "SAMPLETON JOHN R"}]}},
+  {"dataType": "NAME", "nameList": {"label": "Grantee", "value": [{"value": "EXAMPLE SAVINGS BANK"}]}}
+ ]}]}

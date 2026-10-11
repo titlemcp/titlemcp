@@ -19,6 +19,7 @@ Install the core package and the Ohio recorder package from the repo root:
 ```bash
 python -m pip install -e packages/titlemcp
 python -m pip install -e packages/platforms/publicsearch
+python -m pip install -e packages/platforms/countyfusion
 python -m pip install -e packages/jurisdictions/us/oh/recorder
 ```
 
