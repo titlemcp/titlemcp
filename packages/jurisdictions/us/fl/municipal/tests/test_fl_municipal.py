@@ -226,6 +226,33 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertIn("There's no fee.", plan.steps[0].description)
 
+    async def test_a_letter_asked_for_by_phone_says_to_ask_the_office(self) -> None:
+        directory = FloridaDirectory(
+            [
+                _office(
+                    "Sample County",
+                    kind="county",
+                    lien_letter={
+                        "offered": "yes",
+                        "channel": "phone",
+                        "source_url": "https://county.example/liens",
+                    },
+                )
+            ]
+        )
+        request = WorkflowRequest(
+            kind=WorkflowKind.MUNICIPAL_LIEN_SEARCH,
+            jurisdiction=Jurisdiction(state="FL", county="Sample"),
+            order={"file_number": "TEST-0001"},
+        )
+
+        plan = await FloridaMunicipalLienSearchAdapter(directory=directory).plan(request)
+
+        self.assertIn(
+            "Ask Sample County how to order it; it's described at https://county.example/liens.",
+            plan.steps[0].description,
+        )
+
 
 class DirectoryDataTests(unittest.TestCase):
     def test_every_county_and_its_cities_are_in_the_directory(self) -> None:

@@ -37,11 +37,9 @@ class MunicipalDirectory(Protocol):
 
     def supports(self, jurisdiction: Jurisdiction, kind: object | None = None) -> bool:
         """Whether the directory covers the jurisdiction."""
-        ...
 
     async def find_offices(self, jurisdiction: Jurisdiction) -> SourceResult:
         """The county's entry, and the municipality's when one is given."""
-        ...
 
 
 def municipal_directory_result(

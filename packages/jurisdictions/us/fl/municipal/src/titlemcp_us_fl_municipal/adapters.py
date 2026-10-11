@@ -186,8 +186,7 @@ def _how_to_order(office: MunicipalOffice) -> str:
             return f"{issuer} Mail the request{see}"
         case LienOrderChannel.FAX:
             return f"{issuer} Fax the request{see}"
-        case _:
-            return f"{issuer} Ask {office.name} how to order it{see}"
+    return f"{issuer} Ask {office.name} how to order it{see}"
 
 
 def _permit_step(office: MunicipalOffice, left_out: str) -> WorkflowAction:
