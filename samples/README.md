@@ -58,6 +58,12 @@ See [property_tax_ollama](property_tax_ollama/) for a sample that asks Ollama
 whether a parcel's property taxes are paid and verifies it triggers
 `property_tax_status_search`.
 
+## Municipal Lien Directory with Ollama
+
+See [municipal_lien_directory_ollama](municipal_lien_directory_ollama/) for a
+sample that asks Ollama how to order a city's municipal lien search and verifies
+it triggers `municipal_lien_directory`.
+
 ## PACER Bankruptcy Search with Ollama
 
 See [pacer_ollama](pacer_ollama/) for a sample that asks Ollama a natural

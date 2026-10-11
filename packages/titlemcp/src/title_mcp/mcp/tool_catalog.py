@@ -22,6 +22,7 @@ from title_mcp.platform import TitleMCPPlatform
 from title_mcp.sources import (
     HoaContactSerpApiSourceConnector,
     MortgageReleaseSource,
+    MunicipalDirectory,
     OfacScreeningSourceConnector,
     PacerBankruptcySourceConnector,
     PropertyTaxSource,
@@ -554,6 +555,46 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
         return result.model_dump(mode="json")
 
     @mcp.tool(
+        title="Municipal Lien Directory",
+        annotations=_read_only_local("Municipal Lien Directory"),
+    )
+    async def municipal_lien_directory(
+        state: str,
+        county: str,
+        municipality: str | None = None,
+        country: str = "US",
+    ) -> dict[str, Any]:
+        """
+        Find who to ask about a parcel's municipal liens, open permits and code cases.
+
+        Give the county, and the city when the parcel is inside one. Returns a
+        title_mcp.municipal_lien_directory record under records[0] with an entry
+        for the city and one for the county: who issues the lien search letter,
+        how to order it (the government's portal, a vendor, email, or a public
+        records request), its fee and turnaround, what it covers, and where the
+        permit, code case, utility and special assessment records are. A status
+        of requires_configuration means no installed directory covers the state.
+        """
+        await ensure_ready()
+        try:
+            directory, jurisdiction = _municipal_directory(
+                platform, country, state, county, municipality
+            )
+        except ValidationError:
+            return _unreadable_state("municipal-lien-directory", state)
+        if directory is None:
+            return SourceResult(
+                source_id="municipal-lien-directory",
+                status=SourceResultStatus.REQUIRES_CONFIGURATION,
+                warnings=[
+                    f"No installed municipal directory covers {jurisdiction.county}, "
+                    f"{jurisdiction.state}."
+                ],
+            ).model_dump(mode="json")
+        result = await directory.find_offices(jurisdiction)
+        return result.model_dump(mode="json")
+
+    @mcp.tool(
         title="Parse Payoff Letter",
         annotations=_state_changing("Parse Payoff Letter"),
     )
@@ -827,6 +868,30 @@ def _tax_source(
         for connector in platform.sources.all():
             if isinstance(connector, PropertyTaxSource) and connector.supports(
                 jurisdiction, SourceKind.TAX_AUTHORITY
+            ):
+                return connector, jurisdiction
+    return None, candidates[0]
+
+
+def _municipal_directory(
+    platform: TitleMCPPlatform,
+    country: str,
+    state: str,
+    county: str,
+    municipality: str | None,
+) -> tuple[MunicipalDirectory | None, Jurisdiction]:
+    """The directory covering a county, named either way ("Broward" or "Broward County")."""
+    city = " ".join(municipality.split()) if municipality else None
+    candidates = [
+        Jurisdiction(
+            country=country, state=_state_code(state), county=name, municipality=city or None
+        )
+        for name in dict.fromkeys([_county_name(county), " ".join(county.split())])
+    ]
+    for jurisdiction in candidates:
+        for connector in platform.sources.all():
+            if isinstance(connector, MunicipalDirectory) and connector.supports(
+                jurisdiction, SourceKind.MUNICIPAL
             ):
                 return connector, jurisdiction
     return None, candidates[0]
