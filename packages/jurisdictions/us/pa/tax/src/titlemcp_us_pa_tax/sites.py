@@ -24,8 +24,10 @@ DELAWARE = IasWorldSiteConfig(
     tax_due_months_after_billing=4,
     tax_due_dates=[TaxDueDate(label="County tax", month=6, day=1)],
     tax_notes=[
-        "The county's site shows county real estate tax only. School district and "
-        "municipal real estate taxes are billed and collected locally.",
+        (
+            "The county's site shows county real estate tax only. School district and "
+            "municipal real estate taxes are billed and collected locally."
+        ),
         "Unpaid county tax goes to the Tax Claim Bureau after the year ends.",
     ],
 )

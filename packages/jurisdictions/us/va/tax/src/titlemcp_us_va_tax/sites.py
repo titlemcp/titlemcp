@@ -25,8 +25,10 @@ FAIRFAX = IasWorldSiteConfig(
         TaxDueDate(label="2nd half", month=12, day=5),
     ],
     tax_notes=[
-        "The county's iCARE page summarizes the current year's real estate tax; it "
-        "doesn't list earlier years.",
+        (
+            "The county's iCARE page summarizes the current year's real estate tax; it "
+            "doesn't list earlier years."
+        ),
         "The towns of Herndon, Vienna and Clifton bill their own real estate tax.",
     ],
 )
