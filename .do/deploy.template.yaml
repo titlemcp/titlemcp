@@ -1,0 +1,13 @@
+# App spec for the "Deploy to DigitalOcean" button in the README. It builds the
+# Dockerfile at the repository root and serves MCP over Streamable HTTP at /mcp.
+spec:
+  name: titlemcp
+  services:
+    - name: titlemcp
+      git:
+        repo_clone_url: https://github.com/titlemcp/titlemcp.git
+        branch: main
+      dockerfile_path: Dockerfile
+      http_port: 8000
+      health_check:
+        http_path: /healthz

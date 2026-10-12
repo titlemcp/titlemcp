@@ -12,11 +12,13 @@ Start here if you are new to the project:
 2. [Tool Reference](TOOLS.md): what tools exist today and what each returns.
 3. [Configuration](CONFIGURATION.md): environment variables for PACER, state
    backends, logging, extension loading, and optional source connectors.
-4. [Samples](SAMPLES.md): Ollama examples for Franklin County Auditor, HOA
+4. [Deploying](DEPLOY.md): one-click deploys to Render, Heroku, Google Cloud
+   Run, DigitalOcean and Koyeb, and connecting a client to the deployment.
+5. [Samples](SAMPLES.md): Ollama examples for Franklin County Auditor, HOA
    contact search, and PACER.
-5. [Extending TitleMCP](EXTENDING.md): where to add adapters, source connectors,
+6. [Extending TitleMCP](EXTENDING.md): where to add adapters, source connectors,
    vendor connectors, domain models, and optional toolsets.
-6. [Agent & contributor guide](../AGENTS.md): the conventions every agent and
+7. [Agent & contributor guide](../AGENTS.md): the conventions every agent and
    contributor must follow — Pydantic principles and the tool/test/sample
    contract for new endpoints.
 

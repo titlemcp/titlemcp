@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from datetime import date
 from typing import Any
 
 from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
-from pydantic import ValidationError
+from pydantic import TypeAdapter, ValidationError
 
 from title_mcp.capabilities import CapabilityType
 from title_mcp.domain.models import (
@@ -33,6 +34,8 @@ from title_mcp.sources import (
     SourceResult,
     SourceResultStatus,
 )
+from title_mcp.sources.release_tracking import SOURCE_ID as RELEASE_TRACKING_SOURCE_ID
+from title_mcp.sources.release_tracking import release_tracking_result
 from title_mcp.vendors import VendorKind
 
 
@@ -505,6 +508,77 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
                 warnings=[error["msg"] for error in exc.errors()],
             ).model_dump(mode="json")
         result = await connector.find_release(jurisdiction, query)
+        return result.model_dump(mode="json")
+
+    @mcp.tool(
+        title="Release Tracking Status",
+        annotations=_read_only_open_world("Release Tracking Status"),
+    )
+    async def release_tracking_status(
+        state: str,
+        county: str,
+        paid_off_on: str,
+        mortgage_instrument_number: str | None = None,
+        mortgage_book: str | None = None,
+        mortgage_page: str | None = None,
+        borrower_names: list[str] | None = None,
+        lender_names: list[str] | None = None,
+        release_requested_on: str | None = None,
+        as_of: str | None = None,
+        country: str = "US",
+        requested_by: str = "mcp",
+    ) -> dict[str, Any]:
+        """
+        After a payoff, check whether the mortgage's release is of record and on time.
+
+        Identify the mortgage as for a release search: its instrument number, or
+        book and page, or the borrower's names. paid_off_on (YYYY-MM-DD) starts
+        the state's statutory clock. Where the statute's clock starts only with
+        the owner's written request, give release_requested_on (YYYY-MM-DD).
+        as_of (YYYY-MM-DD) defaults to today.
+        Returns a title_mcp.release_tracking_status record under records[0]. Its
+        status is released, released_late, awaiting_release, overdue,
+        not_released, needs_review or not_checked. It carries the deadline with
+        its statute citation, the date the release is due, recheck_on (when to
+        look again) and next_action. With no recorder connector for the county
+        it is not_checked: the deadline alone, so the release can be checked by
+        hand.
+        """
+        await ensure_ready()
+        try:
+            jurisdiction = Jurisdiction(
+                country=country, state=_state_code(state), county=_county_name(county)
+            )
+        except ValidationError:
+            return _unreadable_state(RELEASE_TRACKING_SOURCE_ID, state)
+        try:
+            query = MortgageReleaseQuery(
+                mortgage_instrument_number=mortgage_instrument_number,
+                mortgage_book=mortgage_book,
+                mortgage_page=mortgage_page,
+                borrower_names=borrower_names or [],
+                lender_names=lender_names or [],
+                paid_off_on=paid_off_on,
+            )
+            dates = TypeAdapter(date)
+            checked_on = dates.validate_python(as_of) if as_of else date.today()
+            requested_on = (
+                dates.validate_python(release_requested_on) if release_requested_on else None
+            )
+        except ValidationError as exc:
+            return SourceResult(
+                source_id=RELEASE_TRACKING_SOURCE_ID,
+                status=SourceResultStatus.REQUIRES_CONFIGURATION,
+                warnings=[error["msg"] for error in exc.errors()],
+            ).model_dump(mode="json")
+        result = await release_tracking_result(
+            connector=_release_source(platform, jurisdiction),
+            jurisdiction=jurisdiction,
+            query=query,
+            paid_off_on=query.paid_off_on,
+            as_of=checked_on,
+            requested_on=requested_on,
+        )
         return result.model_dump(mode="json")
 
     @mcp.tool(

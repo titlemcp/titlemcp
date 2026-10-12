@@ -26,6 +26,10 @@ Common transports:
 - `streamable-http`: HTTP deployment mode.
 - `sse`: server-sent events mode.
 
+The Docker image runs `streamable-http` on `0.0.0.0:8000`. When a hosting
+platform sets `PORT`, the image listens there instead of on
+`TITLE_MCP_MCP_PORT`. See [Deploying](DEPLOY.md).
+
 The HTTP discovery response at `/` advertises an absolute MCP endpoint as
 `mcp.url`. By default it is derived from the request host. Set
 `TITLE_MCP_MCP_PUBLIC_URL` when a proxy or deployment URL should be advertised
