@@ -218,6 +218,60 @@ releases; with none for the county it returns `requires_configuration`. Ohio's
 are in `titlemcp-us-oh-recorder`, and Texas, Colorado, Illinois, Pennsylvania and
 South Carolina counties are in `titlemcp-us-<state>-recorder`.
 
+### `release_tracking_status`
+
+After a payoff, checks whether the mortgage's release is of record, and judges
+it against the deadline the state's statute gives the lender. Call it again on
+its `recheck_on` date until nothing is left to wait for.
+
+Input:
+
+```json
+{
+  "state": "OH",
+  "county": "Stark",
+  "mortgage_instrument_number": "202001150101",
+  "paid_off_on": "2026-05-01"
+}
+```
+
+The mortgage is identified as for `mortgage_release_search`. `paid_off_on`
+starts the state's clock, and `as_of` (default today) is the day it is judged
+on. In states whose clock starts only with the owner's written request, such as
+Pennsylvania, Connecticut and Missouri, pass `release_requested_on` too.
+
+Returns a `title_mcp.release_tracking_status` record. Its `status` is one of:
+- `released`: a full release is of record, recorded by the deadline;
+- `released_late`: recorded after it;
+- `awaiting_release`: none of record, and the deadline hasn't passed;
+- `overdue`: none of record, the deadline has passed, and the statute's duty is
+  to record the release;
+- `not_released`: none of record, and the index can't show whether the lender is
+  late: no deadline is on file, the clock waits on a request not yet given, or
+  the statute lets the lender deliver the release to the borrower instead of
+  recording it;
+- `needs_review`: the county's answer needs a person, such as only candidates;
+- `not_checked`: no recorder connector covers the county.
+
+The record carries the deadline with its statute citation and link, what starts
+the clock, the remedy and any written demand it needs first, and any way for
+someone other than the lender to clear the lien. It also has `release_due_on`,
+`days_overdue`, `recheck_on` and `next_action`. The county index's own answer is
+under `release_search`. Every result is marked for review: the payoff date given
+stands in for whatever starts the statute's clock.
+
+Without a recorder connector for the county, the result is `partial`: the
+deadline alone, so the release can be checked by hand on time.
+
+Deadlines are on file for 44 states and the District of Columbia, each read from
+the statute's official text. Most states also let a title insurer or attorney
+record a release affidavit when the lender doesn't, and the record names that
+route with its citation. Not on file:
+- California, Georgia, Tennessee and Mississippi, until their current text is
+  read on an official site;
+- Idaho, which says only "immediately" on demand;
+- New Mexico, which sets no time limit.
+
 ### `property_tax_status_search`
 
 Reads one parcel's current property tax status from the collector's own record:
