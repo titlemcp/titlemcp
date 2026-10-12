@@ -1,0 +1,5 @@
+# Heroku builds the root Dockerfile for the web process and runs its CMD, which
+# listens on the PORT Heroku assigns.
+build:
+  docker:
+    web: Dockerfile

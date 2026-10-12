@@ -1,0 +1,7 @@
+{
+  "name": "titlemcp",
+  "description": "MCP server with title and real estate tools: county records, tax status, release search, OFAC screening and title workflows. Review-first.",
+  "repository": "https://github.com/titlemcp/titlemcp",
+  "keywords": ["mcp", "model-context-protocol", "title", "real-estate"],
+  "stack": "container"
+}

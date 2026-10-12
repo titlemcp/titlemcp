@@ -21,6 +21,18 @@ This repository is organized as a Python package monorepo for TitleMCP.
 > contract for new endpoints, and the review-first rule. (`CLAUDE.md` and
 > `.github/copilot-instructions.md` point here too.)
 
+## Deploy Your Own
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/titlemcp/titlemcp)
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://www.heroku.com/deploy?template=https://github.com/titlemcp/titlemcp)
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run?git_repo=https://github.com/titlemcp/titlemcp)
+[![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/titlemcp/titlemcp/tree/main)
+[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/deploy?type=git&repository=github.com/titlemcp/titlemcp&branch=main&builder=dockerfile&name=titlemcp&ports=8000;http;/&env%5BPORT%5D=8000)
+
+Each button builds this repository's Docker image and serves MCP at
+`https://<your-app>/mcp`. The server has no sign-in of its own, so read
+[Deploying](docs/DEPLOY.md) before you add credentials to a public deployment.
+
 ## Start Here
 
 New to the project? Start with the beginner docs:
@@ -29,6 +41,7 @@ New to the project? Start with the beginner docs:
 - [Getting started](docs/GETTING_STARTED.md)
 - [Tool reference](docs/TOOLS.md)
 - [Configuration](docs/CONFIGURATION.md)
+- [Deploying](docs/DEPLOY.md)
 - [Samples](docs/SAMPLES.md)
 - [Extending TitleMCP](docs/EXTENDING.md)
 - [Agent & contributor guide](AGENTS.md)

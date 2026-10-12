@@ -1,0 +1,12 @@
+# Blueprint for the "Deploy to Render" button in the README. It builds the
+# Dockerfile at the repository root and serves MCP over Streamable HTTP at /mcp.
+services:
+  - type: web
+    name: titlemcp
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    # Every deployment made from the button is its owner's copy. A push to this
+    # repository should not redeploy all of them.
+    autoDeployTrigger: "off"

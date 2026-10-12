@@ -59,3 +59,32 @@ jobs:
           python -m pip install build twine
           python -m build packages/titlemcp
           python -m twine check packages/titlemcp/dist/*
+
+  image:
+    # The deploy buttons in the README all build this Dockerfile. A hosting
+    # platform passes its port as PORT and sits behind a proxy that ends TLS.
+    name: Docker image builds and serves
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Build
+        run: docker build -t titlemcp:ci .
+
+      - name: Serves on the port the platform gives it
+        run: |
+          docker run -d --name titlemcp -e PORT=10000 -p 10000:10000 titlemcp:ci
+          for attempt in $(seq 1 30); do
+            curl -fs http://localhost:10000/healthz && break
+            sleep 1
+          done
+          curl -fs http://localhost:10000/healthz || { docker logs titlemcp; exit 1; }
+
+      - name: Advertises the https endpoint behind a proxy
+        run: |
+          url=$(curl -fs -H "Host: titlemcp.example.com" -H "X-Forwarded-Proto: https" \
+            http://localhost:10000/ | python -c "import json, sys; print(json.load(sys.stdin)['mcp']['url'])")
+          echo "$url"
+          test "$url" = "https://titlemcp.example.com/mcp"
