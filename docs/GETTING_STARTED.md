@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide assumes you are running TitleMCP from a local source checkout.
+This guide runs TitleMCP from a git clone of the repository.
 
 ## Prerequisites
 
@@ -10,51 +10,82 @@ This guide assumes you are running TitleMCP from a local source checkout.
 - Optional: PACER credentials for live PACER bankruptcy searches
 - Optional: a SerpAPI key for live HOA contact searches
 
-## 1. Create The Environment
+## 1. Install
 
-From the repository root:
+From a git clone of the repository:
+
+```bash
+./scripts/install.sh
+```
+
+It creates `.venv` and installs the core package and every platform and county
+package into it, editable. Use a full clone rather than a ZIP download: the core
+package reads its version from the repository's tags.
+
+To install only the core, with the development tools:
 
 ```bash
 python -m venv .venv
 .venv/bin/pip install -e "packages/titlemcp[dev]"
 ```
 
-If you only need the core runtime:
-
-```bash
-.venv/bin/pip install -e packages/titlemcp
-```
-
 ## 2. Run The MCP Server
 
-From a source checkout:
-
 ```bash
-PYTHONPATH=packages/titlemcp/src .venv/bin/python -m title_mcp.mcp.server
+TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true .venv/bin/titlemcp-server
 ```
 
-After the package is installed, the console script is also available:
+The default transport is stdio, which is the normal mode for MCP clients. Most
+county packages register as plugins, which load only with
+`TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true`.
+
+Connect Claude Code to it:
 
 ```bash
-titlemcp-server
+claude mcp add titlemcp -e TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true -- "$PWD/.venv/bin/titlemcp-server"
 ```
 
-The default transport is stdio, which is the normal mode for MCP clients.
+### Run It In Docker
+
+```bash
+docker compose up --build
+```
+
+The image has every package, with plugins loaded. Open the server catalog at
+`http://localhost:8000/` or the MCP Inspector at `http://localhost:6274/`. The
+catalog response includes `mcp.url` and an `inspector.url` with the backend
+prefilled for Docker. The Dockerized Inspector also defaults to:
+
+```text
+Transport: Streamable HTTP
+URL: http://titlemcp:8000/mcp
+```
+
+The Inspector proxy is bound to localhost by default. It requires a session token;
+read the token from `docker compose logs mcp-inspector`. If you use the prefilled
+URL printed by the container, replace `0.0.0.0` with `localhost` in your browser.
+If the Inspector returns `Forbidden - invalid origin`, open it through
+`http://localhost:6274/` or set `MCP_INSPECTOR_ALLOWED_ORIGINS` to include the
+browser origin you are using.
+
+The Inspector Resources tab includes `titlemcp://server/info`,
+`titlemcp://server/runtime`, `titlemcp://tools/catalog`, and
+`titlemcp://workflows/kinds`. The Prompts tab includes starter templates for
+workflow intake, parcel lookup review, HOA contact review, and sample prompts
+derived from the Ollama examples.
 
 ## 3. Run Tests
 
 Core tests:
 
 ```bash
-PYTHONPATH=packages/titlemcp/src .venv/bin/python -m unittest discover packages/titlemcp/tests
+.venv/bin/python -m unittest discover -s packages/titlemcp/tests
 ```
 
-Franklin County jurisdiction package tests:
+A county or platform package's tests, for example Franklin County's recorder:
 
 ```bash
-PYTHONPATH=packages/titlemcp/src:packages/jurisdictions/us/oh/franklin/recorder/src \
-  .venv/bin/python -m unittest \
-  packages/jurisdictions/us/oh/franklin/recorder/tests/test_contract.py
+.venv/bin/python -m unittest discover -s packages/jurisdictions/us/oh/franklin/recorder/tests
 ```
 
 ## 4. Try A Sample

@@ -164,6 +164,9 @@ TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=false
 
 Disable a group only for locked-down deployments or focused tests.
 
+Most county packages register as plugins, so they load only with
+`TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true`. The Docker image sets it.
+
 ## AWS Textract
 
 Document-analysis workflows can be configured to use AWS integrations.

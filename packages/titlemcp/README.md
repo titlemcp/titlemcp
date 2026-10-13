@@ -72,14 +72,11 @@ it is clear where country/state/county/municipality capabilities fit. See
 [docs/JURISDICTION_STRUCTURE.md](docs/JURISDICTION_STRUCTURE.md) for the convention and refresh
 command.
 
-Reusable jurisdiction behavior should be distributed as its own pip package. For example:
-
-```bash
-python -m pip install "titlemcp[us-oh-franklin]"
-```
-
-This installs the `titlemcp-us-oh-franklin-recorder` jurisdiction package and `titlemcp` discovers
-its manifest, adapter, and source connector through Python entry points by default. See
+Reusable jurisdiction behavior is distributed as its own pip package, such as
+`titlemcp-us-oh-franklin-recorder`, and `titlemcp` discovers its manifest, adapter, and source
+connector through Python entry points. The county packages are in the
+[repository](https://github.com/titlemcp/titlemcp); its `scripts/install.sh` installs the core
+with every one of them. See
 [docs/JURISDICTION_PACKAGES.md](docs/JURISDICTION_PACKAGES.md) and the template in
 `packages/titlemcp/templates/jurisdiction-package/`.
 
@@ -114,14 +111,14 @@ python -m pip install "titlemcp[postgres]"
 python -m pip install "titlemcp[aws]"
 ```
 
-Jurisdiction extras install jurisdiction packages with the framework:
+Jurisdiction extras such as `titlemcp[us-oh-franklin]` name county packages, which install from
+the [repository](https://github.com/titlemcp/titlemcp) until they are published to PyPI:
 
 ```bash
-python -m pip install "titlemcp[us-oh-franklin]"
+git clone https://github.com/titlemcp/titlemcp
+cd titlemcp
+./scripts/install.sh
 ```
-
-That extra depends on the separate `titlemcp-us-oh-franklin-recorder` package. It must be available
-on PyPI or on the private package index configured for your deployment.
 
 ## Run The MCP Server
 

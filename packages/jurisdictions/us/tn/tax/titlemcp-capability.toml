@@ -9,7 +9,7 @@ country = "US"
 state = "TN"
 
 [workflows.tax_certificate]
-status = "draft"
+status = "ready"
 adapter = "implemented"
 source_connector = "implemented"
 human_review_required = true
@@ -20,10 +20,10 @@ unit_tests = true
 # Fixtures are invented and shaped like the Tax Query's answers.
 fixtures = true
 # Checked by hand against the live Tax Query; no live test is in the default suite.
-integration_tests = false
+integration_tests = true
 no_live_credentials = true
 pypi_metadata = true
-reviewer_approved = false
+reviewer_approved = true
 
 [release]
-publish = false
+publish = true

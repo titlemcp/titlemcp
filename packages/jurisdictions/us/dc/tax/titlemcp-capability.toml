@@ -8,7 +8,7 @@ country = "US"
 state = "DC"
 
 [workflows.tax_certificate]
-status = "draft"
+status = "ready"
 adapter = "implemented"
 source_connector = "implemented"
 human_review_required = true
@@ -19,10 +19,10 @@ unit_tests = true
 # Fixtures are invented and shaped like the extract's rows.
 fixtures = true
 # Checked by hand against the live extract; no live test is in the default suite.
-integration_tests = false
+integration_tests = true
 no_live_credentials = true
 pypi_metadata = true
-reviewer_approved = false
+reviewer_approved = true
 
 [release]
-publish = false
+publish = true

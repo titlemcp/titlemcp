@@ -22,6 +22,9 @@ server over Streamable HTTP. When the deployment is up, it serves:
   the parcel proxy) uses them for whoever calls it, and PACER and the paid APIs
   bill per use. Leave those unset on a public deployment, or deploy somewhere
   only your own clients can reach.
+- **Every county package is in the image and loaded**; the image sets
+  `TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true`. Their tools read the counties'
+  public websites when they are called.
 - **State is kept in memory.** Workflow records are lost when the service
   restarts or redeploys, and free instances restart often. For durable state,
   set `TITLE_MCP_STATE_BACKEND=postgres` and `TITLE_MCP_POSTGRES_DSN` (see
@@ -85,4 +88,4 @@ docker build --build-arg TITLEMCP_VERSION=0.3.6 -t titlemcp:0.3.6 .
 ```
 
 For local work with MCP Inspector alongside, use `docker compose up --build` as
-described in the [README](../README.md#core-package).
+described in [Getting Started](GETTING_STARTED.md#run-it-in-docker).

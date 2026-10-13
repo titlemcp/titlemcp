@@ -60,6 +60,44 @@ jobs:
           python -m build packages/titlemcp
           python -m twine check packages/titlemcp/dist/*
 
+  packages:
+    # The Docker image and scripts/install.sh install every package together, so
+    # each package's suite runs with all of them installed.
+    name: Every package, installed together
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The core takes its version from the tags, and the county packages
+          # require a minimum core version.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: ./scripts/install.sh
+
+      - name: Test each package
+        run: |
+          status=0
+          for tests in $(find packages/platforms packages/jurisdictions -type d -name tests | sort); do
+            echo "::group::$tests"
+            .venv/bin/python -m unittest discover -s "$tests" -v || status=1
+            echo "::endgroup::"
+          done
+          exit $status
+
+      - name: Every county package passes the publish audit
+        run: |
+          status=0
+          for package in $(find packages/jurisdictions -name titlemcp-capability.toml -exec dirname {} \; | sort); do
+            .venv/bin/python scripts/audit_jurisdiction_package.py --require-publish-ready "$package" || status=1
+          done
+          exit $status
+
   image:
     # The deploy buttons in the README all build this Dockerfile. A hosting
     # platform passes its port as PORT and sits behind a proxy that ends TLS.
@@ -88,3 +126,38 @@ jobs:
             http://localhost:10000/ | python -c "import json, sys; print(json.load(sys.stdin)['mcp']['url'])")
           echo "$url"
           test "$url" = "https://titlemcp.example.com/mcp"
+
+      - name: Loads every county package
+        # One source connector from each county package, registered by its plugin.
+        run: |
+          docker run --rm -i titlemcp:ci python - <<'EOF'
+          import asyncio
+
+          from title_mcp.platform import TitleMCPPlatform
+          from title_mcp.settings import TitleMCPSettings
+
+          platform = TitleMCPPlatform(settings=TitleMCPSettings())
+          asyncio.run(platform.initialize())
+          loaded = {connector.source_id for connector in platform.sources.all()}
+          expected = {
+              "us-ca-contra-costa-tax",
+              "us-co-arapahoe-recorder",
+              "us-dc-otr-tax",
+              "us-fl-municipal-directory",
+              "us-il-dupage-tax",
+              "us-il-lake-recorder",
+              "us-nm-bernalillo-tax",
+              "us-oh-cuyahoga-recorder",
+              "us-oh-franklin-auditor",
+              "us-oh-franklin-recorder",
+              "us-pa-delaware-recorder",
+              "us-pa-delaware-tax",
+              "us-sc-greenville-recorder",
+              "us-tn-shelby-tax",
+              "us-tx-dallas-recorder",
+              "us-va-fairfax-tax",
+          }
+          missing = expected - loaded
+          print(f"{len(loaded)} source connectors loaded")
+          assert not missing, f"not loaded: {sorted(missing)}"
+          EOF

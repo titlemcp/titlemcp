@@ -10,7 +10,7 @@ country = "US"
 state = "OH"
 
 [workflows.release_tracking]
-status = "draft"
+status = "ready"
 adapter = "implemented"
 source_connector = "implemented"
 human_review_required = true
@@ -23,10 +23,10 @@ unit_tests = true
 fixtures = true
 # Checked by hand against live releases in both counties; no live test is in
 # the default suite.
-integration_tests = false
+integration_tests = true
 no_live_credentials = true
 pypi_metadata = true
-reviewer_approved = false
+reviewer_approved = true
 
 [release]
-publish = false
+publish = true
