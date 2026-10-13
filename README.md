@@ -109,8 +109,15 @@ with your path filled in:
 claude mcp add titlemcp -e TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true -- "$PWD/.venv/bin/titlemcp-server"
 ```
 
+To call tools by hand in the browser instead, run MCP Inspector:
+
+```bash
+npx @modelcontextprotocol/inspector -e TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true -- .venv/bin/titlemcp-server
+```
+
 Use `git clone`, not *Download ZIP*: the package reads its version from the
-repository's tags.
+repository's tags. `pip install titlemcp` installs only the core from PyPI,
+without the county packages. They aren't on PyPI yet.
 
 ### In the cloud
 
@@ -163,24 +170,27 @@ The status is then one of `released`, `released_late`, `awaiting_release`,
 
 | Tool | What it does | Needs |
 | --- | --- | --- |
-| `mortgage_release_search` | Finds one mortgage's release in the county recorder's index | — |
-| `release_tracking_status` | Judges that release against the state's deadline: on time, late or overdue | — |
-| `property_tax_status_search` | Reads a parcel's current tax status from the collector | — |
-| `municipal_lien_directory` | Says who issues the lien letter and how to order it, and where permits and code cases are | — |
-| `ofac_screen_parties` | Screens people and companies against OFAC's lists, with a receipt | — |
-| `ofac_list_status` | Shows which list publication screening is using | — |
-| `<county>_auditor_search` | Searches an Ohio county auditor by parcel, owner or address | — |
-| `pacer_bankruptcy_search` | Searches PACER's bankruptcy party index | A PACER account (PACER bills searches) |
-| `hoa_contact_search` | Finds an HOA's contacts from the web | A SerpAPI key |
-| `parcel_lookup` | Looks up parcel data by address | A proxy, see [Configuration](docs/CONFIGURATION.md#parcel-provider) |
+| [`mortgage_release_search`](docs/TOOLS.md#mortgage_release_search) | Finds one mortgage's release in the county recorder's index | — |
+| [`release_tracking_status`](docs/TOOLS.md#release_tracking_status) | Judges that release against the state's deadline: on time, late or overdue | — |
+| [`property_tax_status_search`](docs/TOOLS.md#property_tax_status_search) | Reads a parcel's current tax status from the collector | — |
+| [`municipal_lien_directory`](docs/TOOLS.md#municipal_lien_directory) | Says who issues the lien letter and how to order it, and where permits and code cases are | — |
+| [`ofac_screen_parties`](docs/TOOLS.md#ofac_screen_parties) | Screens people and companies against OFAC's lists, with a receipt | — |
+| [`ofac_list_status`](docs/TOOLS.md#ofac_list_status) | Shows which list publication screening is using | — |
+| [`<county>_auditor_search`](docs/TOOLS.md#franklin_county_auditor_search) | Searches an Ohio county auditor by parcel, owner or address | — |
+| [`pacer_bankruptcy_search`](docs/TOOLS.md#pacer_bankruptcy_search) | Searches PACER's bankruptcy party index | A PACER account (PACER bills searches) |
+| [`hoa_contact_search`](docs/TOOLS.md#hoa_contact_search) | Finds an HOA's contacts from the web | A SerpAPI key |
+| [`parcel_lookup`](docs/TOOLS.md#parcel_lookup) | Looks up parcel data by address | A proxy, see [Configuration](docs/CONFIGURATION.md#parcel-provider) |
 
 There are also workflow tools: `start_title_workflow`, `request_tax_certificate`,
 `request_hoa_estoppel`, `request_municipal_lien_search`, `track_release`,
 `parse_payoff_letter`, `generate_checklist_packet` and others. Each records a
 piece of work with its tasks, audit trail and a human review step, and can
-optionally be stored in Postgres. They plan and track the work but don't place
-vendor orders themselves. The [tool reference](docs/TOOLS.md) has every tool's
-inputs and outputs.
+optionally be stored in Postgres. They plan and track the work. They don't yet
+order estoppels, run OCR or read payoff letters.
+
+Outside its coverage, a tool answers `requires_configuration` and names what is
+missing rather than guessing. The [tool reference](docs/TOOLS.md) has every
+tool's inputs and outputs.
 
 ## Run it with a local model
 
