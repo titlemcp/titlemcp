@@ -85,4 +85,4 @@ docker build --build-arg TITLEMCP_VERSION=0.3.6 -t titlemcp:0.3.6 .
 ```
 
 For local work with MCP Inspector alongside, use `docker compose up --build` as
-described in the [README](../README.md#core-package).
+described in the [README](../README.md#development).
