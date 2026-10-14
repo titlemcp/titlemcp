@@ -61,6 +61,10 @@ This codebase is Pydantic v2 throughout. Follow the patterns in
 - **Settings come from `TitleMCPSettings` (pydantic-settings), never `os.getenv`.**
   Env vars use the `TITLE_MCP_` prefix. Inject settings (`settings=...`) so they
   stay testable; resolve the singleton with `get_settings()`.
+- **Credentials are `SecretStr | None` settings.** That covers any new key,
+  password, token or connection string. Read it with `secret_value(...)` only at
+  the call that sends it, and add it to `.env.example` and to the Credentials
+  table in `docs/CONFIGURATION.md`.
 - **Canonical records carry schema metadata:** a stable `schema_name`
   (`title_mcp.<name>`), `schema_version`, `record_type`, a `source` block with
   retrieval info, and `source_specific` for the untouched upstream payload. See
@@ -194,7 +198,11 @@ true`, and each workflow `status = "ready"` with `human_review_required = true`.
   sensitive payloads. Log source/workflow/jurisdiction IDs only.
 - **Redact** sensitive identifiers in returned records and in any criteria you
   echo back (see `redacted_query` / `_redacted_ssn`).
-- **Never hardcode secrets.** They come from `TITLE_MCP_*` settings.
+- **Never hardcode secrets.** They come from `TITLE_MCP_*` settings typed
+  `SecretStr` (see §2), and tests use invented values.
+- **Never build a log line from a credential**, even redacted, and that includes
+  a proxy or database URL that carries one. Log what identifies it instead: the
+  Regrid connector logs the proxy's port.
 
 ---
 

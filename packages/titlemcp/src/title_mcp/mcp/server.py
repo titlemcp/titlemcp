@@ -16,7 +16,7 @@ from title_mcp.mcp.tool_catalog import register_core_tools
 from title_mcp.mcp.toolsets import register_entry_point_toolsets
 from title_mcp.observability import configure_logging
 from title_mcp.platform import TitleMCPPlatform
-from title_mcp.settings import TitleMCPSettings, get_settings
+from title_mcp.settings import TitleMCPSettings, get_settings, secret_value
 
 
 def create_mcp_server(
@@ -179,9 +179,11 @@ def _public_runtime_settings(settings: TitleMCPSettings) -> dict[str, Any]:
             "plugins": settings.load_entry_point_plugins,
         },
         "configured_integrations": {
-            "parcel_lookup": bool(settings.smart_proxy),
-            "hoa_contact_search": bool(settings.serpapi_api_key),
-            "pacer_bankruptcy_search": bool(settings.pacer_username and settings.pacer_password),
+            "parcel_lookup": bool(secret_value(settings.smart_proxy)),
+            "hoa_contact_search": bool(secret_value(settings.serpapi_api_key)),
+            "pacer_bankruptcy_search": bool(
+                settings.pacer_username and secret_value(settings.pacer_password)
+            ),
             "aws_textract": bool(settings.aws_region and settings.textract_s3_bucket),
         },
         "background_worker_concurrency": settings.background_worker_concurrency,

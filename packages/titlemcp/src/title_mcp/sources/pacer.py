@@ -15,7 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from title_mcp.adapters.base import JurisdictionScope
 from title_mcp.domain.models import Jurisdiction
-from title_mcp.settings import TitleMCPSettings, get_settings
+from title_mcp.settings import TitleMCPSettings, get_settings, secret_value
 from title_mcp.sources.base import (
     SourceCitation,
     SourceConnector,
@@ -350,11 +350,12 @@ class PacerBankruptcySourceConnector(SourceConnector):
         )
 
     def _client_from_settings(self) -> PacerClient | None:
-        if not self.settings.pacer_username or not self.settings.pacer_password:
+        password = secret_value(self.settings.pacer_password)
+        if not self.settings.pacer_username or not password:
             return None
         self._client = PacerClient(
             self.settings.pacer_username,
-            self.settings.pacer_password,
+            password,
             client_code=self.settings.pacer_client_code,
             qa_mode=self.settings.pacer_qa_mode,
             timeout=self.settings.pacer_timeout_seconds,

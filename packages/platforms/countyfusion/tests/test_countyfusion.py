@@ -211,6 +211,16 @@ class SessionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(form["FROMDATE"], "05/01/2026")
         self.assertEqual(form["ALLNAMES"], "SAMPLETON JANE")
 
+    async def test_a_book_and_page_search_covers_every_book_series(self) -> None:
+        site = _FakeSite()
+
+        await _client(site).search_book_page("912", "3344")
+
+        form = next(data for _, path, data in site.requests if "searchExecute" in path)
+        self.assertEqual(form["SEARCHTYPE"], "bookPage")
+        self.assertEqual((form["BOOK"], form["PAGE"]), ("912", "3344"))
+        self.assertEqual(form["VOLUME"], "")
+
 
 class IndexTests(unittest.IsolatedAsyncioTestCase):
     def test_people_are_searched_surname_first_and_businesses_as_written(self) -> None:
@@ -238,6 +248,17 @@ class IndexTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(linked.references[0].instrument_number, "202605180303")
         self.assertEqual(release.recorded_on, date(2026, 5, 18))
         self.assertEqual(len(site.requests), before)
+
+    async def test_a_book_and_page_finds_only_the_document_recorded_there(self) -> None:
+        index = CountyFusionIndex(_client(_FakeSite()))
+
+        [mortgage] = await index.by_book_page("912", "3344")
+        [same] = await index.by_book_page("0912", " 3344 ")
+        elsewhere = await index.by_book_page("912", "3345")
+
+        self.assertEqual(mortgage.instrument_number, "201904150101")
+        self.assertEqual(same.instrument_number, "201904150101")
+        self.assertEqual(elsewhere, [])
 
 
 class ConnectorTests(unittest.IsolatedAsyncioTestCase):
@@ -286,6 +307,21 @@ class ConnectorTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(match["basis"], "index_reference")
         self.assertEqual(match["release"]["instrument_number"], "202605180303")
         self.assertEqual(match["release"]["recorded_on"], "2026-05-18")
+
+    async def test_a_mortgage_cited_by_book_and_page_is_found_and_followed(self) -> None:
+        result = await self._connector().find_release(
+            EXAMPLE,
+            MortgageReleaseQuery(
+                mortgage_book="912", mortgage_page="3344", paid_off_on="2026-05-01"
+            ),
+        )
+
+        [record] = result.records
+        self.assertEqual(record["status"], "released")
+        self.assertEqual(record["mortgage_identified_by"], "book_page")
+        self.assertEqual(record["mortgage"]["instrument_number"], "201904150101")
+        [match] = record["releases"]
+        self.assertEqual(match["release"]["instrument_number"], "202605180303")
 
 
 if __name__ == "__main__":

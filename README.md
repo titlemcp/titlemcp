@@ -3,9 +3,10 @@
 [![CI](https://github.com/titlemcp/titlemcp/actions/workflows/ci.yml/badge.svg)](https://github.com/titlemcp/titlemcp/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/titlemcp)](https://pypi.org/project/titlemcp/)
 [![Python](https://img.shields.io/pypi/pyversions/titlemcp)](https://pypi.org/project/titlemcp/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**Title research tools for AI agents.** TitleMCP connects Claude, or any
-[MCP](https://modelcontextprotocol.io) client or local model, to county
+**Open-source title research tools for AI agents.** TitleMCP connects Claude,
+or any [MCP](https://modelcontextprotocol.io) client or local model, to county
 recorders, tax collectors, state statutes and federal sanctions lists. Your
 agent can then do the lookups a title file needs and show where each answer
 came from.
@@ -70,8 +71,9 @@ links to those sources.
 | **Bankruptcy, HOA contacts, parcel data** | Nationwide, with your own PACER, SerpAPI or proxy account |
 
 Don't see your county? Counties on the same records software share a platform
-package (PublicSearch, CountyFusion, iasWorld), so adding the next county on one
-is mostly a matter of describing its site. See [Add your county](#add-your-county).
+package (Kofile PublicSearch, Kofile CountyFusion, Tyler iasWorld), so adding
+the next county on one is mostly a matter of describing its site. See
+[Add your county](#add-your-county).
 
 ## Get started
 
@@ -116,8 +118,9 @@ npx @modelcontextprotocol/inspector -e TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true -
 ```
 
 Use `git clone`, not *Download ZIP*: the package reads its version from the
-repository's tags. `pip install titlemcp` installs only the core from PyPI,
-without the county packages. They aren't on PyPI yet.
+repository's tags. `pip install titlemcp` installs only the core from PyPI: OFAC
+screening, the release deadlines, the workflow tools and the credentialed tools.
+The county packages, including the Florida directory, aren't on PyPI yet.
 
 ### In the cloud
 
@@ -135,7 +138,8 @@ credentials.
 ### Then ask
 
 Start with *"What can TitleMCP look up?"*, then try the questions at the top of
-this page.
+this page. The first OFAC screening downloads the lists, which takes a few
+seconds.
 
 ## What an answer looks like
 
@@ -181,16 +185,29 @@ The status is then one of `released`, `released_late`, `awaiting_release`,
 | [`hoa_contact_search`](docs/TOOLS.md#hoa_contact_search) | Finds an HOA's contacts from the web | A SerpAPI key |
 | [`parcel_lookup`](docs/TOOLS.md#parcel_lookup) | Looks up parcel data by address | A proxy, see [Configuration](docs/CONFIGURATION.md#parcel-provider) |
 
-There are also workflow tools: `start_title_workflow`, `request_tax_certificate`,
-`request_hoa_estoppel`, `request_municipal_lien_search`, `track_release`,
-`parse_payoff_letter`, `generate_checklist_packet` and others. Each records a
-piece of work with its tasks, audit trail and a human review step, and can
-optionally be stored in Postgres. They plan and track the work. They don't yet
-order estoppels, run OCR or read payoff letters.
+**Workflow tools.** `start_title_workflow`, `request_hoa_estoppel`,
+`request_municipal_lien_search`, `request_tax_certificate`,
+`request_public_records_search`, `track_release`, `analyze_document`,
+`parse_payoff_letter` and `generate_checklist_packet` record a title task with the
+steps its jurisdiction needs. `get_workflow_status`, `list_workflows` and
+`submit_human_review` follow it through review, with an audit trail, and the
+records can be kept in Postgres. These tools plan and track the work. They don't
+yet order estoppels, run OCR or read payoff letters.
+
+`list_title_capabilities`, `list_source_connectors` and `list_vendor_connectors`
+report what a running server has installed.
 
 Outside its coverage, a tool answers `requires_configuration` and names what is
 missing rather than guessing. The [tool reference](docs/TOOLS.md) has every
 tool's inputs and outputs.
+
+### Credentials
+
+Only the three tools above that name a credential need one. Their variables are
+listed in [`.env.example`](.env.example). Keep them in a secret manager, a local
+`.env`, your MCP client's configuration or your host's settings.
+[Configuration](docs/CONFIGURATION.md#credentials) explains each option and how
+the code keeps them out of logs.
 
 ## Run it with a local model
 
@@ -214,12 +231,15 @@ If you need a county and can't build it yourself, open an issue that names it.
 
 - [Getting started](docs/GETTING_STARTED.md): the source checkout, tests and samples
 - [Tool reference](docs/TOOLS.md): every tool's inputs and outputs
-- [Configuration](docs/CONFIGURATION.md): every setting
+- [Configuration](docs/CONFIGURATION.md): every setting, and where to keep credentials
 - [Deploying](docs/DEPLOY.md): the cloud buttons and connecting a client
+- [Samples](docs/SAMPLES.md): Ollama clients that show a local model picking the right tool
 - [Extending TitleMCP](docs/EXTENDING.md): adapters, connectors and county packages
 - [AGENTS.md](AGENTS.md): conventions for contributors and coding agents
-- [Architecture](packages/titlemcp/docs/ARCHITECTURE.md)
+- [Architecture](packages/titlemcp/docs/ARCHITECTURE.md),
+  [jurisdiction packages](packages/titlemcp/docs/JURISDICTION_PACKAGES.md) and
+  [publishing](packages/titlemcp/docs/PUBLISHING.md)
 
 ## License
 
-See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
