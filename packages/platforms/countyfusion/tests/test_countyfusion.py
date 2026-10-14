@@ -94,6 +94,21 @@ def _client(site: _FakeSite, **kwargs) -> CountyFusionClient:
     return CountyFusionClient(CONFIG, session_factory=site.session, **kwargs)
 
 
+def _without_marginal_column(page: str) -> str:
+    """The result list as a guest sees it: no column flagging links."""
+    return page.replace("<th>Marginal</th>", "<th>Notes</th>")
+
+
+class _GuestSite(_FakeSite):
+    """A county whose result list, seen as a guest, has no Marginal column."""
+
+    def request(self, method, url, **kwargs):
+        answer = super().request(method, url, **kwargs)
+        if url.endswith("docs_SearchResultList.jsp"):
+            answer.text = _without_marginal_column(answer.text)
+        return answer
+
+
 class MappingTests(unittest.TestCase):
     def test_result_rows_put_each_party_on_its_side(self) -> None:
         mortgage, release = _client(_FakeSite()).rows((FIXTURES / "result_list.html").read_text())
@@ -125,6 +140,22 @@ class MappingTests(unittest.TestCase):
                 ("202101050202", InstrumentKind.ASSIGNMENT),
             ],
         )
+
+    def test_a_detail_may_give_the_number_as_a_plain_field(self) -> None:
+        text = (FIXTURES / "mortgage_detail.json").read_text()
+        payload = json.loads(text.replace('"INSTNUM_ITERATE"', '"STRING"'))
+
+        mortgage = _client(_FakeSite()).document(payload, "7000101")
+
+        self.assertEqual(mortgage.instrument_number, "201904150101")
+
+    def test_a_list_without_a_marginal_column_leaves_links_unknown(self) -> None:
+        page = _without_marginal_column((FIXTURES / "result_list.html").read_text())
+
+        mortgage, release = _client(_FakeSite()).rows(page)
+
+        self.assertIsNone(mortgage.raw["has_links"])
+        self.assertIsNone(release.raw["has_links"])
 
     def test_a_link_says_enough_about_the_document_to_skip_fetching_it(self) -> None:
         client = _client(_FakeSite())
@@ -211,6 +242,15 @@ class SessionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(form["FROMDATE"], "05/01/2026")
         self.assertEqual(form["ALLNAMES"], "SAMPLETON JANE")
 
+    async def test_a_guest_county_logs_in_as_guest(self) -> None:
+        site = _FakeSite()
+        config = CONFIG.model_copy(update={"guest_login": True})
+
+        await CountyFusionClient(config, session_factory=site.session).search_instrument("1")
+
+        login = next(data for _, path, data in site.requests if path == "/login.action")
+        self.assertEqual((login["guest"], login["public"]), ("true", "false"))
+
     async def test_a_book_and_page_search_covers_every_book_series(self) -> None:
         site = _FakeSite()
 
@@ -248,6 +288,14 @@ class IndexTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(linked.references[0].instrument_number, "202605180303")
         self.assertEqual(release.recorded_on, date(2026, 5, 18))
         self.assertEqual(len(site.requests), before)
+
+    async def test_links_a_guest_list_doesnt_flag_are_read_from_the_detail(self) -> None:
+        index = CountyFusionIndex(_client(_GuestSite()))
+        [mortgage] = await index.by_instrument("201904150101")
+
+        linked = await index.with_links(mortgage)
+
+        self.assertIn("202605180303", [r.instrument_number for r in linked.references])
 
     async def test_a_book_and_page_finds_only_the_document_recorded_there(self) -> None:
         index = CountyFusionIndex(_client(_FakeSite()))
