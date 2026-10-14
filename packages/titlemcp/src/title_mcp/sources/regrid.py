@@ -30,7 +30,7 @@ from title_mcp.domain.parcel import (
     ParcelSite,
     ParcelValuation,
 )
-from title_mcp.settings import TitleMCPSettings, get_settings
+from title_mcp.settings import TitleMCPSettings, get_settings, secret_value
 from title_mcp.sources.base import (
     SourceCitation,
     SourceConnector,
@@ -165,6 +165,10 @@ class RegridParcelQueryService:
             proxy_port_start=proxy_port_start,
             proxy_port_end=proxy_port_end,
         )
+        # Logs name an endpoint by its port. The proxy URLs carry the credentials,
+        # so no log line is built from them.
+        self.proxy_ports = list(range(proxy_port_start, proxy_port_end + 1))
+        self.current_proxy_port: int | None = None
         attempt_limit = max_proxy_attempts or len(self.proxies)
         self.max_proxy_attempts = max(1, min(attempt_limit, len(self.proxies)))
         LOGGER.info(
@@ -322,9 +326,10 @@ class RegridParcelQueryService:
     def _get_next_proxy(self) -> dict[str, str]:
         if not self.proxies:
             raise RegridProxyConfigurationError("No Regrid smart proxies are configured.")
-        proxy = random.choice(self.proxies)
-        LOGGER.debug("Using Regrid smart proxy endpoint: %s", proxy)
-        return proxy
+        index = random.randrange(len(self.proxies))
+        self.current_proxy_port = self.proxy_ports[index]
+        LOGGER.debug("Using Regrid smart proxy port %s.", self.current_proxy_port)
+        return self.proxies[index]
 
     def _fetch_new_cookie(self) -> str:
         last_error: Exception | None = None
@@ -337,11 +342,11 @@ class RegridParcelQueryService:
             self.current_proxy = proxy
             start = time.monotonic()
             LOGGER.info(
-                "Regrid cookie HEAD attempt %s/%s: url=%s proxy=%s timeout=%ss.",
+                "Regrid cookie HEAD attempt %s/%s: url=%s proxy_port=%s timeout=%ss.",
                 attempt,
                 self.max_proxy_attempts,
                 self.url_cookies,
-                _redacted_proxy_map(proxy),
+                self.current_proxy_port,
                 self.cookie_timeout_seconds,
             )
             try:
@@ -404,12 +409,12 @@ class RegridParcelQueryService:
             start = time.monotonic()
             try:
                 LOGGER.info(
-                    "Regrid GET attempt %s/%s: url=%s params=%s proxy=%s timeout=%ss.",
+                    "Regrid GET attempt %s/%s: url=%s params=%s proxy_port=%s timeout=%ss.",
                     attempt_number,
                     max_attempts,
                     url,
                     params or {},
-                    _redacted_proxy_map(self.current_proxy),
+                    self.current_proxy_port,
                     self.request_timeout_seconds,
                 )
                 response = self.session.get(
@@ -801,7 +806,7 @@ class RegridParcelSourceConnector(SourceConnector):
         )
 
     def _service_from_settings(self) -> RegridParcelQueryService:
-        smart_proxy = self.settings.smart_proxy
+        smart_proxy = secret_value(self.settings.smart_proxy)
         if not smart_proxy:
             import os
 
@@ -879,22 +884,6 @@ def _is_regrid_service_unavailable_response(response: requests.Response) -> bool
         return False
     text = response.text or ""
     return "Service Unavailable" in text or '"code": "503"' in text or '"code":"503"' in text
-
-
-def _redacted_proxy_map(proxy: dict[str, str] | None) -> dict[str, str] | None:
-    if proxy is None:
-        return None
-    return {
-        scheme: _redacted_proxy_url(url)
-        for scheme, url in proxy.items()
-        if scheme in {"http", "https"}
-    }
-
-
-def _redacted_proxy_url(value: str) -> str:
-    text = str(value)
-    text = re.sub(r"//([^:@/\s]+):([^@/\s]+)@", "//***:***@", text)
-    return re.sub(r"^([^:@/\s]+):([^@/\s]+)@", "***:***@", text)
 
 
 def _response_text_preview(response: requests.Response, limit: int = 240) -> str:
