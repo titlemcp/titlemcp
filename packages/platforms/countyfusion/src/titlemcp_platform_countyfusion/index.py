@@ -96,7 +96,7 @@ class CountyFusionIndex:
 
     async def with_links(self, document: RecordedInstrument) -> RecordedInstrument:
         inst_id = str(document.raw.get("inst_id") or "")
-        if document.references or not document.raw.get("has_links") or not inst_id:
+        if document.references or document.raw.get("has_links") is False or not inst_id:
             return document
         detailed = await self._client.detail(inst_id)
         merged = document.model_copy(

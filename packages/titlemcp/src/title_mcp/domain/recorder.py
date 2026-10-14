@@ -53,6 +53,10 @@ _TYPE_WORDS = {
     "MORTG": "MORTGAGE",
     "MODIF": "MODIFICATION",
     "MODIFIC": "MODIFICATION",
+    "SAT": "SATISFACTION",
+    "SATIS": "SATISFACTION",
+    "SATISMORT": "SATISFACTION",
+    "CANC": "CANCELLATION",
 }
 
 #: The only words a release of a mortgage is described with, besides the

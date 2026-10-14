@@ -16,9 +16,15 @@ package for each county's index, and the release method in `title_mcp`.
 | Stark | `us-oh-stark-recorder` | Kofile PublicSearch |
 | Wayne | `us-oh-wayne-recorder` | Kofile CountyFusion |
 | Ashland | `us-oh-ashland-recorder` | Kofile CountyFusion |
+| Seneca | `us-oh-seneca-recorder` | Kofile CountyFusion |
+| Tuscarawas | `us-oh-tuscarawas-recorder` | Kofile CountyFusion (guest login) |
+| Richland | `us-oh-richland-recorder` | Kofile CountyFusion (guest login) |
 
 Wayne's own website doesn't link its index. Several CountyFusion hosts serve it;
-the configured one is `countyfusion8.kofiletech.us`.
+the configured one is `countyfusion8.kofiletech.us`. Tuscarawas and Richland
+offer "Login as Guest" rather than "Login as Public"; both are open to anyone.
+Seneca indexes some releases as `SPECIAL RELEASE`, which is read as a partial
+release so that a reviewer confirms it.
 
 Franklin also runs PublicSearch and has its own package,
 `titlemcp-us-oh-franklin-recorder`, which assembles a parcel's chain.
@@ -30,8 +36,8 @@ county: check the county's index with `mortgage_release_search`, follow up with
 the lender if no release is recorded as the 90 days Ohio allows run out (R.C.
 5301.36(B)), and have a reviewer confirm the release discharges the mortgage.
 
-Releases are linked to their mortgages in all four counties' indexes, in both
-directions, so a lookup by the mortgage's instrument number is exact. Without the number,
+Releases are linked to their mortgages in every one of these counties' indexes,
+in both directions, so a lookup by the mortgage's instrument number is exact. Without the number,
 the borrower's name and the payoff date pick the mortgage out: the one open on
 the payoff date and released since. Checked against live releases in both
 counties, the releases found were recorded between a few days and two months

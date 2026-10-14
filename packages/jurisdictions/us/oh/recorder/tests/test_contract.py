@@ -13,7 +13,10 @@ from titlemcp_us_oh_recorder.sites import (
     OH_COUNTYFUSION_SITES,
     OH_PUBLICSEARCH_SITES,
     OH_RECORDER_SITES,
+    RICHLAND,
+    SENECA,
     STARK,
+    TUSCARAWAS,
     WAYNE,
 )
 
@@ -57,7 +60,10 @@ class OhioRecorderContractTests(unittest.TestCase):
         self.assertEqual({site.state for site in OH_PUBLICSEARCH_SITES}, {"OH"})
 
     def test_sites_are_the_counties_on_countyfusion(self) -> None:
-        self.assertEqual(OH_COUNTYFUSION_SITES, (WAYNE, ASHLAND))
+        self.assertEqual(OH_COUNTYFUSION_SITES, (WAYNE, ASHLAND, SENECA, TUSCARAWAS, RICHLAND))
+        self.assertEqual(
+            [site.guest_login for site in (SENECA, TUSCARAWAS, RICHLAND)], [False, True, True]
+        )
         self.assertEqual(WAYNE.base_url, "https://countyfusion8.kofiletech.us/countyweb")
         self.assertEqual((WAYNE.county_key, ASHLAND.county_key), ("WayneOH", "AshlandOH"))
 

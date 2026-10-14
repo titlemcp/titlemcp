@@ -29,6 +29,9 @@ class CountyFusionSiteConfig(BaseModel):
     priority: int = 220
     #: The least time between two requests to the county's site.
     min_interval_seconds: float = Field(default=1.1, ge=0)
+    #: Some counties offer "Login as Guest" where others offer "Login as
+    #: Public". Both are open to anyone, with no account.
+    guest_login: bool = False
     document_type_kinds: dict[str, InstrumentKind] = Field(default_factory=dict)
 
     @field_validator("state")

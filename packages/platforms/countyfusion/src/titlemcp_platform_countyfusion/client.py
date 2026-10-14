@@ -1,8 +1,8 @@
 """Kofile's CountyFusion, as its public search pages speak it.
 
 CountyFusion is a server-rendered site with no documented API. Everything here
-is what its own pages send, with the public login a visitor gets from the
-"Login as Public" button.
+is what its own pages send, with the login a visitor gets from the "Login as
+Public" button, or "Login as Guest" where a county offers that instead.
 
 **A session.** A GET of the login page sets ``JSESSIONID`` and carries a form
 token; posting the public login with that token and then accepting the
@@ -170,7 +170,9 @@ class CountyFusionClient:
                     legal_description=_text(row.get("Legal Description")),
                     raw={
                         "inst_id": ids.get(index, ""),
-                        "has_links": bool(row.get("Marginal")),
+                        # A guest's result list has no Marginal column, so whether
+                        # a document has links is unknown until its detail is read.
+                        "has_links": bool(row["Marginal"]) if "Marginal" in row else None,
                     },
                 )
             )
@@ -184,7 +186,9 @@ class CountyFusionClient:
         found: dict[str, Any] = {"names": {}, "legal": [], "references": []}
         for field in fields:
             kind, label = field.get("dataType"), field.get("label")
-            if kind == "INSTNUM_ITERATE":
+            # Counties lay the detail out differently: the number may be its own
+            # kind of field, or a plain read-only or text one carrying the label.
+            if kind == "INSTNUM_ITERATE" or label == "Instrument Number":
                 found["number"] = _text(field.get("value"))
             elif kind == "INSTTYPE":
                 found["type"] = _text(field.get("value"))
@@ -304,8 +308,8 @@ class CountyFusionClient:
                 "datasource": "",
                 "userdatasource": "",
                 "fraudsleuth": "false",
-                "guest": "false",
-                "public": "true",
+                "guest": "true" if self.config.guest_login else "false",
+                "public": "false" if self.config.guest_login else "true",
                 "startPage": "",
                 "CountyFusionForceNewSession": "true",
                 "struts.token.name": "token",

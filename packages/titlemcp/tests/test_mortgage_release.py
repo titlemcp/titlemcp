@@ -137,10 +137,17 @@ class InstrumentClassificationTests(unittest.TestCase):
             "ASSN MORTGAGE": InstrumentKind.ASSIGNMENT,
             "COURT RELEASE": InstrumentKind.RELEASE,
             "RELEASE": InstrumentKind.RELEASE,
+            "SAT MTG": InstrumentKind.RELEASE,
+            "SATIS MORTGAGE": InstrumentKind.RELEASE,
+            "SATISMORT": InstrumentKind.RELEASE,
+            "CANC MTG": InstrumentKind.RELEASE,
         }
         for description, kind in cases.items():
             with self.subTest(description=description):
                 self.assertIs(classify_instrument(description), kind)
+
+    def test_a_bare_cancellation_names_nothing_it_cancels(self) -> None:
+        self.assertIs(classify_instrument("CANC"), InstrumentKind.OTHER)
 
     def test_releases_of_other_things_are_not_mortgage_releases(self) -> None:
         for description in (
