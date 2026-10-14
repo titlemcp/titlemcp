@@ -1,104 +1,128 @@
 # TitleMCP
 
-[![PyPI](https://img.shields.io/pypi/v/titlemcp)](https://pypi.org/project/titlemcp/)
 [![CI](https://github.com/titlemcp/titlemcp/actions/workflows/ci.yml/badge.svg)](https://github.com/titlemcp/titlemcp/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/titlemcp)](https://pypi.org/project/titlemcp/)
+[![Python](https://img.shields.io/pypi/pyversions/titlemcp)](https://pypi.org/project/titlemcp/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-TitleMCP is an open-source [MCP](https://modelcontextprotocol.io) server that
-gives AI assistants tools for title and real estate work. An assistant can ask
-whether a mortgage was released, whether a parcel's taxes are paid, or whether a
-buyer appears on OFAC's sanctions lists. It gets back structured answers read
-from the public record, with the source cited. Every answer that bears on title
-is flagged for a person to review: the tools report facts and leave the
-decisions to you.
+**Open-source title research tools for AI agents.** TitleMCP connects Claude,
+or any [MCP](https://modelcontextprotocol.io) client or local model, to county
+recorders, tax collectors, state statutes and federal sanctions lists. Your
+agent can then do the lookups a title file needs and show where each answer
+came from.
 
-## What works today
+Every title file means the same chores. Search the recorder's index, pull the
+tax status, find out which office issues the lien letter, screen the parties,
+and chase the lender for the release. Every county runs them on a different
+website. TitleMCP turns those chores into tools an agent can call, and returns
+structured answers it can act on. It's built for title agents, escrow and
+closing teams, real estate attorneys, and the developers building agents for
+them.
 
-**No account or key needed:**
+Ask it things like:
 
-| Tool | What it answers | Coverage |
-| --- | --- | --- |
-| [`ofac_screen_parties`](docs/TOOLS.md#ofac_screen_parties) | Is this person or company on OFAC's SDN or Consolidated list? Returns a receipt that lists near misses too. | Nationwide. Uses OFAC's public lists, refreshed daily. |
-| [`mortgage_release_search`](docs/TOOLS.md#mortgage_release_search) | Has this mortgage or deed of trust been released of record? | 15 counties in 6 states ([below](#county-coverage)) |
-| [`release_tracking_status`](docs/TOOLS.md#release_tracking_status) | After a payoff, is the release recorded, and was it recorded within the state's deadline? | Deadlines for 44 states and DC. Recorded or not is checked in the release-search counties. |
-| [`property_tax_status_search`](docs/TOOLS.md#property_tax_status_search) | Are this parcel's property taxes paid, due or delinquent? | 13 collectors in 7 states and DC ([below](#county-coverage)) |
-| [`municipal_lien_directory`](docs/TOOLS.md#municipal_lien_directory) | Who issues lien letters for this parcel, and where are its permits and code cases? | Florida: all 67 counties and the 120 cities of 20,000 people or more |
-| [`<county>_auditor_search`](docs/TOOLS.md#franklin_county_auditor_search) | Owner, parcel and values from the county auditor | Ohio: Butler, Clermont, Franklin, Lake, Lucas and Montgomery |
+- *"The Alex Example mortgage in Dallas County was paid off May 1. Has the
+  release recorded yet? Is the lender late?"*
+- *"We paid off the Alex Example loan in Cuyahoga County on March 3. If the
+  release still isn't recorded, what can we do?"*
+- *"Are the taxes paid on this Fairfax County parcel?"*
+- *"Who do I order a municipal lien search from in Fort Lauderdale, and what does
+  it cost?"*
+- *"Screen the buyers and sellers on this file against OFAC."*
 
-**With your own credentials** ([how to set them](docs/CONFIGURATION.md#credentials)):
+Each question is answered from the source itself: the recorder's index, the
+collector's own records, the statute's official text. The tool's answer carries
+links to those sources.
 
-| Tool | What it answers | Needs |
-| --- | --- | --- |
-| [`pacer_bankruptcy_search`](docs/TOOLS.md#pacer_bankruptcy_search) | Bankruptcy cases naming a person or business, nationwide | A PACER account. Searches can be billed to it. |
-| [`hoa_contact_search`](docs/TOOLS.md#hoa_contact_search) | Contact candidates for an HOA or its management company | A SerpAPI key |
-| [`parcel_lookup`](docs/TOOLS.md#parcel_lookup) | The Regrid parcel record for an address | A rotating proxy |
+## Why it's different
 
-**Workflow tools.** `start_title_workflow`, `request_hoa_estoppel`,
-`request_municipal_lien_search`, `request_tax_certificate`,
-`request_public_records_search`, `track_release`, `analyze_document`,
-`parse_payoff_letter` and `generate_checklist_packet` record a title task with the
-steps its jurisdiction needs. `get_workflow_status`, `list_workflows` and
-`submit_human_review` follow it through review, with an audit trail. These tools
-plan and track the work. They don't yet order estoppels, run OCR or read payoff
-letters.
+- **It reads the source.** Tax status comes straight from the county
+  collector's website. Release checks read the recorder's index, and deadlines
+  come from the statute itself.
+- **It knows the law it checks against.** Release deadlines are on file for 44
+  states and DC. Each is read from the statute, with the sentence that sets it,
+  a link to the official text, and the remedy once the lender is late. Where
+  the statute gives one, it also gives the route for clearing the lien
+  without the lender.
+- **Its accuracy is measured.** OFAC screening handles transliterations,
+  typos, reordered names and initials. It keeps common names quiet.
+  [The benchmark](scripts/ofac_benchmark.py) uses 3,000 disguised real listings
+  and 3,000 realistic U.S. names. Screening surfaces **97.6%** of the listings
+  with **no false alarms**. Whole-name fuzzy matching, the usual approach,
+  manages 75.0% at the same zero false alarms. Every screening returns a
+  receipt showing a "no match" was searched for properly.
+- **A person stays in charge.** Answers that affect title are marked for review.
+  The tools find and report facts; they never make the legal or underwriting
+  decision.
+- **Most tools need no account.** The county tools, OFAC screening, the
+  deadlines and the municipal directory need no API key and no sign-up.
 
-`list_title_capabilities`, `list_source_connectors` and `list_vendor_connectors`
-report what a running server has installed.
+## What it covers
 
-Outside its coverage, a tool answers `requires_configuration` and names what is
-missing rather than guessing.
+| Lookup | Where |
+| --- | --- |
+| **Has the mortgage been released?** (county recorder index) | **TX:** Bexar, Collin, Dallas, Denton, Hidalgo, Montgomery, Tarrant · **OH:** Ashland, Cuyahoga, Stark, Wayne · **CO:** Arapahoe · **IL:** Lake · **PA:** Delaware · **SC:** Greenville |
+| **Is the lender late?** (statutory release deadlines) | 44 states and DC |
+| **Are the property taxes paid?** | **DC** · **OH:** Butler, Clermont, Franklin, Lake, Lucas, Montgomery · **CA:** Contra Costa · **IL:** DuPage · **NM:** Bernalillo · **PA:** Delaware · **TN:** Shelby · **VA:** Fairfax |
+| **Who issues the municipal lien letter?** Plus permits, code cases, utilities and assessments | **FL:** all 67 counties and the 120 cities of 20,000 people or more, about 94% of Floridians |
+| **Auditor property search** | **OH:** Butler, Clermont, Franklin, Lake, Lucas, Montgomery |
+| **The recorded chain for one parcel** | **OH:** Franklin |
+| **OFAC sanctions screening** | Nationwide: Treasury's SDN and consolidated lists, refreshed daily |
+| **Bankruptcy, HOA contacts, parcel data** | Nationwide, with your own PACER, SerpAPI or proxy account |
 
-### County coverage
+Don't see your county? Counties on the same records software share a platform
+package (Kofile PublicSearch, Kofile CountyFusion, Tyler iasWorld), so adding
+the next county on one is mostly a matter of describing its site. See
+[Add your county](#add-your-county).
 
-| State | Release search | Property tax status |
-| --- | --- | --- |
-| California | | Contra Costa |
-| Colorado | Arapahoe | |
-| District of Columbia | | The District |
-| Illinois | Lake | DuPage |
-| New Mexico | | Bernalillo |
-| Ohio | Ashland, Cuyahoga, Stark, Wayne | Butler, Clermont, Franklin, Lake, Lucas, Montgomery |
-| Pennsylvania | Delaware | Delaware (county tax) |
-| South Carolina | Greenville | |
-| Tennessee | | Shelby (county tax) |
-| Texas | Bexar, Collin, Dallas, Denton, Hidalgo, Montgomery, Tarrant | |
-| Virginia | | Fairfax |
+## Get started
 
-Each county is a small package. Adding one is described in
-[Extending TitleMCP](docs/EXTENDING.md), and most counties on a platform that
-TitleMCP already reads (Kofile PublicSearch, Kofile CountyFusion, Tyler iasWorld)
-need only a configuration entry and a test.
-
-## Try it
-
-You need Python 3.12 or newer, and no accounts or keys.
+### With Docker
 
 ```bash
-git clone https://github.com/titlemcp/titlemcp && cd titlemcp
-python3.12 -m venv .venv && . .venv/bin/activate
-pip install $(find packages -name pyproject.toml -not -path '*/templates/*' -exec dirname {} \;)
+git clone https://github.com/titlemcp/titlemcp
+cd titlemcp
+docker compose up --build
 ```
 
-That installs the core and every county package. The county packages load as
-plugins, which are off by default, so turn them on when you connect a client:
+The server is now at `http://localhost:8000/mcp`. Add it to Claude Code:
 
 ```bash
-# Claude Code
-claude mcp add titlemcp -e TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true -- "$PWD/.venv/bin/titlemcp-server"
+claude mcp add --transport http titlemcp http://localhost:8000/mcp
+```
 
-# or MCP Inspector, in the browser
+[MCP Inspector](https://github.com/modelcontextprotocol/inspector) also runs at
+`http://localhost:6274` for calling tools by hand. Its sign-in token is in
+`docker compose logs mcp-inspector`.
+
+### With Python 3.12 or newer
+
+```bash
+git clone https://github.com/titlemcp/titlemcp
+cd titlemcp
+./scripts/install.sh
+```
+
+The script installs TitleMCP and every county package into `.venv`. It then
+prints the command for Claude Code and the snippet for Claude Desktop's config,
+with your path filled in:
+
+```bash
+claude mcp add titlemcp -e TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true -- "$PWD/.venv/bin/titlemcp-server"
+```
+
+To call tools by hand in the browser instead, run MCP Inspector:
+
+```bash
 npx @modelcontextprotocol/inspector -e TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true -- .venv/bin/titlemcp-server
 ```
 
-Then ask something like *"Who handles municipal lien letters for St. Petersburg,
-Florida?"* or *"Screen Example Holdings LLC against OFAC."* The first OFAC
-screening downloads the lists, which takes a few seconds.
+Use `git clone`, not *Download ZIP*: the package reads its version from the
+repository's tags. `pip install titlemcp` installs only the core from PyPI: OFAC
+screening, the release deadlines, the workflow tools and the credentialed tools.
+The county packages, including the Florida directory, aren't on PyPI yet.
 
-`pip install titlemcp` installs only the core from PyPI: OFAC screening, the
-release deadlines, the workflow tools and the credentialed tools. The county
-packages install from this repository.
-
-## Deploy your own
+### In the cloud
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/titlemcp/titlemcp)
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://www.heroku.com/deploy?template=https://github.com/titlemcp/titlemcp)
@@ -106,12 +130,78 @@ packages install from this repository.
 [![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/titlemcp/titlemcp/tree/main)
 [![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/deploy?type=git&repository=github.com/titlemcp/titlemcp&branch=main&builder=dockerfile&name=titlemcp&ports=8000;http;/&env%5BPORT%5D=8000)
 
-Each button builds this repository's Docker image and serves MCP at
-`https://<your-app>/mcp`. The image runs the core tools; the county packages
-listed above aren't in it yet. The server has no sign-in of its own, so read
-[Deploying](docs/DEPLOY.md) before you add credentials to a public deployment.
+Each button builds the same Docker image, with every county package, and serves
+MCP at `https://<your-app>/mcp`. **The server has no sign-in**, so anyone with
+the URL can call it. Read [Deploying](docs/DEPLOY.md) before you add any
+credentials.
 
-## Credentials
+### Then ask
+
+Start with *"What can TitleMCP look up?"*, then try the questions at the top of
+this page. The first OFAC screening downloads the lists, which takes a few
+seconds.
+
+## What an answer looks like
+
+*"We paid off the Alex Example mortgage in Orange County, Florida on June 1.
+When is the release due?"* Orange County has no recorder connector yet, so the
+tool can't check the index itself. It still knows Florida's deadline, and its
+answer includes:
+
+```json
+{
+  "status": "not_checked",
+  "paid_off_on": "2026-06-01",
+  "release_due_on": "2026-07-31",
+  "deadline": {
+    "days": 60,
+    "clock_start": "payoff",
+    "citation": "Fla. Stat. § 701.04(2)(a)",
+    "remedy": "Prevailing party in a civil action to enforce the release duty gets reasonable attorney fees and costs. No statutory damages amount.",
+    "alternative_release": "Title insurer officer or appointed agent may record a certificate of release if none is recorded after payoff per estoppel letter; copy to servicer. No wait stated. Loans <= $500,000, not open-end.",
+    "alternative_citation": "Fla. Stat. § 701.041"
+  },
+  "next_action": "No connector reads Orange County's index. Check its records by hand after 2026-07-31, the deadline.",
+  "requires_human_review": true
+}
+```
+
+In a county with a connector, such as Dallas, the tool also reads the index.
+The status is then one of `released`, `released_late`, `awaiting_release`,
+`overdue`, `not_released` or `needs_review`, with what the index showed.
+
+## The tools
+
+| Tool | What it does | Needs |
+| --- | --- | --- |
+| [`mortgage_release_search`](docs/TOOLS.md#mortgage_release_search) | Finds one mortgage's release in the county recorder's index | — |
+| [`release_tracking_status`](docs/TOOLS.md#release_tracking_status) | Judges that release against the state's deadline: on time, late or overdue | — |
+| [`property_tax_status_search`](docs/TOOLS.md#property_tax_status_search) | Reads a parcel's current tax status from the collector | — |
+| [`municipal_lien_directory`](docs/TOOLS.md#municipal_lien_directory) | Says who issues the lien letter and how to order it, and where permits and code cases are | — |
+| [`ofac_screen_parties`](docs/TOOLS.md#ofac_screen_parties) | Screens people and companies against OFAC's lists, with a receipt | — |
+| [`ofac_list_status`](docs/TOOLS.md#ofac_list_status) | Shows which list publication screening is using | — |
+| [`<county>_auditor_search`](docs/TOOLS.md#franklin_county_auditor_search) | Searches an Ohio county auditor by parcel, owner or address | — |
+| [`pacer_bankruptcy_search`](docs/TOOLS.md#pacer_bankruptcy_search) | Searches PACER's bankruptcy party index | A PACER account (PACER bills searches) |
+| [`hoa_contact_search`](docs/TOOLS.md#hoa_contact_search) | Finds an HOA's contacts from the web | A SerpAPI key |
+| [`parcel_lookup`](docs/TOOLS.md#parcel_lookup) | Looks up parcel data by address | A proxy, see [Configuration](docs/CONFIGURATION.md#parcel-provider) |
+
+**Workflow tools.** `start_title_workflow`, `request_hoa_estoppel`,
+`request_municipal_lien_search`, `request_tax_certificate`,
+`request_public_records_search`, `track_release`, `analyze_document`,
+`parse_payoff_letter` and `generate_checklist_packet` record a title task with the
+steps its jurisdiction needs. `get_workflow_status`, `list_workflows` and
+`submit_human_review` follow it through review, with an audit trail, and the
+records can be kept in Postgres. These tools plan and track the work. They don't
+yet order estoppels, run OCR or read payoff letters.
+
+`list_title_capabilities`, `list_source_connectors` and `list_vendor_connectors`
+report what a running server has installed.
+
+Outside its coverage, a tool answers `requires_configuration` and names what is
+missing rather than guessing. The [tool reference](docs/TOOLS.md) has every
+tool's inputs and outputs.
+
+### Credentials
 
 Only the three tools above that name a credential need one. Their variables are
 listed in [`.env.example`](.env.example). Keep them in a secret manager, a local
@@ -119,165 +209,37 @@ listed in [`.env.example`](.env.example). Keep them in a secret manager, a local
 [Configuration](docs/CONFIGURATION.md#credentials) explains each option and how
 the code keeps them out of logs.
 
+## Run it with a local model
+
+TitleMCP doesn't depend on a hosted AI. The lookup tools have
+[runnable samples](docs/SAMPLES.md). Each one starts the server and asks a
+local [Ollama](https://ollama.com) model a plain question, and the model has to
+pick the right tool by itself.
+
+## Add your county
+
+A county is a small Python package that registers through entry points. If the
+county runs software TitleMCP already reads, its package is mostly a
+description of the county's site. Start from
+[Extending TitleMCP](docs/EXTENDING.md) and the
+[package template](packages/titlemcp/templates/jurisdiction-package/). Then read
+[CONTRIBUTING.md](CONTRIBUTING.md) for how to open a pull request.
+
+If you need a county and can't build it yourself, open an issue that names it.
+
 ## Documentation
 
-- [Getting started](docs/GETTING_STARTED.md)
-- [Tool reference](docs/TOOLS.md): every tool, its input and what it returns
-- [Configuration](docs/CONFIGURATION.md)
-- [Deploying](docs/DEPLOY.md)
-- [Samples](docs/SAMPLES.md): Ollama clients that show a model choosing each tool
-- [Extending TitleMCP](docs/EXTENDING.md): adding a county, source or vendor
+- [Getting started](docs/GETTING_STARTED.md): the source checkout, tests and samples
+- [Tool reference](docs/TOOLS.md): every tool's inputs and outputs
+- [Configuration](docs/CONFIGURATION.md): every setting, and where to keep credentials
+- [Deploying](docs/DEPLOY.md): the cloud buttons and connecting a client
+- [Samples](docs/SAMPLES.md): Ollama clients that show a local model picking the right tool
+- [Extending TitleMCP](docs/EXTENDING.md): adapters, connectors and county packages
+- [AGENTS.md](AGENTS.md): conventions for contributors and coding agents
 - [Architecture](packages/titlemcp/docs/ARCHITECTURE.md),
   [jurisdiction packages](packages/titlemcp/docs/JURISDICTION_PACKAGES.md) and
   [publishing](packages/titlemcp/docs/PUBLISHING.md)
-- [Agent and contributor guide](AGENTS.md)
 
-## Repository layout
+## License
 
-```text
-packages/
-  titlemcp/                  core: the server, core tools, domain records (PyPI: titlemcp)
-  platforms/                 shared clients for county software
-    publicsearch/            Kofile PublicSearch recorders
-    countyfusion/            Kofile CountyFusion recorders
-    iasworld/                Tyler iasWorld auditors and tax collectors
-  jurisdictions/us/<state>/  one package per state and record type, e.g.
-    tx/recorder/             titlemcp-us-tx-recorder
-    fl/municipal/            titlemcp-us-fl-municipal
-jurisdiction-catalog/        generated geography reference, not package code
-samples/                     runnable Ollama examples, one per tool
-```
-
-## Development
-
-Install the core with its development tools and run its tests:
-
-```bash
-.venv/bin/pip install -e "packages/titlemcp[dev]"
-PYTHONPATH=packages/titlemcp/src .venv/bin/python -m unittest discover \
-  -s packages/titlemcp/tests -v
-```
-
-Run the server from the source checkout:
-
-```bash
-PYTHONPATH=packages/titlemcp/src .venv/bin/python -m title_mcp.mcp.server
-```
-
-Run it in Docker with MCP Inspector beside it:
-
-```bash
-docker compose up --build
-```
-
-Open the server catalog at `http://localhost:8000/` or the Inspector at
-`http://localhost:6274/`, which is set up for Streamable HTTP at
-`http://titlemcp:8000/mcp`. The Inspector asks for a session token, which
-`docker compose logs mcp-inspector` prints. If it answers
-`Forbidden - invalid origin`, open it through `http://localhost:6274/` or add your
-browser's origin to `MCP_INSPECTOR_ALLOWED_ORIGINS`.
-
-The Inspector's Resources tab has `titlemcp://server/info`,
-`titlemcp://server/runtime`, `titlemcp://tools/catalog` and
-`titlemcp://workflows/kinds`. Its Prompts tab has starter prompts for workflow
-intake, parcel lookup review and HOA contact review.
-
-Build the core package:
-
-```bash
-cd packages/titlemcp
-../../.venv/bin/python -m build
-../../.venv/bin/python -m twine check dist/*
-```
-
-## Jurisdiction packages
-
-First-party jurisdiction packages live under `packages/jurisdictions`. Each package should have:
-
-- `pyproject.toml`
-- `src/<import_package>/`
-- `tests/`
-- `titlemcp-capability.toml`
-- adapters, source connectors, vendor connectors, and manifests as needed
-
-Use the package path as the release unit. For example, Franklin County recorder support publishes
-from:
-
-```text
-packages/jurisdictions/us/oh/franklin/recorder
-```
-
-Audit a jurisdiction package before publishing:
-
-```bash
-.venv/bin/python scripts/audit_jurisdiction_package.py \
-  packages/jurisdictions/us/oh/franklin/recorder
-```
-
-The publish workflow runs this audit automatically. If `publish=true`, the audit also requires
-`release.publish = true`, every readiness flag to be true, and each workflow status to be `ready`.
-
-## Generated jurisdiction catalog
-
-`jurisdiction-catalog/` is generated reference scaffolding for country, state, county,
-municipality, and county-subdivision organization. It is not package code and is not included in
-the core wheel.
-
-Regenerate it from the core package:
-
-```bash
-.venv/bin/python packages/titlemcp/scripts/generate_us_jurisdiction_tree.py \
-  --root jurisdiction-catalog --clean
-```
-
-## Contributing
-
-Contributions are welcome — new jurisdiction packages, source and vendor
-connectors, documentation, and fixes. A few conventions keep the project
-consistent.
-
-**Read [AGENTS.md](AGENTS.md) first.** It is the source of truth for the repo's
-Pydantic v2 conventions, the tool/connector/test/sample contract for new
-endpoints, the review-first rule, and the definition of done. Match the existing
-patterns rather than introducing new ones.
-
-### Workflow
-
-The project uses the standard GitHub fork-and-pull-request flow:
-
-1. **Fork** the repository and clone your fork.
-2. **Branch** off `main` (e.g. `feat/...`, `fix/...`, `docs/...`).
-3. **Make your change**, keeping each pull request focused on one thing.
-4. **Add tests and a runnable sample** for any new tool or connector — code-only
-   changes are not considered complete without them (see AGENTS.md §5–6).
-5. **Run lint and the test suite** locally (below) and confirm they pass.
-6. **Open a pull request** against `main` with a clear description of what
-   changed and why.
-
-Contributors without write access should fork; maintainers can push a branch
-directly.
-
-### Before you open a pull request
-
-```bash
-# Lint (Ruff: line length 100, target py312, rules E,F,I,UP,B)
-.venv/bin/ruff check .
-.venv/bin/ruff format --check .
-
-# Core test suite
-PYTHONPATH=packages/titlemcp/src .venv/bin/python -m unittest discover \
-  -s packages/titlemcp/tests -v
-```
-
-For jurisdiction packages, also run that package's own test suite and the audit
-script described in the [Jurisdiction packages](#jurisdiction-packages) section
-above.
-
-### What reviewers look for
-
-- Everything at a boundary is a Pydantic v2 model — never a loose `dict`.
-- Connectors return `REQUIRES_CONFIGURATION` or `FAILED` instead of raising, and
-  default `requires_human_review=True` for title-impacting facts.
-- Tools surface facts; they never make legal, underwriting, or recording
-  decisions. The project stays **review-first**.
-- Secrets are never logged, and sensitive identifiers are redacted.
+MIT. See [LICENSE](LICENSE).

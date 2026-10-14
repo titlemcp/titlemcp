@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "District of Columbia real property tax status for TitleMCP, from the District's open data extract."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "titlemcp>=0.3.6",
 ]
@@ -26,6 +28,7 @@ include = [
     "/src",
     "/tests",
     "/README.md",
+    "/LICENSE",
     "/pyproject.toml",
     "/titlemcp-capability.toml",
 ]

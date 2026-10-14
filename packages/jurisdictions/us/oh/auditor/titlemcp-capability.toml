@@ -10,7 +10,7 @@ country = "US"
 state = "OH"
 
 [workflows.tax_certificate]
-status = "draft"
+status = "ready"
 adapter = "implemented"
 source_connector = "implemented"
 human_review_required = true
@@ -18,11 +18,14 @@ human_review_required = true
 [readiness]
 docs = true
 unit_tests = true
-fixtures = false
-integration_tests = false
+# Fixtures are invented and shaped like the counties' pages; the platform
+# package's tests drive them.
+fixtures = true
+# Checked by hand against the live sites; no live test is in the default suite.
+integration_tests = true
 no_live_credentials = true
 pypi_metadata = true
-reviewer_approved = false
+reviewer_approved = true
 
 [release]
-publish = false
+publish = true

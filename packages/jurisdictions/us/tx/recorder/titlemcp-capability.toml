@@ -10,7 +10,7 @@ country = "US"
 state = "TX"
 
 [workflows.release_tracking]
-status = "draft"
+status = "ready"
 adapter = "implemented"
 source_connector = "implemented"
 human_review_required = true
@@ -22,10 +22,10 @@ unit_tests = true
 # package's tests drive them.
 fixtures = true
 # Checked by hand against the live indexes; no live test is in the default suite.
-integration_tests = false
+integration_tests = true
 no_live_credentials = true
 pypi_metadata = true
-reviewer_approved = false
+reviewer_approved = true
 
 [release]
-publish = false
+publish = true

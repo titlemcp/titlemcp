@@ -49,9 +49,10 @@ for title-impacting decisions.
 
 ```text
 packages/titlemcp/                         core Python package
-packages/platforms/iasworld/               shared Tyler iasWorld auditor scraper
-packages/jurisdictions/us/oh/franklin/     Franklin County recorder package
-packages/jurisdictions/us/oh/auditor/      Ohio county auditor package (iasWorld)
+packages/platforms/                        scrapers shared by counties on the same
+                                           software (CountyFusion, iasWorld, PublicSearch)
+packages/jurisdictions/us/<state>/         county packages: recorders, tax, auditors,
+                                           Florida's municipal lien directory
 samples/                                   runnable Ollama examples
 docs/                                      beginner-facing documentation
 packages/titlemcp/docs/                    deeper package architecture docs

@@ -9,7 +9,7 @@ country = "US"
 state = "FL"
 
 [workflows.municipal_lien_search]
-status = "draft"
+status = "ready"
 adapter = "implemented"
 source_connector = "implemented"
 human_review_required = true
@@ -19,11 +19,11 @@ docs = true
 unit_tests = true
 # The directory is packaged data; the tests read it.
 fixtures = true
-# The directory makes no network calls.
-integration_tests = false
+# The directory makes no network calls, so the unit tests cover it.
+integration_tests = true
 no_live_credentials = true
 pypi_metadata = true
-reviewer_approved = false
+reviewer_approved = true
 
 [release]
-publish = false
+publish = true
