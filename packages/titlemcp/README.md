@@ -338,6 +338,4 @@ cd packages/titlemcp
 
 See [docs/PUBLISHING.md](docs/PUBLISHING.md) for TestPyPI, PyPI, and trusted publishing notes.
 
-The current package metadata is marked `LicenseRef-Proprietary` for private/commercial
-distribution. Replace `LICENSE` and the `license` field in `pyproject.toml` before publishing as
-open source.
+TitleMCP is released under the MIT License; see `LICENSE`.

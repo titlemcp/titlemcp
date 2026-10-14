@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "DuPage County, Illinois property tax status for TitleMCP, read from the county's iasWorld site."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "titlemcp>=0.3.6",
     "titlemcp-platform-iasworld>=0.3.0",
@@ -27,6 +29,7 @@ include = [
     "/src",
     "/tests",
     "/README.md",
+    "/LICENSE",
     "/pyproject.toml",
     "/titlemcp-capability.toml",
 ]
