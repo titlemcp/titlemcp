@@ -201,8 +201,11 @@ the borrower's mortgages picks it out; failing that, releases naming the borrowe
 since the payoff, linked to nothing, come back as candidates.
 
 Returns a `title_mcp.mortgage_release_search` record whose `status` is
-`released`, `partially_released`, `candidates_only`, `not_released` or
-`mortgage_not_found`. Each release carries the basis for the match, strongest
+`released`, `partially_released`, `candidates_only`, `not_released`,
+`mortgage_not_found` or `released_before_payoff`. Given `paid_off_on`, only a release
+recorded on or after it counts; if every release linked to the mortgage is older,
+the status is `released_before_payoff`: an earlier loan's release, or a payoff
+date that is wrong. Each release carries the basis for the match, strongest
 first:
 
 - `index_reference`: the county's index links the release to the mortgage;
