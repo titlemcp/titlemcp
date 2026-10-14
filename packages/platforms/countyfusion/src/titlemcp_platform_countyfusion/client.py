@@ -107,6 +107,19 @@ class CountyFusionClient:
         }
         return await asyncio.to_thread(self._search, fields, 1)
 
+    async def search_book_page(self, book: str, page: str) -> list[RecordedInstrument]:
+        fields = {
+            "SEARCHTYPE": "bookPage",
+            "INSTTYPEALL": "true",
+            "INSTTYPE": "",
+            # A blank volume searches every book series the county keeps ("OR",
+            # "MTG", "DEED", ...), so a reference needn't say which one it is in.
+            "VOLUME": "",
+            "BOOK": book,
+            "PAGE": page,
+        }
+        return await asyncio.to_thread(self._search, fields, 1)
+
     async def search_names(
         self, name: str, *, recorded_from: date | None = None, recorded_to: date | None = None
     ) -> list[RecordedInstrument]:

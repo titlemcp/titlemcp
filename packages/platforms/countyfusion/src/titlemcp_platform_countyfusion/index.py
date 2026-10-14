@@ -67,8 +67,16 @@ class CountyFusionIndex:
         return [document for document in found if document.number == wanted]
 
     async def by_book_page(self, book: str, page: str) -> list[RecordedInstrument]:
-        # The book-and-page search is the county's own form per county; not mapped yet.
-        return []
+        # Every book series answers at once; the release lookup picks the
+        # mortgage among them. Leading zeros differ between a commitment and
+        # the index, so they don't count.
+        wanted = (book.strip().lstrip("0"), page.strip().lstrip("0"))
+        found = self._remember(await self._client.search_book_page(book.strip(), page.strip()))
+        return [
+            document
+            for document in found
+            if (document.book.lstrip("0"), document.page.lstrip("0")) == wanted
+        ]
 
     async def citing(self, instrument_number: str) -> list[RecordedInstrument]:
         # CountyFusion has no search of the text on document images.
