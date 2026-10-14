@@ -2,12 +2,24 @@ import json
 from functools import lru_cache
 from typing import Annotated, Any, Literal
 
-from pydantic import Field, field_validator
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
+def secret_value(value: SecretStr | str | None) -> str | None:
+    """The plain text of a credential setting, for the one call that sends it."""
+    if isinstance(value, SecretStr):
+        return value.get_secret_value() or None
+    return value or None
+
+
 class TitleMCPSettings(BaseSettings):
-    """Runtime settings for the title operations MCP platform."""
+    """Runtime settings for the title operations MCP platform.
+
+    Every credential is a ``SecretStr``: printing, logging or dumping the settings
+    shows ``**********`` in its place. Read one with ``secret_value()`` at the call
+    that needs it, and nowhere else.
+    """
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -21,7 +33,7 @@ class TitleMCPSettings(BaseSettings):
     log_json: bool = True
 
     state_backend: Literal["memory", "postgres"] = "memory"
-    postgres_dsn: str | None = None
+    postgres_dsn: SecretStr | None = None
 
     mcp_transport: Literal["stdio", "sse", "streamable-http"] = "stdio"
     mcp_host: str = "127.0.0.1"
@@ -53,7 +65,7 @@ class TitleMCPSettings(BaseSettings):
     ollama_server_command: str = "python"
 
     pacer_username: str | None = None
-    pacer_password: str | None = None
+    pacer_password: SecretStr | None = None
     pacer_client_code: str | None = None
     pacer_qa_mode: bool = False
     pacer_timeout_seconds: float = Field(default=30.0, ge=1.0, le=300.0)
@@ -62,7 +74,7 @@ class TitleMCPSettings(BaseSettings):
     ofac_max_age_hours: float = Field(default=24.0, ge=0.0, le=720.0)
     ofac_timeout_seconds: float = Field(default=120.0, ge=5.0, le=600.0)
 
-    smart_proxy: str | None = None
+    smart_proxy: SecretStr | None = None
     regrid_proxy_port_start: int = Field(default=10001, ge=1, le=65535)
     regrid_proxy_port_end: int = Field(default=10999, ge=1, le=65535)
     regrid_max_retries: int = Field(default=5, ge=0, le=20)
@@ -72,11 +84,11 @@ class TitleMCPSettings(BaseSettings):
     regrid_timeout_seconds: float = Field(default=10.0, ge=1.0, le=120.0)
     regrid_cookie_timeout_seconds: float = Field(default=5.0, ge=1.0, le=120.0)
 
-    anthropic_api_key: str | None = None
+    anthropic_api_key: SecretStr | None = None
     anthropic_model: str = "claude-opus-5"
     anthropic_timeout_seconds: float = Field(default=300.0, ge=1.0, le=1800.0)
 
-    serpapi_api_key: str | None = None
+    serpapi_api_key: SecretStr | None = None
     serpapi_timeout_seconds: float = Field(default=30.0, ge=1.0, le=120.0)
 
     background_worker_concurrency: int = Field(default=4, ge=1, le=64)
