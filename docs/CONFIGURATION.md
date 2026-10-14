@@ -1,8 +1,85 @@
 # Configuration
 
 TitleMCP uses `pydantic-settings` and reads environment variables with the
-`TITLE_MCP_` prefix. When the server is started from the repository root, `.env`
-is loaded automatically by the settings layer.
+`TITLE_MCP_` prefix. Every setting has a working default, so the server starts
+with none set.
+
+A value is taken from, in order:
+
+1. the process environment;
+2. a `.env` file in the directory the server is started from;
+3. the default.
+
+## Credentials
+
+Most tools need no credentials: OFAC screening, release search and tracking,
+property tax status, the municipal lien directory, the county auditor searches
+and the workflow tools work out of the box. These are the only secrets TitleMCP
+reads. Each one switches on one tool, and a tool whose credential is missing
+answers `requires_configuration` with the variable to set.
+
+| Variable | Switches on | Where it comes from |
+| --- | --- | --- |
+| `TITLE_MCP_PACER_USERNAME`, `TITLE_MCP_PACER_PASSWORD` | `pacer_bankruptcy_search` | A PACER account. Searches can be billed to it; see [PACER](#pacer). |
+| `TITLE_MCP_SERPAPI_API_KEY` | `hoa_contact_search` | A SerpAPI account. |
+| `TITLE_MCP_SMART_PROXY` | `parcel_lookup` | A rotating proxy service, as `user:password@host`. See [Parcel Provider](#parcel-provider). |
+| `TITLE_MCP_ANTHROPIC_API_KEY` | Exam extraction, a library service with no MCP tool | An Anthropic API key. |
+| `TITLE_MCP_POSTGRES_DSN` | Durable workflow state | Your Postgres database. See [State Backend](#state-backend). |
+
+[`.env.example`](../.env.example) lists them. To see which are set on a running
+server, read the `titlemcp://server/runtime` resource: `configured_integrations`
+says yes or no for each one and never shows a value.
+
+### Where to keep them
+
+TitleMCP only reads its environment, so any of these works:
+
+- **A secret manager.** Keep the credentials in a vault and start the server
+  through the manager's CLI, which puts them in the server's environment and
+  writes nothing to disk. For example, `op run` (1Password), `doppler run`,
+  `infisical run` or `aws-vault exec`:
+
+  ```bash
+  doppler run -- titlemcp-server
+  ```
+
+  This suits a team: each person signs in to the vault, access is granted and
+  revoked there, and no one passes `.env` files around.
+- **A local `.env`.** Copy `.env.example` to `.env` in the repository root, fill
+  in the lines you need and start the server from the root. `.env` is ignored by
+  git and left out of Docker builds.
+- **An MCP client's configuration.** A client that starts the server over stdio
+  (Claude Desktop, Claude Code, Cursor) chooses the working directory, so a
+  `.env` may not be found. Put the variables in the server's `env` block:
+
+  ```json
+  {
+    "mcpServers": {
+      "titlemcp": {
+        "command": "titlemcp-server",
+        "env": { "TITLE_MCP_SERPAPI_API_KEY": "<your key>" }
+      }
+    }
+  }
+  ```
+
+  That file is plain text on your machine. To keep the key in a vault instead,
+  make the command the manager's CLI, for example `"command": "doppler"` with
+  `"args": ["run", "--", "titlemcp-server"]`.
+- **A hosted deployment.** Use the platform's secret or environment settings.
+  The server has no sign-in, so read [Deploying](DEPLOY.md#before-you-deploy)
+  before adding credentials to one.
+
+### How the code handles them
+
+- Each credential setting is a `SecretStr`. Printing, logging or dumping the
+  settings shows `**********` in its place.
+- The value is read with `secret_value()` only at the call that sends it to
+  the service.
+- Logs name proxy endpoints with the user and password removed, and PACER
+  criteria are logged without SSNs.
+- Samples, fixtures and committed configuration hold no real credentials.
+  Tests use invented values.
 
 ## Server
 
@@ -134,8 +211,8 @@ TITLE_MCP_SERPAPI_API_KEY=
 TITLE_MCP_SERPAPI_TIMEOUT_SECONDS=30
 ```
 
-Keep API keys in `.env` or deployment secrets, never in sample code or committed
-configuration.
+Keep the key where [Credentials](#where-to-keep-them) describes, never in sample
+code or committed configuration.
 
 ## Ollama
 

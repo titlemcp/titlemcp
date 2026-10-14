@@ -18,7 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from title_mcp.adapters.base import JurisdictionScope
 from title_mcp.domain.models import US_STATE_NAMES as _STATE_NAMES
 from title_mcp.domain.models import Jurisdiction
-from title_mcp.settings import TitleMCPSettings, get_settings
+from title_mcp.settings import TitleMCPSettings, get_settings, secret_value
 from title_mcp.sources.base import (
     SourceCitation,
     SourceConnector,
@@ -337,10 +337,11 @@ class HoaContactSerpApiSourceConnector(SourceConnector):
         )
 
     def _client_from_settings(self) -> SerpApiHoaContactClient | None:
-        if not self.settings.serpapi_api_key:
+        api_key = secret_value(self.settings.serpapi_api_key)
+        if not api_key:
             return None
         self._client = SerpApiHoaContactClient(
-            self.settings.serpapi_api_key,
+            api_key,
             timeout=self.settings.serpapi_timeout_seconds,
         )
         return self._client

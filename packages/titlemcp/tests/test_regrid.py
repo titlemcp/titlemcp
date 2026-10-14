@@ -10,7 +10,6 @@ from title_mcp.sources.regrid import (
     RegridParcelLookupRecord,
     RegridParcelQueryService,
     RegridParcelSourceConnector,
-    _redacted_proxy_map,
     _search_query_variants,
     generate_regrid_headers,
 )
@@ -39,22 +38,23 @@ class RegridTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn(":10001", service.proxies[0]["http"])
         self.assertFalse(service.session.trust_env)
 
-    def test_redacted_proxy_map_hides_credentials_and_ignores_env_proxy_keys(self) -> None:
-        redacted = _redacted_proxy_map(
-            {
-                "http": "http://user:pass@proxy.example:10001",
-                "https": "https://user:pass@proxy.example:10001",
-                "title_mcp_smart": "user:pass@proxy.example",
-            }
-        )
+    def test_logs_name_proxy_ports_without_credentials(self) -> None:
+        with self.assertLogs("title_mcp.sources.regrid", level="DEBUG") as logs:
+            service = RegridParcelQueryService(
+                smart_proxy="proxyuser:fake-proxy-password@proxy.example",
+                proxy_port_start=10001,
+                proxy_port_end=10001,
+                session=_FakeRegridSession(),
+            )
+            service.lookup("100 Example Ave")
 
-        self.assertEqual(
-            redacted,
-            {
-                "http": "http://***:***@proxy.example:10001",
-                "https": "https://***:***@proxy.example:10001",
-            },
-        )
+        output = "\n".join(logs.output)
+        self.assertIn("Using Regrid smart proxy port 10001.", output)
+        self.assertIn("Regrid cookie HEAD attempt 1/1", output)
+        self.assertIn("Regrid GET attempt 1/1", output)
+        self.assertIn("proxy_port=10001", output)
+        self.assertNotIn("fake-proxy-password", output)
+        self.assertNotIn("proxyuser", output)
 
     def test_search_query_variants_try_comma_free_address_first(self) -> None:
         variants = _search_query_variants("100 Example Ave, Columbus, OH")

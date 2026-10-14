@@ -35,7 +35,7 @@ from title_mcp.services.document_analysis import (
     DocumentAnalysisResult,
     DocumentAnalysisService,
 )
-from title_mcp.settings import TitleMCPSettings, get_settings
+from title_mcp.settings import TitleMCPSettings, get_settings, secret_value
 from title_mcp.sources.base import SourceResultStatus
 
 if TYPE_CHECKING:
@@ -809,7 +809,7 @@ class ClaudeExamExtractionService(DocumentAnalysisService):
     def _resolve_client(self) -> ExamExtractionClient | None:
         if self._client is not None:
             return self._client
-        api_key = getattr(self._settings, "anthropic_api_key", None)
+        api_key = secret_value(getattr(self._settings, "anthropic_api_key", None))
         if not api_key:
             return None
         self._client = ClaudeExamExtractionClient(
