@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Florida municipal lien directory for TitleMCP: who issues each lien letter and where permits and code cases are."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "titlemcp>=0.3.7",
 ]
@@ -26,6 +28,7 @@ include = [
     "/src",
     "/tests",
     "/README.md",
+    "/LICENSE",
     "/pyproject.toml",
     "/titlemcp-capability.toml",
 ]

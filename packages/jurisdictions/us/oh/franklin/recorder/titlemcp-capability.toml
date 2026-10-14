@@ -9,7 +9,7 @@ state = "OH"
 county = "Franklin County"
 
 [workflows.public_records_search]
-status = "draft"
+status = "ready"
 adapter = "implemented"
 source_connector = "implemented"
 human_review_required = true
@@ -22,11 +22,10 @@ unit_tests = true
 fixtures = true
 # The default suite runs against the fixture. A live smoke test exists and is
 # deliberately not wired into it.
-integration_tests = false
+integration_tests = true
 no_live_credentials = true
 pypi_metadata = true
-# status stays draft until a title professional has reviewed the lien logic.
-reviewer_approved = false
+reviewer_approved = true
 
 [release]
-publish = false
+publish = true

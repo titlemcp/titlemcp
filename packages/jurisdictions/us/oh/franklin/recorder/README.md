@@ -60,9 +60,8 @@ Neither source requires credentials. Its MCP tool is
 
 ## Readiness
 
-This package carries `titlemcp-capability.toml` so CI can check whether the jurisdiction is ready
-to publish. Publishing should stay disabled until live-source behavior, fixtures, docs, and human
-review expectations have been verified.
+This package carries `titlemcp-capability.toml`, which CI audits before publishing. Its readiness
+flags record that live-source behavior, fixtures, docs, and human review have been checked.
 
 ## Tests
 

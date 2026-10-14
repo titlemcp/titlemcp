@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Ohio county auditor property-search tools for TitleMCP (Tyler iasWorld counties)."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "titlemcp>=0.2.0",
     "titlemcp-platform-iasworld>=0.2.0",
@@ -30,6 +32,7 @@ include = [
     "/src",
     "/tests",
     "/README.md",
+    "/LICENSE",
     "/pyproject.toml",
     "/titlemcp-capability.toml",
 ]

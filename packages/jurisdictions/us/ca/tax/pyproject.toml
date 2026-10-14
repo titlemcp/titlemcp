@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Contra Costa County, California secured property tax status for TitleMCP, from the county's tax lookup."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "titlemcp>=0.3.6",
 ]
@@ -26,6 +28,7 @@ include = [
     "/src",
     "/tests",
     "/README.md",
+    "/LICENSE",
     "/pyproject.toml",
     "/titlemcp-capability.toml",
 ]

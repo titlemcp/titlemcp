@@ -28,24 +28,18 @@ WORKDIR /app
 RUN addgroup --system titlemcp \
     && adduser --system --ingroup titlemcp --home /home/titlemcp titlemcp
 
-COPY packages/titlemcp/pyproject.toml \
-     packages/titlemcp/README.md \
-     packages/titlemcp/LICENSE \
-     packages/titlemcp/
-COPY packages/titlemcp/src packages/titlemcp/src
-
-COPY packages/jurisdictions/us/oh/franklin/recorder/pyproject.toml \
-     packages/jurisdictions/us/oh/franklin/recorder/README.md \
-     packages/jurisdictions/us/oh/franklin/recorder/titlemcp-capability.toml \
-     packages/jurisdictions/us/oh/franklin/recorder/
-COPY packages/jurisdictions/us/oh/franklin/recorder/src \
-     packages/jurisdictions/us/oh/franklin/recorder/src
+# Every package in the repository: the core, the shared platform packages and
+# every county package. Most county packages register as plugins, which this
+# image loads (TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS below).
+COPY packages packages
 
 RUN python -m pip install --upgrade pip \
     && released=$(python -c "import json, urllib.request; print(json.load(urllib.request.urlopen('https://pypi.org/pypi/titlemcp/json', timeout=30))['info']['version'])") \
     && SETUPTOOLS_SCM_PRETEND_VERSION="${TITLEMCP_VERSION:-$released+source}" python -m pip install \
         "packages/titlemcp[postgres]" \
-        "packages/jurisdictions/us/oh/franklin/recorder"
+        $(find packages/platforms packages/jurisdictions -name pyproject.toml -exec dirname {} \;)
+
+ENV TITLE_MCP_LOAD_ENTRY_POINT_PLUGINS=true
 
 USER titlemcp
 

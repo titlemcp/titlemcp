@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Texas county recorder sources for TitleMCP, including mortgage release lookups."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "titlemcp>=0.3.5",
     "titlemcp-platform-publicsearch>=0.1.0",
@@ -27,6 +29,7 @@ include = [
     "/src",
     "/tests",
     "/README.md",
+    "/LICENSE",
     "/pyproject.toml",
     "/titlemcp-capability.toml",
 ]
