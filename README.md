@@ -61,7 +61,7 @@ links to those sources.
 
 | Lookup | Where |
 | --- | --- |
-| **Has the mortgage been released?** (county recorder index) | **TX:** Bexar, Collin, Dallas, Denton, Hidalgo, Montgomery, Tarrant · **OH:** Ashland, Cuyahoga, Stark, Wayne · **CO:** Arapahoe · **IL:** Lake · **PA:** Delaware · **SC:** Greenville |
+| **Has the mortgage been released?** (county recorder index) | **TX:** Bexar, Collin, Dallas, Denton, Hidalgo, Montgomery, Tarrant · **OH:** Ashland, Cuyahoga, Geauga, Holmes, Lake, Medina, Stark, Wayne · **CO:** Arapahoe · **IL:** Lake · **PA:** Delaware · **SC:** Greenville |
 | **Is the lender late?** (statutory release deadlines) | 44 states and DC |
 | **Are the property taxes paid?** | **DC** · **OH:** Butler, Clermont, Franklin, Lake, Lucas, Montgomery · **CA:** Contra Costa · **IL:** DuPage · **NM:** Bernalillo · **PA:** Delaware · **TN:** Shelby · **VA:** Fairfax |
 | **Who issues the municipal lien letter?** Plus permits, code cases, utilities and assessments | **FL:** all 67 counties and the 120 cities of 20,000 people or more, about 94% of Floridians |
@@ -71,8 +71,8 @@ links to those sources.
 | **Bankruptcy, HOA contacts, parcel data** | Nationwide, with your own PACER, SerpAPI or proxy account |
 
 Don't see your county? Counties on the same records software share a platform
-package (Kofile PublicSearch, Kofile CountyFusion, Tyler iasWorld), so adding
-the next county on one is mostly a matter of describing its site. See
+package (Kofile PublicSearch, Kofile CountyFusion, Fidlar AVA, Tyler iasWorld),
+so adding the next county on one is mostly a matter of describing its site. See
 [Add your county](#add-your-county).
 
 ## Get started

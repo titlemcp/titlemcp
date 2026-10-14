@@ -4,13 +4,19 @@ import tomllib
 import unittest
 from pathlib import Path
 
+from titlemcp_platform_fidlarava import FidlarAvaClient
 from titlemcp_us_oh_recorder.adapters import OhioReleaseTrackingAdapter
 from titlemcp_us_oh_recorder.manifest import capability_manifest
 from titlemcp_us_oh_recorder.plugin import OhioRecorderPlugin
 from titlemcp_us_oh_recorder.sites import (
     ASHLAND,
     CUYAHOGA,
+    GEAUGA,
+    HOLMES,
+    LAKE,
+    MEDINA,
     OH_COUNTYFUSION_SITES,
+    OH_FIDLAR_AVA_SITES,
     OH_PUBLICSEARCH_SITES,
     OH_RECORDER_SITES,
     RICHLAND,
@@ -23,6 +29,7 @@ from titlemcp_us_oh_recorder.sites import (
 from title_mcp.adapters.registry import AdapterRegistry
 from title_mcp.capabilities.registry import CapabilityRegistry
 from title_mcp.domain.models import Jurisdiction, OrderRef, WorkflowKind, WorkflowRequest
+from title_mcp.domain.recorder import InstrumentKind
 from title_mcp.plugins import PluginContext
 from title_mcp.settings import TitleMCPSettings
 from title_mcp.sources import MortgageReleaseSource, SourceKind
@@ -52,6 +59,11 @@ class OhioRecorderContractTests(unittest.TestCase):
         self.assertEqual(manifest.package_name, readiness["capability"]["package_name"])
         self.assertEqual(manifest.version, readiness["capability"]["version"])
         self.assertIn(WorkflowKind.RELEASE_TRACKING, manifest.workflow_kinds)
+        self.assertEqual(
+            manifest.metadata["platforms"],
+            ["kofile-publicsearch", "kofile-countyfusion", "fidlar-ava"],
+        )
+        self.assertEqual(len(manifest.jurisdiction_scopes), len(OH_RECORDER_SITES))
 
     def test_sites_are_the_counties_on_publicsearch(self) -> None:
         self.assertEqual(OH_PUBLICSEARCH_SITES, (CUYAHOGA, STARK))
@@ -67,6 +79,68 @@ class OhioRecorderContractTests(unittest.TestCase):
         self.assertEqual(WAYNE.base_url, "https://countyfusion8.kofiletech.us/countyweb")
         self.assertEqual((WAYNE.county_key, ASHLAND.county_key), ("WayneOH", "AshlandOH"))
 
+    def test_sites_are_the_counties_on_fidlar_ava(self) -> None:
+        self.assertEqual(OH_FIDLAR_AVA_SITES, (LAKE, MEDINA, HOLMES, GEAUGA))
+        self.assertEqual(
+            [site.app_url for site in OH_FIDLAR_AVA_SITES],
+            [
+                "https://rep2laredo.fidlar.com/OHLake/AvaWeb/",
+                "https://recorder-search.medinacounty.gov/OHMedina/AvaWeb/",
+                "https://ohholmes.fidlar.com/OHHolmes/AvaWeb/",
+                "https://ava.fidlar.com/OHGeauga/AvaWeb/",
+            ],
+        )
+        self.assertEqual({site.state for site in OH_FIDLAR_AVA_SITES}, {"OH"})
+        # Lake asks crawlers for ten seconds between requests; Geauga gets the same.
+        self.assertEqual((LAKE.min_interval_seconds, GEAUGA.min_interval_seconds), (10, 10))
+
+    def test_each_ava_county_s_mortgage_documents_read_as_what_they_are(self) -> None:
+        expected = [
+            (
+                LAKE,
+                {
+                    "MORTGAGE": InstrumentKind.MORTGAGE,
+                    "RELEASE/SATISFACTION": InstrumentKind.RELEASE,
+                    "PARTIAL RELEASE": InstrumentKind.PARTIAL_RELEASE,
+                    "ASSIGNMENT": InstrumentKind.ASSIGNMENT,
+                    "AMENDMENT TO MORTGAGE": InstrumentKind.MODIFICATION,
+                },
+            ),
+            (
+                MEDINA,
+                {
+                    "M": InstrumentKind.MORTGAGE,
+                    "CANC": InstrumentKind.RELEASE,
+                    "PT/REL": InstrumentKind.PARTIAL_RELEASE,
+                    "ASSIGN": InstrumentKind.ASSIGNMENT,
+                    # A cancellation of anything else is not a mortgage's release.
+                    "CANC MISC": InstrumentKind.OTHER,
+                },
+            ),
+            (
+                HOLMES,
+                {
+                    "MORTGAGE": InstrumentKind.MORTGAGE,
+                    "SAT MTG": InstrumentKind.RELEASE,
+                    "REL MTG": InstrumentKind.RELEASE,
+                    "ASSIGN MTG": InstrumentKind.ASSIGNMENT,
+                },
+            ),
+            (
+                GEAUGA,
+                {
+                    "MORTGAGE": InstrumentKind.MORTGAGE,
+                    "MORTGAGE RELEASE": InstrumentKind.RELEASE,
+                },
+            ),
+        ]
+        for site, kinds in expected:
+            client = FidlarAvaClient(site)
+            for document_type, kind in kinds.items():
+                with self.subTest(county=site.county, document_type=document_type):
+                    row = {"DocumentName": "1", "DocumentType": document_type}
+                    self.assertIs(client.document(row).kind, kind)
+
     def test_the_plugin_registers_a_release_source_per_county(self) -> None:
         context = _context()
 
@@ -81,6 +155,13 @@ class OhioRecorderContractTests(unittest.TestCase):
         wayne = Jurisdiction(state="OH", county="Wayne County")
         resolved = context.sources.resolve(wayne, SourceKind.COUNTY_RECORDER)
         self.assertEqual(resolved.descriptor.metadata["platform"], "kofile-countyfusion")
+        for county in ("Lake County", "Medina County", "Holmes County", "Geauga County"):
+            resolved = context.sources.resolve(
+                Jurisdiction(state="OH", county=county), SourceKind.COUNTY_RECORDER
+            )
+            self.assertEqual(resolved.descriptor.metadata["platform"], "fidlar-ava")
+        medina = context.sources.get(MEDINA.source_id)
+        self.assertEqual(medina.descriptor.base_url, MEDINA.app_url)
 
     def test_a_connector_already_registered_is_kept(self) -> None:
         context = _context()
