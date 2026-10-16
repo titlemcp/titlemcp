@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from titlemcp_platform_countyfusion import CountyFusionSiteConfig
+from titlemcp_platform_fidlarava import FidlarAvaSiteConfig
 from titlemcp_platform_publicsearch import PublicSearchSiteConfig
 
 from title_mcp.domain.recorder import InstrumentKind
@@ -100,7 +101,56 @@ OH_COUNTYFUSION_SITES: tuple[CountyFusionSiteConfig, ...] = (
     RICHLAND,
 )
 
-#: Every Ohio county with a recorder connector, whatever its platform.
-OH_RECORDER_SITES: tuple[PublicSearchSiteConfig | CountyFusionSiteConfig, ...] = (
-    OH_PUBLICSEARCH_SITES + OH_COUNTYFUSION_SITES
+# Fidlar AVA counties. Each has its own AvaWeb app, which names the web API
+# behind it. Lake asks crawlers to wait ten seconds between requests (robots.txt
+# Crawl-delay); lookups in Lake and in Geauga are spaced that far apart.
+LAKE = FidlarAvaSiteConfig(
+    source_id="us-oh-lake-recorder",
+    county="Lake County",
+    state="OH",
+    name="Lake County, Ohio Recorder",
+    app_url="https://rep2laredo.fidlar.com/OHLake/AvaWeb/",
+    owner="Lake County Recorder",
+    min_interval_seconds=10,
+    # An amendment to a mortgage changes one; it isn't another mortgage.
+    document_type_kinds={"AMENDMENT TO MORTGAGE": InstrumentKind.MODIFICATION},
 )
+
+MEDINA = FidlarAvaSiteConfig(
+    source_id="us-oh-medina-recorder",
+    county="Medina County",
+    state="OH",
+    name="Medina County, Ohio Recorder",
+    app_url="https://recorder-search.medinacounty.gov/OHMedina/AvaWeb/",
+    owner="Medina County Recorder",
+    # Medina abbreviates: "M" is a mortgage and "CANC" its release. The
+    # classifier reads "PT/REL" (a partial release) and "ASSIGN" itself.
+    document_type_kinds={"M": InstrumentKind.MORTGAGE, "CANC": InstrumentKind.RELEASE},
+)
+
+# Holmes writes a release as "SAT MTG" or "REL MTG", which the classifier reads.
+HOLMES = FidlarAvaSiteConfig(
+    source_id="us-oh-holmes-recorder",
+    county="Holmes County",
+    state="OH",
+    name="Holmes County, Ohio Recorder",
+    app_url="https://ohholmes.fidlar.com/OHHolmes/AvaWeb/",
+    owner="Holmes County Recorder",
+)
+
+GEAUGA = FidlarAvaSiteConfig(
+    source_id="us-oh-geauga-recorder",
+    county="Geauga County",
+    state="OH",
+    name="Geauga County, Ohio Recorder",
+    app_url="https://ava.fidlar.com/OHGeauga/AvaWeb/",
+    owner="Geauga County Recorder",
+    min_interval_seconds=10,
+)
+
+OH_FIDLAR_AVA_SITES: tuple[FidlarAvaSiteConfig, ...] = (LAKE, MEDINA, HOLMES, GEAUGA)
+
+#: Every Ohio county with a recorder connector, whatever its platform.
+OH_RECORDER_SITES: tuple[
+    PublicSearchSiteConfig | CountyFusionSiteConfig | FidlarAvaSiteConfig, ...
+] = OH_PUBLICSEARCH_SITES + OH_COUNTYFUSION_SITES + OH_FIDLAR_AVA_SITES

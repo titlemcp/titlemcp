@@ -50,7 +50,8 @@ for title-impacting decisions.
 ```text
 packages/titlemcp/                         core Python package
 packages/platforms/                        scrapers shared by counties on the same
-                                           software (CountyFusion, iasWorld, PublicSearch)
+                                           software (CountyFusion, Fidlar AVA, iasWorld,
+                                           PublicSearch)
 packages/jurisdictions/us/<state>/         county packages: recorders, tax, auditors,
                                            Florida's municipal lien directory
 samples/                                   runnable Ollama examples

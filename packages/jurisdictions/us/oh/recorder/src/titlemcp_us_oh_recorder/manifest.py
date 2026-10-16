@@ -23,7 +23,7 @@ def capability_manifest() -> CapabilityManifest:
         },
         review_required=True,
         metadata={
-            "platforms": ["kofile-publicsearch", "kofile-countyfusion"],
+            "platforms": ["kofile-publicsearch", "kofile-countyfusion", "fidlar-ava"],
             "sources": [site.source_id for site in OH_RECORDER_SITES],
             "counties": [site.county for site in OH_RECORDER_SITES],
         },

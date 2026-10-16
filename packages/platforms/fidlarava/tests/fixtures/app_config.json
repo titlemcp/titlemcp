@@ -1,0 +1,7 @@
+{
+    "_comment": "Shaped like AvaWeb's appConfig.json. The host and county are invented.",
+    "webApiBase": "https://ava.example.test/XXExample/Scrap.WebService.Ava/",
+    "version": "5.0.10-rel",
+    "customFolder": "../AvaWebCustom",
+    "productName": "AVA"
+}

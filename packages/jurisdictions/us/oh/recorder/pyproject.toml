@@ -9,6 +9,7 @@ license-files = ["LICENSE"]
 dependencies = [
     "titlemcp>=0.3.4",
     "titlemcp-platform-countyfusion>=0.1.0",
+    "titlemcp-platform-fidlarava>=0.1.0",
     "titlemcp-platform-publicsearch>=0.1.0",
 ]
 

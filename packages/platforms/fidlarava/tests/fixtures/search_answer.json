@@ -1,0 +1,5 @@
+{"_comment": "Shaped like a breeze/Search answer. The fake site fills DocResults from documents.json.",
+ "ResultAccessCode": "example-access-code", "ResultId": 1, "TotalResults": 0, "ViewableResults": 0,
+ "DocResults": [],
+ "Success": true, "Msg": null, "ResultAction": 0, "ActionCost": null, "SessionBalance": null,
+ "PreauthAmountKey": null, "PreAuthAmount": null, "ConvenienceFee": null}
