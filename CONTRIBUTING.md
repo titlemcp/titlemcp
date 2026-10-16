@@ -15,6 +15,7 @@ packages/
   titlemcp/                  # the core framework, published as titlemcp
   platforms/                 # scrapers shared by counties on the same software
     countyfusion/
+    fidlarava/
     iasworld/
     publicsearch/
   jurisdictions/us/<state>/  # one package per county capability, e.g.

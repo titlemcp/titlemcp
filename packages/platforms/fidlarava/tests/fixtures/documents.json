@@ -1,0 +1,252 @@
+{
+ "_comment": "The DocResults rows of an invented county; every party, number and legal is invented. The mortgage links to its assignment and its release, and each links back. The deed sits at page 33440 of the mortgage's book, which a search for page 3344 also finds.",
+ "DocResults": [
+  {
+   "Id": 7000101,
+   "DocumentType": "MORTGAGE",
+   "RecordedDateTime": "4/15/2019 10:35:26 AM",
+   "DocumentName": "2019EX000101",
+   "AssociatedDocuments": [
+    {
+     "Id": 7000202,
+     "Name": "2021EX000202",
+     "ImageExists": true
+    },
+    {
+     "Id": 7000303,
+     "Name": "2026EX000303",
+     "ImageExists": true
+    }
+   ],
+   "Book": "912",
+   "ConsiderationAmount": 0.0,
+   "DocumentDate": "4/10/2019",
+   "Fees": [],
+   "Legals": [
+    {
+     "Id": 8000101,
+     "LegalType": "P",
+     "Description": "00-000-0000",
+     "Notes": "EXAMPLE ACRES LOT 12",
+     "PropertyNotes": null
+    }
+   ],
+   "LegalSummary": "EXAMPLE ACRES LOT 12",
+   "Notes": "",
+   "Page": "3344",
+   "Party1": "SAMPLETON JANE Q",
+   "Party2": "EXAMPLE SAVINGS BANK",
+   "Parties": [
+    {
+     "Id": 9000101,
+     "PartyTypeId": 1,
+     "Name": "SAMPLETON JANE Q",
+     "AdditionalName": null
+    },
+    {
+     "Id": 9000102,
+     "PartyTypeId": 1,
+     "Name": "SAMPLETON JOHN R",
+     "AdditionalName": null
+    },
+    {
+     "Id": 9000103,
+     "PartyTypeId": 2,
+     "Name": "EXAMPLE SAVINGS BANK",
+     "AdditionalName": null
+    }
+   ],
+   "ReferenceNumber": "",
+   "ReturnTo": {
+    "Id": 0,
+    "Address1": null,
+    "Address2": null,
+    "Address3": null,
+    "FullAddress": null,
+    "Name": null
+   },
+   "ImagePageCount": 3,
+   "UCCData": {
+    "UCCNumber": null,
+    "ExpirationDate": null,
+    "TerminationDate": null,
+    "Notes": null
+   },
+   "TapestryLink": "",
+   "CanViewImage": true
+  },
+  {
+   "Id": 7000202,
+   "DocumentType": "ASSIGNMENT",
+   "RecordedDateTime": "1/5/2021 9:02:11 AM",
+   "DocumentName": "2021EX000202",
+   "AssociatedDocuments": [
+    {
+     "Id": 7000101,
+     "Name": "2019EX000101",
+     "ImageExists": true
+    }
+   ],
+   "Book": "950",
+   "ConsiderationAmount": 0.0,
+   "DocumentDate": "",
+   "Fees": [],
+   "Legals": [],
+   "LegalSummary": "",
+   "Notes": "",
+   "Page": "12",
+   "Party1": "EXAMPLE SAVINGS BANK",
+   "Party2": "SAMPLE LOAN SERVICING LLC",
+   "Parties": [
+    {
+     "Id": 9000201,
+     "PartyTypeId": 1,
+     "Name": "EXAMPLE SAVINGS BANK",
+     "AdditionalName": null
+    },
+    {
+     "Id": 9000202,
+     "PartyTypeId": 2,
+     "Name": "SAMPLE LOAN SERVICING LLC",
+     "AdditionalName": null
+    }
+   ],
+   "ReferenceNumber": "",
+   "ReturnTo": {
+    "Id": 0,
+    "Address1": null,
+    "Address2": null,
+    "Address3": null,
+    "FullAddress": null,
+    "Name": null
+   },
+   "ImagePageCount": 3,
+   "UCCData": {
+    "UCCNumber": null,
+    "ExpirationDate": null,
+    "TerminationDate": null,
+    "Notes": null
+   },
+   "TapestryLink": "",
+   "CanViewImage": true
+  },
+  {
+   "Id": 7000303,
+   "DocumentType": "RELEASE/SATISFACTION",
+   "RecordedDateTime": "5/18/2026 1:28:55 PM",
+   "DocumentName": "2026EX000303",
+   "AssociatedDocuments": [
+    {
+     "Id": 7000101,
+     "Name": "2019EX000101",
+     "ImageExists": true
+    }
+   ],
+   "Book": "1007",
+   "ConsiderationAmount": 0.0,
+   "DocumentDate": "",
+   "Fees": [],
+   "Legals": [],
+   "LegalSummary": "",
+   "Notes": "SAT OF MTG 2019EX000101",
+   "Page": "1946",
+   "Party1": "SAMPLE LOAN SERVICING LLC",
+   "Party2": "SAMPLETON JANE Q",
+   "Parties": [
+    {
+     "Id": 9000301,
+     "PartyTypeId": 1,
+     "Name": "SAMPLE LOAN SERVICING LLC",
+     "AdditionalName": null
+    },
+    {
+     "Id": 9000302,
+     "PartyTypeId": 2,
+     "Name": "SAMPLETON JANE Q",
+     "AdditionalName": null
+    },
+    {
+     "Id": 9000303,
+     "PartyTypeId": 2,
+     "Name": "SAMPLETON JOHN R",
+     "AdditionalName": null
+    }
+   ],
+   "ReferenceNumber": "",
+   "ReturnTo": {
+    "Id": 0,
+    "Address1": null,
+    "Address2": null,
+    "Address3": null,
+    "FullAddress": null,
+    "Name": null
+   },
+   "ImagePageCount": 3,
+   "UCCData": {
+    "UCCNumber": null,
+    "ExpirationDate": null,
+    "TerminationDate": null,
+    "Notes": null
+   },
+   "TapestryLink": "",
+   "CanViewImage": true
+  },
+  {
+   "Id": 7000404,
+   "DocumentType": "DEED",
+   "RecordedDateTime": "4/16/2019 2:14:03 PM",
+   "DocumentName": "2019EX000404",
+   "AssociatedDocuments": [],
+   "Book": "912",
+   "ConsiderationAmount": 0.0,
+   "DocumentDate": "",
+   "Fees": [],
+   "Legals": [
+    {
+     "Id": 8000404,
+     "LegalType": "P",
+     "Description": "00-000-0000",
+     "Notes": "EXAMPLE ACRES LOT 14",
+     "PropertyNotes": null
+    }
+   ],
+   "LegalSummary": "EXAMPLE ACRES LOT 14",
+   "Notes": "",
+   "Page": "33440",
+   "Party1": "EXAMPLE HOMES LLC",
+   "Party2": "SAMPLEFORD ALEX",
+   "Parties": [
+    {
+     "Id": 9000401,
+     "PartyTypeId": 1,
+     "Name": "EXAMPLE HOMES LLC",
+     "AdditionalName": null
+    },
+    {
+     "Id": 9000402,
+     "PartyTypeId": 2,
+     "Name": "SAMPLEFORD ALEX",
+     "AdditionalName": null
+    }
+   ],
+   "ReferenceNumber": "",
+   "ReturnTo": {
+    "Id": 0,
+    "Address1": null,
+    "Address2": null,
+    "Address3": null,
+    "FullAddress": null,
+    "Name": null
+   },
+   "ImagePageCount": 3,
+   "UCCData": {
+    "UCCNumber": null,
+    "ExpirationDate": null,
+    "TerminationDate": null,
+    "Notes": null
+   },
+   "TapestryLink": "",
+   "CanViewImage": true
+  }
+ ]
+}
