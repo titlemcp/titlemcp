@@ -173,7 +173,7 @@ async def find_mortgage_release(
             index, query, mortgage, notes, unlinked_only=bool(borrower_mortgages)
         )
 
-    status = _status(mortgage, releases, candidates, borrower_mortgages)
+    status = _status(query, mortgage, releases, candidates, borrower_mortgages)
     notes.extend(_status_notes(status, query, mortgage, releases, borrower_mortgages))
     return ReleaseFinding(
         status=status,
@@ -514,15 +514,21 @@ async def _party_candidates(
 
 
 def _status(
+    query: MortgageReleaseQuery,
     mortgage: RecordedInstrument | None,
     releases: list[ReleaseMatch],
     candidates: list[ReleaseMatch],
     borrower_mortgages: list[BorrowerMortgage],
 ) -> ReleaseFindingStatus:
-    if any(match.release.kind is InstrumentKind.RELEASE for match in releases):
+    # A release recorded before the payoff can't be the payoff's. It still
+    # counts when the payoff date or its recording date isn't known.
+    since = [match for match in releases if not _before_payoff(match, query)]
+    if any(match.release.kind is InstrumentKind.RELEASE for match in since):
         return ReleaseFindingStatus.RELEASED
-    if releases:
+    if since:
         return ReleaseFindingStatus.PARTIALLY_RELEASED
+    if releases:
+        return ReleaseFindingStatus.RELEASED_BEFORE_PAYOFF
     if candidates:
         return ReleaseFindingStatus.CANDIDATES_ONLY
     if mortgage is not None:
@@ -530,6 +536,11 @@ def _status(
     if any(entry.open_at_payoff for entry in borrower_mortgages):
         return ReleaseFindingStatus.NOT_RELEASED
     return ReleaseFindingStatus.MORTGAGE_NOT_FOUND
+
+
+def _before_payoff(match: ReleaseMatch, query: MortgageReleaseQuery) -> bool:
+    recorded = match.release.recorded_on
+    return bool(query.paid_off_on and recorded and recorded < query.paid_off_on)
 
 
 def _status_notes(
@@ -566,7 +577,7 @@ def _status_notes(
     if query.paid_off_on:
         for match in releases:
             recorded = match.release.recorded_on
-            if recorded and recorded < query.paid_off_on:
+            if _before_payoff(match, query) and recorded:
                 notes.append(
                     f"{match.release.instrument_number} was recorded on {recorded.isoformat()}, "
                     f"before the payoff on {query.paid_off_on.isoformat()}. It may release an "

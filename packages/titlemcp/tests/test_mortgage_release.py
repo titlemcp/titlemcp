@@ -368,7 +368,7 @@ class FindReleaseTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertIs(finding.status, ReleaseFindingStatus.PARTIALLY_RELEASED)
 
-    async def test_a_release_recorded_before_the_payoff_is_flagged(self) -> None:
+    async def test_a_release_recorded_before_the_payoff_is_not_the_payoffs(self) -> None:
         early = _release(recorded_on=date(2024, 3, 1), references=[MORTGAGE])
         index = _FakeIndex([_mortgage(), early])
 
@@ -376,9 +376,15 @@ class FindReleaseTests(unittest.IsolatedAsyncioTestCase):
             index,
             MortgageReleaseQuery(mortgage_instrument_number=MORTGAGE, paid_off_on="2026-05-01"),
         )
+        undated = await find_mortgage_release(
+            index, MortgageReleaseQuery(mortgage_instrument_number=MORTGAGE)
+        )
 
-        self.assertIs(finding.status, ReleaseFindingStatus.RELEASED)
+        self.assertIs(finding.status, ReleaseFindingStatus.RELEASED_BEFORE_PAYOFF)
+        self.assertEqual([m.release.instrument_number for m in finding.releases], [RELEASE])
         self.assertIn("before the payoff on 2026-05-01", " ".join(finding.notes))
+        # Without a payoff date there's nothing to compare against.
+        self.assertIs(undated.status, ReleaseFindingStatus.RELEASED)
 
     async def test_name_matches_are_candidates_never_an_answer(self) -> None:
         index = _FakeIndex(

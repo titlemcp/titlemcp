@@ -332,6 +332,9 @@ class ReleaseFindingStatus(StrEnum):
     NOT_RELEASED = "not_released"
     #: The mortgage itself could not be found, and no candidate release was.
     MORTGAGE_NOT_FOUND = "mortgage_not_found"
+    #: Releases are linked to the mortgage, but all were recorded before the
+    #: payoff: an earlier loan's, or a payoff date that is wrong.
+    RELEASED_BEFORE_PAYOFF = "released_before_payoff"
 
 
 class MortgageIdentifiedBy(StrEnum):
