@@ -469,11 +469,12 @@ def register_core_tools(mcp: MCPServer, platform: TitleMCPPlatform) -> None:
         paid_off_on (YYYY-MM-DD) flags a release recorded before the payoff.
         Returns a title_mcp.mortgage_release_search record under records[0].
         Its status is released, partially_released, candidates_only,
-        not_released or mortgage_not_found, and each release carries the basis
-        for the match: the county's own index linking it to the mortgage, its
-        text citing the mortgage, or only the same parties. A status of
-        requires_configuration means no installed recorder connector covers
-        the county, or nothing was given to search for.
+        not_released, mortgage_not_found or released_before_payoff (every
+        release linked to the mortgage predates paid_off_on), and each release
+        carries the basis for the match: the county's own index linking it to
+        the mortgage, its text citing the mortgage, or only the same parties. A
+        status of requires_configuration means no installed recorder connector
+        covers the county, or nothing was given to search for.
         """
         await ensure_ready()
         try:
